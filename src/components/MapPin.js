@@ -41,7 +41,10 @@ const MapPin = ({ data, x, y }) => {
         sx={{ maxHeight: window.outerHeight - 100 }}
       >
         <Box sx={{ p: 4 }}>
-          <EquipmentDataForm data={data} />
+          <EquipmentDataForm
+            data={data}
+            onClose={() => setIsEquipmentDetailViewerOpen(false)}
+          />
         </Box>
       </Drawer>
     </>

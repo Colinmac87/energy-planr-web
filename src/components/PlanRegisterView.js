@@ -87,7 +87,10 @@ const PlanRegisterView = ({ data }) => {
         sx={{ maxHeight: window.outerHeight - 100 }}
       >
         <Box sx={{ p: 4 }}>
-          <EquipmentDataForm data={selectedData} />
+          <EquipmentDataForm
+            data={selectedData}
+            onClose={onCloseEquipmentDetailViewer}
+          />
         </Box>
       </Drawer>
     </Box>
