@@ -1,53 +1,7 @@
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 
-const meta = [
-  {
-    group: "Basic Info",
-    fieldLabel: "Equipment No",
-    fieldTag: "equipmentNo",
-  },
-  {
-    group: "Basic Info",
-    fieldLabel: "Location",
-    fieldTag: "location",
-  },
-  {
-    group: "Basic Info",
-    fieldLabel: "Level",
-    fieldTag: "level",
-  },
-  {
-    group: "Basic Info",
-    fieldLabel: "Description",
-    fieldTag: "description",
-  },
-  {
-    group: "Delivery Assessment",
-    fieldLabel: "Type",
-    fieldTag: "type",
-  },
-  {
-    group: "Delivery Assessment",
-    fieldLabel: "Run Status",
-    fieldTag: "runStatus",
-  },
-  {
-    group: "Maintenance",
-    fieldLabel: "Temporary Repair",
-    fieldTag: "temporaryRepair",
-  },
-  {
-    group: "Maintenance",
-    fieldLabel: "Repair Type",
-    fieldTag: "repairType",
-  },
-  {
-    group: "Other",
-    fieldLabel: "Random Data",
-    fieldTag: "data",
-  },
-];
+import { meta } from "../constants/data.constants";
 
 const EquipmentDataForm = ({ data, onSave, onClose }) => {
   const [formData, setFormData] = useState(JSON.parse(JSON.stringify(data)));

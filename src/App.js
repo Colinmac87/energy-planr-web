@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import Plan from "./pages/Plan";
 import DashboardLayout from "./layout/DashboardLayout";
+import Settings from "./pages/Settings";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,14 @@ const router = createBrowserRouter([
     element: (
       <DashboardLayout>
         <Plan />
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <DashboardLayout>
+        <Settings />
       </DashboardLayout>
     ),
   },

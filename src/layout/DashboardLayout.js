@@ -5,18 +5,22 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Badge,
   Container,
-  Grid,
-  Paper,
-  Link,
-  Avatar,
+  Button,
 } from "@mui/material";
-import { Logout, Menu, Notifications } from "@mui/icons-material";
+import { Logout, Menu, Settings } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
+
+  const onClickHome = () => {
+    navigate("/");
+  };
+
+  const onClickSettings = () => {
+    navigate("/settings");
+  };
 
   const onClickSignout = () => {
     navigate("/signin");
@@ -42,16 +46,30 @@ const DashboardLayout = ({ children }) => {
           >
             <Menu />
           </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              flexDirection: "row",
+              gap: 2,
+              alignItems: "center",
+            }}
           >
-            Energy Planr
-          </Typography>
-
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              sx={{ display: "inline-block" }}
+            >
+              Energy Planr
+            </Typography>
+            <Button variant="Text" onClick={onClickHome}>
+              Home
+            </Button>
+          </Box>
+          <IconButton color="inherit" onClick={onClickSettings}>
+            <Settings />
+          </IconButton>
           <IconButton color="inherit" onClick={onClickSignout}>
             <Logout />
           </IconButton>

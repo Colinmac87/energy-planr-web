@@ -7,7 +7,7 @@ import Papa from "papaparse";
 import PlanRegisterView from "../components/PlanRegisterView";
 import PlanMapView from "../components/PlanMapView";
 import EquipmentFileUpload from "../components/EquipmentFileUpload";
-import { camelize } from "../utils/stringUtils";
+import { camelize } from "../utils/string.utils";
 
 const Plan = () => {
   const [selectedTab, setSelectedTab] = useState("tab-register");
