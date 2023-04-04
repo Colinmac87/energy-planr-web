@@ -1,15 +1,15 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
 
-const PlanForm = () => {
+const AssetForm = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h4">Create a new plan</Typography>
+        <Typography variant="h4">Create a new asset</Typography>
       </Grid>
       <Grid item xs={12}>
         <TextField
-          id={"plan-name"}
-          label={"Plan Name"}
+          id={"asset-name"}
+          label={"Asset Name"}
           variant="outlined"
           fullWidth
         />
@@ -21,4 +21,4 @@ const PlanForm = () => {
   );
 };
 
-export default PlanForm;
+export default AssetForm;

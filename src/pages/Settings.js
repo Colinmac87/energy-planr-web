@@ -38,7 +38,7 @@ const Settings = () => {
       <Grid item xs={12}>
         <TabContext value={selectedTab}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={onTabChange} aria-label="Plan Tabs">
+            <TabList onChange={onTabChange} aria-label="Asset Tabs">
               <Tab iconPosition="start" label="Users" value="tab-users" />
               <Tab iconPosition="start" label="Fields" value="tab-fields" />
               <Tab iconPosition="start" label="Groups" value="tab-groups" />

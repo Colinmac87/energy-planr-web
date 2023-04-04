@@ -4,12 +4,12 @@ import { UploadFile, Map, TableRows, TableChart } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import Papa from "papaparse";
 
-import PlanRegisterView from "../components/PlanRegisterView";
-import PlanMapView from "../components/PlanMapView";
+import AssetRegisterView from "../components/AssetRegisterView";
+import AssetMapView from "../components/AssetMapView";
 import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
 
-const Plan = () => {
+const Asset = () => {
   const [selectedTab, setSelectedTab] = useState("tab-register");
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
 
@@ -59,7 +59,7 @@ const Plan = () => {
       <Grid item xs={12}>
         <TabContext value={selectedTab}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={onTabChange} aria-label="Plan Tabs">
+            <TabList onChange={onTabChange} aria-label="Asset Tabs">
               <Tab
                 icon={<TableChart />}
                 iconPosition="start"
@@ -75,10 +75,10 @@ const Plan = () => {
             </TabList>
           </Box>
           <TabPanel value="tab-register">
-            <PlanRegisterView data={data} />
+            <AssetRegisterView data={data} />
           </TabPanel>
           <TabPanel value="tab-viewer">
-            <PlanMapView data={data} />
+            <AssetMapView data={data} />
           </TabPanel>
         </TabContext>
       </Grid>
@@ -91,4 +91,4 @@ const Plan = () => {
   );
 };
 
-export default Plan;
+export default Asset;

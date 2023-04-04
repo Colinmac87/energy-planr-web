@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
 
-const PlanRegisterView = ({ data }) => {
+const AssetRegisterView = ({ data }) => {
   const [isEquipmentDetailViewerOpen, setIsEquipmentDetailViewerOpen] =
     useState(false);
   const [selectedData, setSelectedData] = useState(null);
@@ -97,4 +97,4 @@ const PlanRegisterView = ({ data }) => {
   );
 };
 
-export default PlanRegisterView;
+export default AssetRegisterView;

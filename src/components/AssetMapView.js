@@ -7,7 +7,7 @@ import MapPin from "./MapPin";
 
 import mezzMap from "../assets/Mezz-Floor.png";
 
-const PlanMapView = ({ data }) => {
+const AssetMapView = ({ data }) => {
   const [expanded, setExpanded] = useState([]);
   const [selected, setSelected] = useState([]);
 
@@ -98,4 +98,4 @@ const PlanMapView = ({ data }) => {
   );
 };
 
-export default PlanMapView;
+export default AssetMapView;

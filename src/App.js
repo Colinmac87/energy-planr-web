@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
-import Plan from "./pages/Plan";
+import Asset from "./pages/Asset";
 import DashboardLayout from "./layout/DashboardLayout";
 import Settings from "./pages/Settings";
 
@@ -21,10 +21,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/plan/:id",
+    path: "/asset/:id",
     element: (
       <DashboardLayout>
-        <Plan />
+        <Asset />
       </DashboardLayout>
     ),
   },

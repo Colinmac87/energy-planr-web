@@ -8,9 +8,9 @@ import {
   Drawer,
   Box,
 } from "@mui/material";
-import PlanForm from "../components/PlanForm";
+import AssetForm from "../components/AssetForm";
 
-const plans = [
+const assets = [
   {
     id: 1,
     name: "Microsoft head office",
@@ -26,25 +26,25 @@ const plans = [
 ];
 
 const Home = () => {
-  const [isNewPlanFormOpen, setIsNewPlanFormOpen] = useState(false);
+  const [isNewAssetFormOpen, setIsNewAssetFormOpen] = useState(false);
 
-  const onCloseNewPlanForm = () => {
-    setIsNewPlanFormOpen(false);
+  const onCloseNewAssetForm = () => {
+    setIsNewAssetFormOpen(false);
   };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography gutterBottom variant="h3" component="div">
-          Plans
+          Assets
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <Button variant="contained" onClick={() => setIsNewPlanFormOpen(true)}>
-          New Plan
+        <Button variant="contained" onClick={() => setIsNewAssetFormOpen(true)}>
+          New Asset
         </Button>
       </Grid>
-      {plans.map((plan) => (
+      {assets.map((asset) => (
         <Grid item xs={12} md={4} lg={3}>
           <Paper
             sx={{
@@ -54,9 +54,9 @@ const Home = () => {
             }}
           >
             <Typography gutterBottom variant="h6" component="div">
-              {plan.name}
+              {asset.name}
             </Typography>
-            <Link href={`/plan/${plan.id}`} underline="none">
+            <Link href={`/asset/${asset.id}`} underline="none">
               View
             </Link>
           </Paper>
@@ -65,11 +65,11 @@ const Home = () => {
 
       <Drawer
         anchor={"right"}
-        open={isNewPlanFormOpen}
-        onClose={onCloseNewPlanForm}
+        open={isNewAssetFormOpen}
+        onClose={onCloseNewAssetForm}
       >
         <Box sx={{ p: 4 }}>
-          <PlanForm />
+          <AssetForm />
         </Box>
       </Drawer>
     </Grid>
