@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
 import "@fontsource/inter/300.css";
 import "@fontsource/inter/400.css";
@@ -14,6 +14,9 @@ import { initFirebase } from "./firebase";
 import App from "./App";
 
 const theme = createTheme({
+  palette: {
+    mode: "dark",
+  },
   typography: {
     fontFamily: `"Inter", "Roboto", "Helvetica", "Arial", sans-serif`,
   },
@@ -23,6 +26,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
     </ThemeProvider>
   </React.StrictMode>
