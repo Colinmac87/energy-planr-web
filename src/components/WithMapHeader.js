@@ -24,14 +24,14 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Mezz Floor
+            Headquarter Site / Mezz Floor
           </Typography>
           <Button
             key="btnTooglePinsVisibilitiy"
             onClick={onTogglePinsVisibility}
             size="small"
             variant="contained"
-            sx={{ ml: 2 }}
+            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
           >
             {arePinsVisible ? <Visibility /> : <VisibilityOff />}
           </Button>
@@ -39,7 +39,7 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
             key="btnMapDownload"
             size="small"
             variant="contained"
-            sx={{ ml: 2 }}
+            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
           >
             <Download />
           </Button>
@@ -48,7 +48,7 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
             onClick={onToggleFullscreen}
             size="small"
             variant="contained"
-            sx={{ ml: 2 }}
+            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
           >
             <Fullscreen />
           </Button>

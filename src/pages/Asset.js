@@ -62,11 +62,6 @@ const Asset = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Typography gutterBottom variant="h3" component="div">
-          Headquarter site
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
         <TabContext value={selectedTab}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList onChange={onTabChange} aria-label="Asset Tabs">

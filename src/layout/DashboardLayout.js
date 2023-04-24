@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   AppBar,
@@ -6,24 +6,32 @@ import {
   IconButton,
   Typography,
   Container,
-  Button,
   Link,
+  MenuItem,
+  Menu,
 } from "@mui/material";
-import { Logout, Menu, Settings } from "@mui/icons-material";
+import { AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const onClickHome = () => {
-    navigate("/");
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const onClickSettings = () => {
+    handleClose();
     navigate("/settings");
   };
 
   const onClickSignout = () => {
+    handleClose();
     navigate("/signin");
   };
 
@@ -55,12 +63,38 @@ const DashboardLayout = ({ children }) => {
               </Typography>
             </Link>
           </Box>
-          <IconButton color="inherit" onClick={onClickSettings}>
-            <Menu />
-          </IconButton>
-          <IconButton color="inherit" onClick={onClickSignout}>
-            <Logout />
-          </IconButton>
+          <div>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={onClickSettings}>Settings</MenuItem>
+              <MenuItem onClick={onClickSignout}>Logout</MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </AppBar>
       <Box

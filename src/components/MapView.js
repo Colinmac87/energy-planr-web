@@ -188,9 +188,9 @@ const MapView = ({ image, data, arePinsVisible }) => {
       ref={containerRef}
       style={{
         position: "relative",
-        border: "1px solid #2226",
         width: "100%",
         height: "100%",
+        backgroundColor: "#fff2",
         borderBottomLeftRadius: 4,
         borderBottomRightRadius: 4,
       }}
