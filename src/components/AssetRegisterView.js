@@ -1,7 +1,17 @@
-import { Box, Drawer, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Drawer,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
+import { Link } from "react-router-dom";
 
 const AssetRegisterView = ({ data }) => {
   const [isEquipmentDetailViewerOpen, setIsEquipmentDetailViewerOpen] =
@@ -49,6 +59,18 @@ const AssetRegisterView = ({ data }) => {
       filterable: false,
       width: 150,
     },
+    // {
+    //   field: "id",
+    //   headerName: "Action",
+    //   sortable: false,
+    //   editable: false,
+    //   filterable: false,
+    //   width: 150,
+    //   valueGetter: (params) => {
+    //     console.log(params);
+    //     return <Link to={`/asset/maps/viewer/${params.id}`}>View Map</Link>;
+    //   },
+    // },
   ];
 
   const onCloseEquipmentDetailViewer = () => {
@@ -57,7 +79,7 @@ const AssetRegisterView = ({ data }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item md={4}>
         <TextField
           id={`register-search`}
           label={"Search"}
@@ -73,6 +95,34 @@ const AssetRegisterView = ({ data }) => {
           //   setFormData(temp);
           // }}
         />
+      </Grid>
+      <Grid item md={4}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Location</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Location"
+          >
+            <MenuItem value={10}>Location 1</MenuItem>
+            <MenuItem value={20}>Location 2</MenuItem>
+            <MenuItem value={30}>Location 3</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid item md={4}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Level</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Level"
+          >
+            <MenuItem value={10}>Mezz Floor</MenuItem>
+            <MenuItem value={20}>Lower Deck</MenuItem>
+            <MenuItem value={30}>Roof Deck</MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ height: 600, width: "100%" }}>

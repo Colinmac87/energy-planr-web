@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/asset/:id",
+    path: "/asset/:id?/:tab?",
     element: (
       <DashboardLayout>
         <Asset />

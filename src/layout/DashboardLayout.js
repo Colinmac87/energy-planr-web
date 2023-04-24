@@ -7,6 +7,7 @@ import {
   Typography,
   Container,
   Button,
+  Link,
 } from "@mui/material";
 import { Logout, Menu, Settings } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -34,18 +35,6 @@ const DashboardLayout = ({ children }) => {
             pr: "24px", // keep right padding when drawer closed
           }}
         >
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            // onClick={toggleDrawer}
-            sx={{
-              marginRight: "36px",
-              //   ...(open && { display: "none" }),
-            }}
-          >
-            <Menu />
-          </IconButton>
           <Box
             sx={{
               display: "flex",
@@ -55,20 +44,19 @@ const DashboardLayout = ({ children }) => {
               alignItems: "center",
             }}
           >
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              sx={{ display: "inline-block" }}
-            >
-              Energy Planr
-            </Typography>
-            <Button variant="Text" onClick={onClickHome}>
-              Home
-            </Button>
+            <Link href={`/`} underline="none">
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                sx={{ display: "inline-block" }}
+              >
+                Energy Planr
+              </Typography>
+            </Link>
           </Box>
           <IconButton color="inherit" onClick={onClickSettings}>
-            <Settings />
+            <Menu />
           </IconButton>
           <IconButton color="inherit" onClick={onClickSignout}>
             <Logout />
@@ -84,7 +72,15 @@ const DashboardLayout = ({ children }) => {
         }}
       >
         <Toolbar />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container
+          maxWidth="xl"
+          sx={{
+            mt: 4,
+            mb: 4,
+            minWidth: "100%",
+            height: "100vh",
+          }}
+        >
           {children}
         </Container>
       </Box>

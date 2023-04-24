@@ -26,6 +26,21 @@ import { useState } from "react";
 import { meta } from "../constants/data.constants";
 import { Delete } from "@mui/icons-material";
 
+const groups = [
+  {
+    groupLabel: "Basic Info",
+  },
+  {
+    groupLabel: "Delivery Assessment",
+  },
+  {
+    groupLabel: "Maintenance",
+  },
+  {
+    groupLabel: "Other",
+  },
+];
+
 const Settings = () => {
   const [selectedTab, setSelectedTab] = useState("tab-fields");
 
@@ -181,6 +196,18 @@ const Settings = () => {
               </Grid>
             </Grid>
             <br />
+            {groups.map((group) => (
+              <Paper sx={{ p: 2, pt: 3, mb: 2 }}>
+                <Stack gap={2}>
+                  <TextField
+                    id={`field-${group.groupLabel}`}
+                    label={"Group Name"}
+                    fullWidth
+                    value={group.groupLabel}
+                  />
+                </Stack>
+              </Paper>
+            ))}
           </TabPanel>
         </TabContext>
       </Grid>

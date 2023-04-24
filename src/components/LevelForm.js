@@ -1,22 +1,47 @@
-import { Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import FileUpload from "react-mui-fileuploader";
 
-const AssetForm = () => {
+const LevelForm = () => {
   const onFileUploadChanges = () => {};
   const onFileUploadError = () => {};
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h4">Create a new asset</Typography>
+        <Typography variant="h4">Add new Level</Typography>
       </Grid>
       <Grid item xs={12}>
         <TextField
-          id={"asset-name"}
-          label={"Asset Name"}
+          id={"Level-name"}
+          label={"Level Name"}
           variant="outlined"
           fullWidth
         />
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl sx={{ width: "100%" }}>
+          <InputLabel>Associated Location</InputLabel>
+          <Select
+            sx={{ width: "100%" }}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={"location-1"}
+            label="Associated Location"
+          >
+            <MenuItem value={"location-1"}>Location 1</MenuItem>
+            <MenuItem value={"location-2"}>Location 2</MenuItem>
+            <MenuItem value={"location-3"}>Location 3</MenuItem>
+          </Select>
+        </FormControl>
       </Grid>
       <Grid item xs={12}>
         <FileUpload
@@ -64,4 +89,4 @@ const AssetForm = () => {
   );
 };
 
-export default AssetForm;
+export default LevelForm;

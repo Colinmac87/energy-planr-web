@@ -9,18 +9,19 @@ import {
   Box,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
+import { v4 } from "uuid";
 
 const assets = [
   {
-    id: 1,
+    id: v4(),
     name: "Microsoft head office",
   },
   {
-    id: 2,
+    id: v4(),
     name: "Gymshark building",
   },
   {
-    id: 3,
+    id: v4(),
     name: "Oraan site",
   },
 ];
@@ -46,20 +47,20 @@ const Home = () => {
       </Grid>
       {assets.map((asset) => (
         <Grid item xs={12} md={4} lg={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Typography gutterBottom variant="h6" component="div">
-              {asset.name}
-            </Typography>
-            <Link href={`/asset/${asset.id}`} underline="none">
-              View
-            </Link>
-          </Paper>
+          <Link href={`/asset/${asset.id}`} underline="none">
+            <Paper
+              sx={{
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Typography gutterBottom variant="h6" component="div">
+                {asset.name}
+              </Typography>
+              <img src="http://placekitten.com/g/512/256" />
+            </Paper>
+          </Link>
         </Grid>
       ))}
 

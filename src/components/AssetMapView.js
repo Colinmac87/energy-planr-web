@@ -1,17 +1,32 @@
-import { Box, Button, Grid, Drawer, Paper, Typography } from "@mui/material";
-import { ExpandMore, ChevronRight } from "@mui/icons-material";
-import { TreeView, TreeItem } from "@mui/lab";
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
-
-import MapPin from "./MapPin";
 
 import mezzMap from "../assets/Mezz-Floor.png";
 import roofMap from "../assets/Roof-Deck.png";
 import lowerMap from "../assets/Lower-Deck.png";
+import WithMapViewer from "./WithMapViewer";
 
-const AssetMapView = ({ data }) => {
+const AssetMapView = ({ preSelected, data }) => {
   const [expanded, setExpanded] = useState([]);
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(preSelected);
 
   const [selectedMap, setSelectedMap] = useState("");
 
@@ -20,15 +35,17 @@ const AssetMapView = ({ data }) => {
   };
 
   const handleSelect = (event, nodeId) => {
-    if (nodeId.includes("location")) {
-    setSelected(nodeId);
-    console.log("location");
+    if (selected == nodeId) {
+      setSelected(null);
+      return;
     }
 
-    if (nodeId.includes("level")) {
+    if (nodeId.includes("location")) {
+    } else if (nodeId.includes("level")) {
       if (nodeId.includes("roofDeck")) setSelectedMap(roofMap);
       if (nodeId.includes("lowerDeck")) setSelectedMap(lowerMap);
       if (nodeId.includes("mezzFloor")) setSelectedMap(mezzMap);
+    } else {
       setSelected(nodeId);
     }
   };
@@ -39,27 +56,33 @@ const AssetMapView = ({ data }) => {
     );
   };
 
-  // const handleSelectClick = () => {
-  //   setSelected((oldSelected) =>
-  //     oldSelected.length === 0
-  //       ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-  //       : []
-  //   );
-  // };
-
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={3}>
-        <Paper elevation={2} sx={{ mb: 1, p: 1 }}>
-          <Box sx={{ mb: 2 }}>
-            <Button onClick={handleExpandClick}>
+      <Grid item xs={12} md={2}>
+        <Paper elevation={2} sx={{ mb: 1, p: 2 }}>
+          <Box sx={{ mb: 1 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Location</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Location"
+              >
+                <MenuItem value={10}>Location 1</MenuItem>
+                <MenuItem value={20}>Location 2</MenuItem>
+                <MenuItem value={30}>Location 3</MenuItem>
+              </Select>
+            </FormControl>
+            {/* <Button
+              size="small"
+              onClick={handleExpandClick}
+              fullWidth
+              sx={{ mt: 1 }}
+            >
               {expanded.length === 0 ? "Expand all" : "Collapse all"}
-            </Button>
-            {/* <Button onClick={handleSelectClick}>
-              {selected.length === 0 ? "Select all" : "Unselect all"}
             </Button> */}
           </Box>
-          <TreeView
+          {/* <TreeView
             aria-label="controlled"
             defaultCollapseIcon={<ExpandMore />}
             defaultExpandIcon={<ChevronRight />}
@@ -70,65 +93,99 @@ const AssetMapView = ({ data }) => {
           >
             <TreeItem nodeId="location-1" label="Location 1">
               <TreeItem nodeId="level-roofDeck" label="Roof Deck">
-                <TreeItem nodeId="eq-1" label="Equipment 1" />
-                <TreeItem nodeId="eq-2" label="Equipment 2" />
-                <TreeItem nodeId="eq-3" label="Equipment 3" />
-                <TreeItem nodeId="eq-4" label="Equipment 4" />
+                {data.slice(0, 3).map((dataPoint) => (
+                  <TreeItem
+                    nodeId={dataPoint.id}
+                    label={dataPoint.equipmentNo}
+                  />
+                ))}
               </TreeItem>
               <TreeItem nodeId="level-lowerDeck" label="Lower Deck">
-                <TreeItem nodeId="eq-5" label="Equipment 5" />
-                <TreeItem nodeId="eq-6" label="Equipment 6" />
-                <TreeItem nodeId="eq-7" label="Equipment 7" />
-                <TreeItem nodeId="eq-8" label="Equipment 8" />
+                {data.slice(4, 6).map((dataPoint) => (
+                  <TreeItem
+                    nodeId={dataPoint.id}
+                    label={dataPoint.equipmentNo}
+                  />
+                ))}
               </TreeItem>
             </TreeItem>
             <TreeItem nodeId="location-2" label="Location 2">
               <TreeItem nodeId="level-mezzFloor" label="Mezz Floor">
-                <TreeItem nodeId="eq-9" label="Equipment 9"></TreeItem>
-                <TreeItem nodeId="eq-10" label="Equipment 10"></TreeItem>
-                <TreeItem nodeId="eq-11" label="Equipment 11"></TreeItem>
+                {data.slice(7, 9).map((dataPoint) => (
+                  <TreeItem
+                    nodeId={dataPoint.id}
+                    label={dataPoint.equipmentNo}
+                  />
+                ))}
               </TreeItem>
             </TreeItem>
-          </TreeView>
+          </TreeView> */}
+
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>Mezz Floor</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List dense={true}>
+                {data.slice(0, 3).map((dataPoint) => (
+                  <ListItemButton>
+                    <ListItemText
+                      primary={dataPoint.equipmentNo}
+                    />
+                  </ListItemButton>
+                ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              <Typography>Ground</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List dense={true}>
+                {data.slice(4, 6).map((dataPoint) => (
+                  <ListItemButton>
+                    <ListItemText
+                      primary={dataPoint.equipmentNo}
+                    />
+                  </ListItemButton>
+                ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              aria-controls="panel3a-content"
+              id="panel3a-header"
+            >
+              <Typography>Top Floor</Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <List dense={true}>
+                {data.slice(7, 9).map((dataPoint) => (
+                  <ListItemButton>
+                    <ListItemText
+                      primary={dataPoint.equipmentNo}
+                    />
+                  </ListItemButton>
+                ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
         </Paper>
       </Grid>
-      <Grid item xs={12} md={9}>
-        <Paper elevation={2}>
-          <Box
-            sx={{
-              width: "100%",
-              minHeight: 120,
-              position: "relative",
-            }}
-          >
-            {selectedMap ? (
-              <img
-                style={{ width: "100%" }}
-                src={selectedMap}
-                alt="Level Map"
-              />
-            ) : (
-              <Box
-                sx={{
-                  p: 4,
-                  display: "flex",
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography>Select a level to view map</Typography>
-              </Box>
-            )}
-            {data.map((dataPin) => (
-              <MapPin
-                x={Math.floor(Math.random() * 100)}
-                y={Math.floor(Math.random() * 100)}
-                data={dataPin}
-              />
-            ))}
-          </Box>
-        </Paper>
+      <Grid item xs={12} md={10}>
+        <WithMapViewer data={data} />
       </Grid>
     </Grid>
   );
