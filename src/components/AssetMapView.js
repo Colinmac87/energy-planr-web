@@ -15,6 +15,7 @@ import {
   ListItem,
   ListItemText,
   ListItemButton,
+  MenuList,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { useEffect, useState } from "react";
@@ -83,19 +84,18 @@ const AssetMapView = ({ preSelected, data }) => {
     <Grid container spacing={2}>
       <Grid item xs={12} md={2}>
         <Paper elevation={2} sx={{ mb: 1, p: 2 }}>
-          <Box sx={{ mb: 1 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Level</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Location"
-              >
-                <MenuItem value={10}>Mezz Floor</MenuItem>
-                <MenuItem value={20}>Ground Floor</MenuItem>
-                <MenuItem value={30}>Top Floor</MenuItem>
-              </Select>
-            </FormControl>
+          <Paper elevation={4} sx={{ mb: 1 }}>
+            <MenuList>
+              <MenuItem>
+                <ListItemText>Mezz Floor</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemText>Ground Floor</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemText>Top Floor</ListItemText>
+              </MenuItem>
+            </MenuList>
             {/* <Button
               size="small"
               onClick={handleExpandClick}
@@ -104,7 +104,7 @@ const AssetMapView = ({ preSelected, data }) => {
             >
               {expanded.length === 0 ? "Expand all" : "Collapse all"}
             </Button> */}
-          </Box>
+          </Paper>
           {/* <TreeView
             aria-label="controlled"
             defaultCollapseIcon={<ExpandMore />}
