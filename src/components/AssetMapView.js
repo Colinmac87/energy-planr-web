@@ -17,7 +17,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import mezzMap from "../assets/Mezz-Floor.png";
 import roofMap from "../assets/Roof-Deck.png";
@@ -29,6 +29,29 @@ const AssetMapView = ({ preSelected, data }) => {
   const [selected, setSelected] = useState(preSelected);
 
   const [selectedMap, setSelectedMap] = useState("");
+
+  const [treeViewData, setTreeViewData] = useState([]);
+
+  useEffect(() => {
+    try {
+      let temp = [];
+      const schema = data[0];
+
+      for (const property in schema) {
+        // remove internal properties
+        if (["id", "x", "y", "level"].includes(property)) continue;
+
+        const allPropertyValues = data.map((i) => i[property]);
+
+        temp.push({
+          group: property,
+          entries: [...new Set(allPropertyValues)],
+        });
+      }
+
+      setTreeViewData(temp);
+    } catch (error) {}
+  }, []);
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -62,15 +85,15 @@ const AssetMapView = ({ preSelected, data }) => {
         <Paper elevation={2} sx={{ mb: 1, p: 2 }}>
           <Box sx={{ mb: 1 }}>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Location</InputLabel>
+              <InputLabel id="demo-simple-select-label">Level</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Location"
               >
-                <MenuItem value={10}>Location 1</MenuItem>
-                <MenuItem value={20}>Location 2</MenuItem>
-                <MenuItem value={30}>Location 3</MenuItem>
+                <MenuItem value={10}>Mezz Floor</MenuItem>
+                <MenuItem value={20}>Ground Floor</MenuItem>
+                <MenuItem value={30}>Top Floor</MenuItem>
               </Select>
             </FormControl>
             {/* <Button
@@ -121,7 +144,36 @@ const AssetMapView = ({ preSelected, data }) => {
             </TreeItem>
           </TreeView> */}
 
-          <Accordion>
+          {treeViewData.map((treeViewObject) => (
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>{treeViewObject.group}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List dense={true}>
+                  {treeViewObject.entries.map((propertyValue, i) => (
+                    <ListItemButton
+                      key={`${treeViewObject.group}-${propertyValue}`}
+                      selected={
+                        selected == `${treeViewObject.group}-${propertyValue}`
+                      }
+                      onClick={() =>
+                        setSelected(`${treeViewObject.group}-${propertyValue}`)
+                      }
+                    >
+                      <ListItemText primary={propertyValue} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+
+          {/* <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMore />}
               aria-controls="panel1a-content"
@@ -133,9 +185,7 @@ const AssetMapView = ({ preSelected, data }) => {
               <List dense={true}>
                 {data.slice(0, 3).map((dataPoint) => (
                   <ListItemButton>
-                    <ListItemText
-                      primary={dataPoint.equipmentNo}
-                    />
+                    <ListItemText primary={dataPoint.equipmentNo} />
                   </ListItemButton>
                 ))}
               </List>
@@ -153,9 +203,7 @@ const AssetMapView = ({ preSelected, data }) => {
               <List dense={true}>
                 {data.slice(4, 6).map((dataPoint) => (
                   <ListItemButton>
-                    <ListItemText
-                      primary={dataPoint.equipmentNo}
-                    />
+                    <ListItemText primary={dataPoint.equipmentNo} />
                   </ListItemButton>
                 ))}
               </List>
@@ -174,14 +222,12 @@ const AssetMapView = ({ preSelected, data }) => {
               <List dense={true}>
                 {data.slice(7, 9).map((dataPoint) => (
                   <ListItemButton>
-                    <ListItemText
-                      primary={dataPoint.equipmentNo}
-                    />
+                    <ListItemText primary={dataPoint.equipmentNo} />
                   </ListItemButton>
                 ))}
               </List>
             </AccordionDetails>
-          </Accordion>
+          </Accordion> */}
         </Paper>
       </Grid>
       <Grid item xs={12} md={10}>
