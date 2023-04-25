@@ -8,10 +8,11 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
 import { Link } from "react-router-dom";
+import { v4 } from "uuid";
 
 const AssetRegisterView = ({ data }) => {
   const [isEquipmentDetailViewerOpen, setIsEquipmentDetailViewerOpen] =
@@ -22,55 +23,28 @@ const AssetRegisterView = ({ data }) => {
     {
       field: "equipmentNo",
       headerName: "Equipment No",
-      sortable: false,
-      editable: false,
-      filterable: false,
       width: 200,
     },
     {
       field: "location",
       headerName: "Location",
-      sortable: false,
-      editable: false,
-      filterable: false,
       width: 150,
     },
     {
       field: "level",
       headerName: "Level",
-      sortable: false,
-      editable: false,
-      filterable: false,
       width: 150,
     },
     {
       field: "type",
       headerName: "Type",
-      sortable: false,
-      editable: false,
-      filterable: false,
       width: 150,
     },
     {
       field: "runStatus",
       headerName: "Run Status",
-      sortable: false,
-      editable: false,
-      filterable: false,
       width: 150,
     },
-    // {
-    //   field: "id",
-    //   headerName: "Action",
-    //   sortable: false,
-    //   editable: false,
-    //   filterable: false,
-    //   width: 150,
-    //   valueGetter: (params) => {
-    //     console.log(params);
-    //     return <Link to={`/asset/maps/viewer/${params.id}`}>View Map</Link>;
-    //   },
-    // },
   ];
 
   const onCloseEquipmentDetailViewer = () => {
@@ -79,7 +53,7 @@ const AssetRegisterView = ({ data }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={4}>
+      {/* <Grid item md={4}>
         <TextField
           id={`register-search`}
           label={"Search"}
@@ -98,20 +72,6 @@ const AssetRegisterView = ({ data }) => {
       </Grid>
       <Grid item md={4}>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Location</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Location"
-          >
-            <MenuItem value={10}>Location 1</MenuItem>
-            <MenuItem value={20}>Location 2</MenuItem>
-            <MenuItem value={30}>Location 3</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item md={4}>
-        <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Level</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -123,26 +83,27 @@ const AssetRegisterView = ({ data }) => {
             <MenuItem value={30}>Roof Deck</MenuItem>
           </Select>
         </FormControl>
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
         <Box sx={{ height: 600, width: "100%" }}>
           <DataGrid
             rows={data.map((d, i) => ({
-              id: i,
+              id: v4(),
               ...d,
             }))}
             columns={columns}
-            // initialState={{
-            //   pagination: {
-            //     paginationModel: {
-            //       pageSize: 5,
-            //     },
-            //   },
-            // }}
             pageSizeOptions={[5, 20, 50, 100]}
             disableRowSelectionOnClick
             disableColumnFilter
-            disableColumnMenu
+            disableColumnSelector
+            disableDensitySelector
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                quickFilterProps: { debounceMs: 500 },
+              },
+            }}
             onRowClick={(params) => {
               setSelectedData(params.row);
               setIsEquipmentDetailViewerOpen(true);
