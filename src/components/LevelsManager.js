@@ -70,7 +70,22 @@ const LevelsManager = () => {
                 </Stack>
               }
             >
-              <ListItemText primary="Ground" secondary="contains 3 assets" />
+              <ListItemText primary="Ground Floor" secondary="contains 3 assets" />
+            </ListItem>
+            <Divider />
+            <ListItem
+              secondaryAction={
+                <Stack direction="row" spacing={2}>
+                  <IconButton edge="end" aria-label="edit">
+                    <Edit />
+                  </IconButton>
+                  <IconButton edge="end" aria-label="delete">
+                    <Delete />
+                  </IconButton>
+                </Stack>
+              }
+            >
+              <ListItemText primary="Top Floor" secondary="contains 3 assets" />
             </ListItem>
           </List>
         </Box>
