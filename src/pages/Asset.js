@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Box, Tab, Grid, Typography, Button, Stack } from "@mui/material";
+import { Box, Tab, Grid, Button, Stack } from "@mui/material";
 import {
   UploadFile,
   Map,
   TableChart,
-  Fullscreen,
-  Place,
   Layers,
+  DynamicForm,
 } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
@@ -18,8 +17,8 @@ import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
 import { useParams, useSearchParams } from "react-router-dom";
 import FullScreenViewer from "../components/FullScreenViewer";
-import LocationsManager from "../components/LocationsManager";
 import LevelsManager from "../components/LevelsManager";
+import FormManager from "../components/FormManager";
 
 const Asset = () => {
   const params = useParams();
@@ -78,16 +77,16 @@ const Asset = () => {
                 value="map-view"
               />
               <Tab
-                icon={<Place />}
-                iconPosition="start"
-                label="Locations"
-                value="locations-manager"
-              />
-              <Tab
                 icon={<Layers />}
                 iconPosition="start"
                 label="Levels"
                 value="levels-manager"
+              />
+              <Tab
+                icon={<DynamicForm />}
+                iconPosition="start"
+                label="Form Settings"
+                value="form-manager"
               />
             </TabList>
           </Box>
@@ -98,19 +97,10 @@ const Asset = () => {
               justifyContent={"flex-end"}
               mb={2}
             >
-              {/* <Button
-                variant="contained"
-                component="label"
-                startIcon={<Fullscreen />}
-                onClick={() => setIsFullScreenViewerOpen(true)}
-              >
-                Fullscreen Viewer
-              </Button> */}
               <Button
                 variant="outlined"
                 component="label"
                 startIcon={<UploadFile />}
-                // onClick={() => setIsFileUploadDialogOpen(true)}
               >
                 Upload Data
                 <input
@@ -126,11 +116,11 @@ const Asset = () => {
           <TabPanel value="map-view">
             <AssetMapView data={data} />
           </TabPanel>
-          <TabPanel value="locations-manager">
-            <LocationsManager />
-          </TabPanel>
           <TabPanel value="levels-manager">
             <LevelsManager />
+          </TabPanel>
+          <TabPanel value="form-manager">
+            <FormManager />
           </TabPanel>
         </TabContext>
       </Grid>

@@ -28,22 +28,6 @@ const LevelForm = () => {
         />
       </Grid>
       <Grid item xs={12}>
-        <FormControl sx={{ width: "100%" }}>
-          <InputLabel>Associated Location</InputLabel>
-          <Select
-            sx={{ width: "100%" }}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={"location-1"}
-            label="Associated Location"
-          >
-            <MenuItem value={"location-1"}>Location 1</MenuItem>
-            <MenuItem value={"location-2"}>Location 2</MenuItem>
-            <MenuItem value={"location-3"}>Location 3</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12}>
         <FileUpload
           getBase64={false}
           multiFile={false}

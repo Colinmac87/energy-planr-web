@@ -23,26 +23,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { meta } from "../constants/data.constants";
 import { Delete } from "@mui/icons-material";
 
-const groups = [
-  {
-    groupLabel: "Basic Info",
-  },
-  {
-    groupLabel: "Delivery Assessment",
-  },
-  {
-    groupLabel: "Maintenance",
-  },
-  {
-    groupLabel: "Other",
-  },
-];
 
 const Settings = () => {
-  const [selectedTab, setSelectedTab] = useState("tab-fields");
+  const [selectedTab, setSelectedTab] = useState("tab-users");
 
   const onTabChange = (e, v) => {
     setSelectedTab(v);
@@ -55,8 +40,6 @@ const Settings = () => {
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList onChange={onTabChange} aria-label="Asset Tabs">
               <Tab iconPosition="start" label="Users" value="tab-users" />
-              <Tab iconPosition="start" label="Fields" value="tab-fields" />
-              <Tab iconPosition="start" label="Groups" value="tab-groups" />
             </TabList>
           </Box>
           <TabPanel value="tab-users">
@@ -142,72 +125,8 @@ const Settings = () => {
               </List>
             </Box>
           </TabPanel>
-          <TabPanel value="tab-fields">
-            <Grid container>
-              <Grid item md={8}>
-                <Typography variant="h4">Data Fields</Typography>
-              </Grid>
-              <Grid item md={4} textAlign={"right"}>
-                <Button variant="contained">New Field</Button>
-              </Grid>
-            </Grid>
-            <br />
-
-            {meta.map((field) => (
-              <Paper sx={{ p: 2, pt: 3, mb: 2 }}>
-                <Stack gap={2}>
-                  <TextField
-                    id={`field-${field.fieldTag}`}
-                    label={"Field/Column Name"}
-                    fullWidth
-                    value={field.fieldLabel}
-                  />
-                  <FormControl>
-                    <InputLabel>Group</InputLabel>
-                    <Select
-                      fullWidth
-                      id="demo-simple-select"
-                      value={"basicInfo"}
-                      label="Group"
-                    >
-                      <MenuItem value={"basicInfo"}>Basic Info</MenuItem>
-                      <MenuItem value={"deliveryAssessment"}>
-                        Delivery Assessment
-                      </MenuItem>
-                      <MenuItem value={"maintenance"}>Maintenance</MenuItem>
-                      <MenuItem value={"other"}>Other</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <FormControlLabel
-                    control={<Switch defaultChecked />}
-                    label="Visible In Register Table"
-                  />
-                </Stack>
-              </Paper>
-            ))}
-          </TabPanel>
           <TabPanel value="tab-groups">
-            <Grid container>
-              <Grid item md={8}>
-                <Typography variant="h4">Data Groups</Typography>
-              </Grid>
-              <Grid item md={4} textAlign={"right"}>
-                <Button variant="contained">New Group</Button>
-              </Grid>
-            </Grid>
-            <br />
-            {groups.map((group) => (
-              <Paper sx={{ p: 2, pt: 3, mb: 2 }}>
-                <Stack gap={2}>
-                  <TextField
-                    id={`field-${group.groupLabel}`}
-                    label={"Group Name"}
-                    fullWidth
-                    value={group.groupLabel}
-                  />
-                </Stack>
-              </Paper>
-            ))}
+            
           </TabPanel>
         </TabContext>
       </Grid>
