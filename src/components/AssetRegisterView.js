@@ -1,17 +1,7 @@
-import {
-  Box,
-  Drawer,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Drawer, Grid } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
-import { Link } from "react-router-dom";
 import { v4 } from "uuid";
 
 const AssetRegisterView = ({ data }) => {
@@ -94,16 +84,7 @@ const AssetRegisterView = ({ data }) => {
             columns={columns}
             pageSizeOptions={[5, 20, 50, 100]}
             disableRowSelectionOnClick
-            disableColumnFilter
-            disableColumnSelector
-            disableDensitySelector
             slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-                quickFilterProps: { debounceMs: 500 },
-              },
-            }}
             onRowClick={(params) => {
               setSelectedData(params.row);
               setIsEquipmentDetailViewerOpen(true);
