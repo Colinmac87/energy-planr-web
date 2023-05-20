@@ -1,4 +1,13 @@
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { uploadFile } from "./storage.service";
 
@@ -31,5 +40,38 @@ export const createAsset = async ({ name, thumbnailFile }) => {
   } catch (error) {
     console.log(error);
     return null;
+  }
+};
+
+export const getAsset = async (id) => {
+  try {
+    const docRef = doc(db, "assets", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateAsset = async (id, { name, thumbnailFile }) => {
+  try {
+    const asset = {
+      name: name,
+    };
+
+    if (thumbnailFile) {
+      asset.thumbnailUrl = await uploadFile(thumbnailFile);
+    }
+
+    const docRef = doc(db, "assets", id);
+    return await updateDoc(docRef, asset);
+  } catch (error) {
+    console.log(error);
   }
 };

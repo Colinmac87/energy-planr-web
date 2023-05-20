@@ -1,12 +1,12 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
-import { createAsset } from "../services/asset.service";
+import { createAsset, updateAsset } from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 
-const AssetForm = ({ onSaving, onSave }) => {
+const AssetForm = ({ asset, onSaving, onSave }) => {
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(asset?.name);
   const [thumbnailFile, setThumbnailFile] = useState(null);
 
   const onFileUploadChanges = (files) => {
@@ -19,16 +19,30 @@ const AssetForm = ({ onSaving, onSave }) => {
     setLoading(true);
     onSaving();
 
-    createAsset({ name, thumbnailFile })
-      .then((assetId) => {
-        if (assetId) {
-          alertSuccess("New asset created.");
+    if (asset?.id) {
+      updateAsset(asset.id, { name, thumbnailFile })
+        .then(() => {
+          alertSuccess("Changes saved.");
           onSave();
-        } else {
-          alertError("Unable to create asset, please try again or contact us.");
-        }
-      })
-      .finally(() => setLoading(false));
+        })
+        .catch(() => {
+          alertError("Unable to save changes, please try again or contact us.");
+        })
+        .finally(() => setLoading(false));
+    } else {
+      createAsset({ name, thumbnailFile })
+        .then((assetId) => {
+          if (assetId) {
+            alertSuccess("New asset created.");
+            onSave();
+          } else {
+            alertError(
+              "Unable to create asset, please try again or contact us."
+            );
+          }
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   return (
@@ -43,7 +57,9 @@ const AssetForm = ({ onSaving, onSave }) => {
             label={"Asset Name"}
             variant="outlined"
             fullWidth
+            value={name}
             onChange={(e) => setName(e.target.value)}
+            autoFocus
           />
         </Grid>
         <Grid item xs={12}>
@@ -52,7 +68,7 @@ const AssetForm = ({ onSaving, onSave }) => {
             multiFile={false}
             disabled={loading}
             title="Thumbnail"
-            header="Drop file here"
+            header={asset ? "Drag a new file here" : "Drop file here"}
             leftLabel="or"
             rightLabel="to select file"
             buttonLabel="click here"
@@ -68,6 +84,8 @@ const AssetForm = ({ onSaving, onSave }) => {
               variant: "outlined",
               sx: { background: "black" },
             }}
+            imageSrc={asset?.thumbnailUrl}
+            showPlaceholderImage={true}
             onContextReady={(context) => {}}
             PlaceholderGridProps={{ md: 6 }}
             LabelsGridProps={{ md: 6 }}

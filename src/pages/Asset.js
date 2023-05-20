@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Tab, Grid, Button, Stack } from "@mui/material";
 import {
   UploadFile,
@@ -6,6 +6,7 @@ import {
   TableChart,
   Layers,
   DynamicForm,
+  Settings,
 } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
@@ -15,22 +16,40 @@ import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
 import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FullScreenViewer from "../components/FullScreenViewer";
 import LevelsManager from "../components/LevelsManager";
 import FormManager from "../components/FormManager";
+import AssetForm from "../components/AssetForm";
+import { getAsset } from "../services/asset.service";
 
-const Asset = () => {
+const Asset = ({}) => {
   const params = useParams();
-  let [searchParams, setSearchParams] = useSearchParams();
+
+  const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState(
     params?.tab || "register-view"
   );
+
+  const [asset, setAsset] = useState(null);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFullScreenViewerOpen, setIsFullScreenViewerOpen] = useState(false);
 
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const id = params?.id;
+    if (!id) navigate("/");
+
+    getAsset(id)
+      .then((_asset) => {
+        if (!_asset) navigate("/");
+
+        setAsset(_asset);
+      })
+      .catch(() => navigate("/"));
+  }, []);
 
   const onTabChange = (e, v) => {
     setSelectedTab(v);
@@ -57,6 +76,8 @@ const Asset = () => {
       },
     });
   };
+
+  if (!asset) return null;
 
   return (
     <Grid container spacing={1}>
@@ -87,6 +108,12 @@ const Asset = () => {
                 iconPosition="start"
                 label="Form Settings"
                 value="form-manager"
+              />
+              <Tab
+                icon={<Settings />}
+                iconPosition="start"
+                label="Asset"
+                value="asset-settings"
               />
             </TabList>
           </Box>
@@ -121,6 +148,9 @@ const Asset = () => {
           </TabPanel>
           <TabPanel value="form-manager">
             <FormManager />
+          </TabPanel>
+          <TabPanel value="asset-settings">
+            <AssetForm asset={asset} onSaving={() => {}} onSave={() => {}} />
           </TabPanel>
         </TabContext>
       </Grid>
