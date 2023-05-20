@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import reportWebVitals from "./reportWebVitals";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
@@ -12,6 +13,8 @@ import "./index.css";
 
 import { initFirebase } from "./firebase";
 import App from "./App";
+import store from "./store";
+import { Toaster } from "react-hot-toast";
 
 const theme = createTheme({
   palette: {
@@ -25,10 +28,13 @@ const theme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+        <Toaster />
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 

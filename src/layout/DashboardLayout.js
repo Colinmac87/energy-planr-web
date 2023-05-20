@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   AppBar,
@@ -12,10 +12,18 @@ import {
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { signOut } from "../services/auth.service";
 
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const account = useSelector((state) => state.account);
+
+  useEffect(() => {
+    if (account.loginAttempted && !account.user) navigate("/signin");
+  }, [account.loginAttempted]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,8 +40,12 @@ const DashboardLayout = ({ children }) => {
 
   const onClickSignout = () => {
     handleClose();
-    navigate("/signin");
+    signOut().then(() => {
+      navigate("/signin");
+    });
   };
+
+  if (!account.loginAttempted) return null;
 
   return (
     <Box sx={{ display: "flex" }}>

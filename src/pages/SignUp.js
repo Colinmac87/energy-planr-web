@@ -3,26 +3,26 @@ import {
   Box,
   Typography,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Button,
   CssBaseline,
   Divider,
   Link,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { signIn } from "../services/auth.service";
-import { alertError } from "../utils/alert.utils";
-import { setUser } from "../features/account.slice";
+import { useNavigate } from "react-router-dom";
+import { signUp } from "../services/auth.service";
 import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../features/account.slice";
+import { alertError } from "../utils/alert.utils";
 
-const SignIn = () => {
+const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const account = useSelector((state) => state.account);
 
   const [loading, setLoading] = useState(false);
+  const [businessName, setBusinessName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -34,12 +34,15 @@ const SignIn = () => {
     e.preventDefault();
     setLoading(true);
 
-    signIn({ email, password })
+    signUp({ businessName, fullName, email, password })
       .then((user) => {
         if (user) {
           dispatch(setUser(user));
           navigate("/");
-        } else alertError("Email or password is not correct.");
+        } else
+          alertError(
+            "Unable to create account, please try again or contact us."
+          );
       })
       .finally(() => {
         setLoading(false);
@@ -62,9 +65,28 @@ const SignIn = () => {
         <Typography variant="h3">Energy Planr</Typography>
         <br />
         <Typography component="h1" variant="h5">
-          Sign in
+          Create an Account
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="company"
+            label="Business Name"
+            name="company"
+            autoFocus
+            onChange={(e) => setBusinessName(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="fullName"
+            label="Your Full Name"
+            name="fullName"
+            onChange={(e) => setFullName(e.target.value)}
+          />
           <TextField
             margin="normal"
             required
@@ -73,7 +95,6 @@ const SignIn = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
@@ -87,10 +108,6 @@ const SignIn = () => {
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
@@ -98,12 +115,12 @@ const SignIn = () => {
             sx={{ mt: 3, mb: 2 }}
             disabled={loading}
           >
-            Sign In
+            Register
           </Button>
           <Divider mt={2} mb={4} />
           <div style={{ textAlign: "center", marginTop: 16 }}>
-            <Link href="/signup" underline="none">
-              Create an account
+            <Link href="/signin" underline="none">
+              Sign in with an existing account
             </Link>
           </div>
         </Box>
@@ -112,4 +129,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
