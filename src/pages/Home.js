@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Grid,
@@ -9,25 +9,19 @@ import {
   Box,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
-import { v4 } from "uuid";
-
-const assets = [
-  {
-    id: v4(),
-    name: "Microsoft head office",
-  },
-  {
-    id: v4(),
-    name: "Gymshark building",
-  },
-  {
-    id: v4(),
-    name: "Oraan site",
-  },
-];
+import { getAssets } from "../services/asset.service";
 
 const Home = () => {
   const [isNewAssetFormOpen, setIsNewAssetFormOpen] = useState(false);
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    loadAssets();
+  }, []);
+
+  const loadAssets = () => {
+    getAssets().then((data) => setAssets(data));
+  };
 
   const onCloseNewAssetForm = () => {
     setIsNewAssetFormOpen(false);
@@ -58,7 +52,13 @@ const Home = () => {
               <Typography gutterBottom variant="h6" component="div">
                 {asset.name}
               </Typography>
-              <img src="http://placekitten.com/g/512/256" />
+              {asset.thumbnailUrl && (
+                <img
+                  src={asset.thumbnailUrl}
+                  style={{ maxWidth: 256, maxHeight: 256 }}
+                  alt="Failed to load"
+                />
+              )}
             </Paper>
           </Link>
         </Grid>
@@ -70,7 +70,13 @@ const Home = () => {
         onClose={onCloseNewAssetForm}
       >
         <Box sx={{ p: 4 }}>
-          <AssetForm />
+          <AssetForm
+            onSaving={() => {}}
+            onSave={() => {
+              onCloseNewAssetForm();
+              loadAssets();
+            }}
+          />
         </Box>
       </Drawer>
     </Grid>
