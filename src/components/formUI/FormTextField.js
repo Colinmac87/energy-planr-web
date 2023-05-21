@@ -7,6 +7,7 @@ const FormTextField = ({ field, value, onChange }) => {
       fullWidth
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      required={field.required}
     />
   );
 };

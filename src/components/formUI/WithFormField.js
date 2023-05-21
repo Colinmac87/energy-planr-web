@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 import {
   FIELD_DATERANGE,
   FIELD_DATETIME,
+  FIELD_DROPDOWN,
   FIELD_FILES,
   FIELD_IMAGE,
   FIELD_MULTILINE,
@@ -20,6 +21,7 @@ import FormDateTimeField from "./FormDateTimeField";
 import FormDateRangeField from "./FormDateRangeField";
 import FormFileUploadField from "./FormFileUploadField";
 import FormImageUploadField from "./FormImageUploadField";
+import FormDropdownField from "./FormDropdownField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -68,6 +70,10 @@ const WithFormField = ({ field, value, onChange }) => {
             value={value}
             onChange={onChange}
           />
+        );
+      case FIELD_DROPDOWN:
+        return (
+          <FormDropdownField field={field} value={value} onChange={onChange} />
         );
       default:
         return null;

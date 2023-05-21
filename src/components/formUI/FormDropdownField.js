@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-const FormYesNoField = ({ field, value, onChange }) => {
+const FormDropdownField = ({ field, value, onChange }) => {
   return (
     <FormControl fullWidth>
       <InputLabel>{field.name}</InputLabel>
@@ -14,11 +14,12 @@ const FormYesNoField = ({ field, value, onChange }) => {
         required={field.required}
       >
         {!field.required && <MenuItem value={"-"}>-</MenuItem>}
-        <MenuItem value={"yes"}>Yes</MenuItem>
-        <MenuItem value={"no"}>No</MenuItem>
+        {field.meta?.options?.map((option) => (
+          <MenuItem value={option.value}>{option.name}</MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
 };
 
-export default FormYesNoField;
+export default FormDropdownField;

@@ -36,6 +36,10 @@ export const FIELD_DICT = {
     name: "Yes / No",
     value: FIELD_YESNO,
   },
+  FIELD_DROPDOWN:{
+    name: "Dropdown",
+    value: FIELD_DROPDOWN,
+  },
   FIELD_DATETIME: {
     name: "Date",
     value: FIELD_DATETIME,

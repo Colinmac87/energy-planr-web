@@ -9,6 +9,7 @@ const FormMultilineField = ({ field, value, onChange }) => {
       rows={4}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      required={field.required}
     />
   );
 };
