@@ -51,6 +51,12 @@ const Asset = ({}) => {
       .catch(() => navigate("/"));
   }, []);
 
+  const onSaveAsset = () => {
+    getAsset(asset.id).then((_asset) => {
+      setAsset(_asset);
+    });
+  };
+
   const onTabChange = (e, v) => {
     setSelectedTab(v);
   };
@@ -112,7 +118,7 @@ const Asset = ({}) => {
               <Tab
                 icon={<Settings />}
                 iconPosition="start"
-                label="Asset"
+                label="Settings"
                 value="asset-settings"
               />
             </TabList>
@@ -147,10 +153,10 @@ const Asset = ({}) => {
             <LevelsManager />
           </TabPanel>
           <TabPanel value="form-manager">
-            <FormManager />
+            <FormManager asset={asset} onSave={onSaveAsset} />
           </TabPanel>
           <TabPanel value="asset-settings">
-            <AssetForm asset={asset} onSaving={() => {}} onSave={() => {}} />
+            <AssetForm asset={asset} onSaving={() => {}} onSave={onSaveAsset} />
           </TabPanel>
         </TabContext>
       </Grid>

@@ -49,9 +49,6 @@ const AssetForm = ({ asset, onSaving, onSave }) => {
     <Box component={"form"} onSubmit={handleSubmit} noValidate>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4">Create a new asset</Typography>
-        </Grid>
-        <Grid item xs={12}>
           <TextField
             id={"asset-name"}
             label={"Asset Name"}

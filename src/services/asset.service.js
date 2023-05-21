@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { uploadFile } from "./storage.service";
+import { generateKey } from "../utils/string.utils";
 
 export const getAssets = async () => {
   try {
@@ -70,6 +71,40 @@ export const updateAsset = async (id, { name, thumbnailFile }) => {
     }
 
     const docRef = doc(db, "assets", id);
+    return await updateDoc(docRef, asset);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const saveFormGroups = async (assetId, { formGroups }) => {
+  try {
+    const asset = {
+      formGroups: formGroups.map((group, i) => ({
+        ...group,
+        key: group.key || generateKey(group.name),
+        order: i,
+      })),
+    };
+
+    const docRef = doc(db, "assets", assetId);
+    return await updateDoc(docRef, asset);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const saveFormFields = async (assetId, { formFields }) => {
+  try {
+    const asset = {
+      formFields: formFields.map((field, i) => ({
+        ...field,
+        key: field.key || generateKey(field.name),
+        order: i,
+      })),
+    };
+
+    const docRef = doc(db, "assets", assetId);
     return await updateDoc(docRef, asset);
   } catch (error) {
     console.log(error);

@@ -5,7 +5,7 @@ import { GroupWork, TextFields } from "@mui/icons-material";
 import { Box, Grid, Tab } from "@mui/material";
 import { useState } from "react";
 
-const FormManager = () => {
+const FormManager = ({ asset, onSave }) => {
   const [selectedTab, setSelectedTab] = useState("fields-manager");
 
   const onTabChange = (e, v) => {
@@ -15,8 +15,8 @@ const FormManager = () => {
   return (
     <Grid container spacing={1}>
       <TabContext value={selectedTab}>
-        <Grid item md={1}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Grid item sm={2}>
+          <Box>
             <TabList
               onChange={onTabChange}
               aria-label="Asset Tabs"
@@ -37,12 +37,12 @@ const FormManager = () => {
             </TabList>
           </Box>
         </Grid>
-        <Grid item md={11}>
+        <Grid item sm={10}>
           <TabPanel value="fields-manager">
-            <FormFieldsManager />
+            <FormFieldsManager asset={asset} onSave={onSave} />
           </TabPanel>
           <TabPanel value="groups-manager">
-            <FormGroupsManager />
+            <FormGroupsManager asset={asset} onSave={onSave} />
           </TabPanel>
         </Grid>
       </TabContext>

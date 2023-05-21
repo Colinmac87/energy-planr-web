@@ -70,6 +70,7 @@ const Home = () => {
         onClose={onCloseNewAssetForm}
       >
         <Box sx={{ p: 4 }}>
+          <Typography variant="h4" mb={4}>Create a new asset</Typography>
           <AssetForm
             onSaving={() => {}}
             onSave={() => {

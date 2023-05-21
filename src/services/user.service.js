@@ -1,15 +1,12 @@
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase";
+import { generateKey } from "../utils/string.utils";
 
 export const createCompany = async ({ businessName }) => {
   try {
     const docRef = await addDoc(collection(db, "companies"), {
       company: businessName,
-      code: businessName
-        .replace(/[^a-zA-Z ]/g, "")
-        .trim()
-        .toLowerCase()
-        .replace(" ", "-"),
+      code: generateKey(businessName),
       status: "active",
     });
     return docRef;

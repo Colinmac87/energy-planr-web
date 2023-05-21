@@ -5,3 +5,11 @@ export function camelize(str) {
     })
     .replace(/\s+/g, "");
 }
+
+export function generateKey(str) {
+  return str
+    .replace(/[^a-zA-Z ]/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(" ", "-");
+}
