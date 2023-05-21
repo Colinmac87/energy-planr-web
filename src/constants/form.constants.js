@@ -44,4 +44,12 @@ export const FIELD_DICT = {
     name: "Date Range",
     value: FIELD_DATERANGE,
   },
+  FIELD_FILES: {
+    name: "File Uploads",
+    value: FIELD_FILES,
+  },
+  FIELD_IMAGE: {
+    name: "Image Upload",
+    value: FIELD_IMAGE,
+  },
 };

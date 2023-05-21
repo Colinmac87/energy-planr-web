@@ -2,6 +2,8 @@ import { Grid } from "@mui/material";
 import {
   FIELD_DATERANGE,
   FIELD_DATETIME,
+  FIELD_FILES,
+  FIELD_IMAGE,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
   FIELD_RICHTEXT,
@@ -16,6 +18,8 @@ import FormRichTextField from "./FormRichTextField";
 import FormYesNoField from "./FormYesNoField";
 import FormDateTimeField from "./FormDateTimeField";
 import FormDateRangeField from "./FormDateRangeField";
+import FormFileUploadField from "./FormFileUploadField";
+import FormImageUploadField from "./FormImageUploadField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -48,6 +52,22 @@ const WithFormField = ({ field, value, onChange }) => {
       case FIELD_DATERANGE:
         return (
           <FormDateRangeField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_FILES:
+        return (
+          <FormFileUploadField
+            field={field}
+            value={value}
+            onChange={onChange}
+          />
+        );
+      case FIELD_IMAGE:
+        return (
+          <FormImageUploadField
+            field={field}
+            value={value}
+            onChange={onChange}
+          />
         );
       default:
         return null;
