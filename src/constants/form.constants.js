@@ -32,4 +32,8 @@ export const FIELD_DICT = {
     name: "URL",
     value: FIELD_URL,
   },
+  FIELD_YESNO: {
+    name: "Yes / No",
+    value: FIELD_YESNO,
+  },
 };

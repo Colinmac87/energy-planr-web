@@ -5,11 +5,13 @@ import {
   FIELD_RICHTEXT,
   FIELD_TEXT,
   FIELD_URL,
+  FIELD_YESNO,
 } from "../../constants/form.constants";
 import FormTextField from "./FormTextField";
 import FormMultilineField from "./FormMultilineField";
 import FormNumericField from "./FormNumericField";
 import FormRichTextField from "./FormRichTextField";
+import FormYesNoField from "./FormYesNoField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -30,6 +32,10 @@ const WithFormField = ({ field, value, onChange }) => {
       case FIELD_RICHTEXT:
         return (
           <FormRichTextField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_YESNO:
+        return (
+          <FormYesNoField field={field} value={value} onChange={onChange} />
         );
       default:
         return null;
