@@ -23,7 +23,7 @@ import FormManager from "../components/FormManager";
 import AssetForm from "../components/AssetForm";
 import { getAsset } from "../services/asset.service";
 
-const Asset = ({}) => {
+const Asset = () => {
   const params = useParams();
 
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ const Asset = ({}) => {
                 />
               </Button>
             </Stack>
-            <AssetRegisterView data={data} />
+            <AssetRegisterView asset={asset} data={data} />
           </TabPanel>
           <TabPanel value="map-view">
             <AssetMapView data={data} />

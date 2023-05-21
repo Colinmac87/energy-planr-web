@@ -52,10 +52,14 @@ const FormGroupsManager = ({ asset, onSave }) => {
     setGroups(groupsCopy);
   };
 
-  const remove = (index) => {
+  const removeGroup = (index) => {
     const groupsCopy = JSON.parse(JSON.stringify(groups));
     groupsCopy.splice(index, 1);
     setGroups(groupsCopy);
+  };
+
+  const addGroup = () => {
+    setGroups([...groups, { name: "" }]);
   };
 
   const handleSave = () => {
@@ -108,7 +112,7 @@ const FormGroupsManager = ({ asset, onSave }) => {
                     <ArrowDownward />
                   </IconButton>
                 )}
-                <IconButton aria-label="delete" onClick={() => remove(i)}>
+                <IconButton aria-label="delete" onClick={() => removeGroup(i)}>
                   <Delete />
                 </IconButton>
               </Stack>
@@ -128,7 +132,7 @@ const FormGroupsManager = ({ asset, onSave }) => {
       ))}
 
       <Grid item md={12} textAlign={"center"}>
-        <Button variant="contained" onClick={() => setGroups([...groups, {}])}>
+        <Button variant="contained" onClick={addGroup}>
           New Group
         </Button>
       </Grid>
