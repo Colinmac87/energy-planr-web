@@ -2,12 +2,14 @@ import { Grid } from "@mui/material";
 import {
   FIELD_MULTILINE,
   FIELD_NUMERIC,
+  FIELD_RICHTEXT,
   FIELD_TEXT,
   FIELD_URL,
 } from "../../constants/form.constants";
 import FormTextField from "./FormTextField";
 import FormMultilineField from "./FormMultilineField";
 import FormNumericField from "./FormNumericField";
+import FormRichTextField from "./FormRichTextField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -24,6 +26,10 @@ const WithFormField = ({ field, value, onChange }) => {
       case FIELD_NUMERIC:
         return (
           <FormNumericField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_RICHTEXT:
+        return (
+          <FormRichTextField field={field} value={value} onChange={onChange} />
         );
       default:
         return null;
