@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import {
+  FIELD_CHECKBOXES,
   FIELD_DATERANGE,
   FIELD_DATETIME,
   FIELD_DROPDOWN,
@@ -22,6 +23,7 @@ import FormDateRangeField from "./FormDateRangeField";
 import FormFileUploadField from "./FormFileUploadField";
 import FormImageUploadField from "./FormImageUploadField";
 import FormDropdownField from "./FormDropdownField";
+import FormCheckboxField from "./FormCheckboxField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -74,6 +76,10 @@ const WithFormField = ({ field, value, onChange }) => {
       case FIELD_DROPDOWN:
         return (
           <FormDropdownField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_CHECKBOXES:
+        return (
+          <FormCheckboxField field={field} value={value} onChange={onChange} />
         );
       default:
         return null;
