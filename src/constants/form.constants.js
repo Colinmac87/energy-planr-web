@@ -36,4 +36,12 @@ export const FIELD_DICT = {
     name: "Yes / No",
     value: FIELD_YESNO,
   },
+  FIELD_DATETIME: {
+    name: "Date",
+    value: FIELD_DATETIME,
+  },
+  FIELD_DATERANGE: {
+    name: "Date Range",
+    value: FIELD_DATERANGE,
+  },
 };

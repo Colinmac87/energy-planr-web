@@ -1,5 +1,7 @@
 import { Grid } from "@mui/material";
 import {
+  FIELD_DATERANGE,
+  FIELD_DATETIME,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
   FIELD_RICHTEXT,
@@ -12,6 +14,8 @@ import FormMultilineField from "./FormMultilineField";
 import FormNumericField from "./FormNumericField";
 import FormRichTextField from "./FormRichTextField";
 import FormYesNoField from "./FormYesNoField";
+import FormDateTimeField from "./FormDateTimeField";
+import FormDateRangeField from "./FormDateRangeField";
 
 const WithFormField = ({ field, value, onChange }) => {
   const renderFormField = () => {
@@ -36,6 +40,14 @@ const WithFormField = ({ field, value, onChange }) => {
       case FIELD_YESNO:
         return (
           <FormYesNoField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_DATETIME:
+        return (
+          <FormDateTimeField field={field} value={value} onChange={onChange} />
+        );
+      case FIELD_DATERANGE:
+        return (
+          <FormDateRangeField field={field} value={value} onChange={onChange} />
         );
       default:
         return null;
