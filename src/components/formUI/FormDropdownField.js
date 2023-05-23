@@ -14,9 +14,11 @@ const FormDropdownField = ({ field, value, onChange }) => {
         required={field.required}
       >
         {!field.required && <MenuItem value={"-"}>-</MenuItem>}
-        {field.meta?.options?.map((option) => (
-          <MenuItem value={option.value}>{option.name}</MenuItem>
-        ))}
+        {field.meta?.options
+          ?.filter((option) => !option.isDeleted)
+          .map((option) => (
+            <MenuItem value={option.key}>{option.text}</MenuItem>
+          ))}
       </Select>
     </FormControl>
   );
