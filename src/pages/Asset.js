@@ -18,7 +18,7 @@ import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
 import { useNavigate, useParams } from "react-router-dom";
 import FullScreenViewer from "../components/FullScreenViewer";
-import LevelsManager from "../components/LevelsManager";
+import LocationsManager from "../components/LocationsManager";
 import FormManager from "../components/FormManager";
 import AssetForm from "../components/AssetForm";
 import { getAsset } from "../services/asset.service";
@@ -106,8 +106,8 @@ const Asset = () => {
               <Tab
                 icon={<Layers />}
                 iconPosition="start"
-                label="Levels"
-                value="levels-manager"
+                label="Locations"
+                value="locations-manager"
               />
               <Tab
                 icon={<DynamicForm />}
@@ -149,8 +149,8 @@ const Asset = () => {
           <TabPanel value="map-view">
             <AssetMapView data={data} />
           </TabPanel>
-          <TabPanel value="levels-manager">
-            <LevelsManager />
+          <TabPanel value="locations-manager">
+            <LocationsManager assetId={asset.id} />
           </TabPanel>
           <TabPanel value="form-manager">
             <FormManager asset={asset} onSave={onSaveAsset} />
