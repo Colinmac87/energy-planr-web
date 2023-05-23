@@ -1,5 +1,6 @@
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
@@ -12,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { setUser } from "./features/account.slice";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +63,11 @@ function App() {
     });
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <RouterProvider router={router} />
+    </LocalizationProvider>
+  );
 }
 
 export default App;
