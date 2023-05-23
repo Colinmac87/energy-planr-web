@@ -220,14 +220,16 @@ const FormFieldsManager = ({ asset, onSave }) => {
                     ))}
                 </Select>
               </FormControl>
-              <Divider>More Options</Divider>
               <WithFormBuilderFieldOptions
                 type={field.type}
                 meta={field.meta}
                 onChange={(v) => {
                   onChangeFieldProperty(i, "meta", v);
                 }}
-              />
+              >
+                <Divider>More Options</Divider>
+                <br />
+              </WithFormBuilderFieldOptions>
             </Stack>
           </Paper>
         </Grid>

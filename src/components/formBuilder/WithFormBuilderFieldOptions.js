@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material";
 import {
   FIELD_CHECKBOXES,
   FIELD_DROPDOWN,
@@ -5,15 +6,28 @@ import {
 import CheckboxesBuilderOptions from "./CheckboxesBuilderOptions";
 import DropdownBuilderOptions from "./DropdownBuilderOptions";
 
-const WithFormBuilderFieldOptions = ({ type, meta, onChange }) => {
+const WithFormBuilderFieldOptions = ({ children, type, meta, onChange }) => {
+  let builder = null;
+
   switch (type) {
     case FIELD_DROPDOWN:
-      return <DropdownBuilderOptions meta={meta} onChangeMeta={onChange} />;
+      builder = <DropdownBuilderOptions meta={meta} onChangeMeta={onChange} />;
+      break;
     case FIELD_CHECKBOXES:
-      return <CheckboxesBuilderOptions meta={meta} onChangeMeta={onChange} />;
+      builder = (
+        <CheckboxesBuilderOptions meta={meta} onChangeMeta={onChange} />
+      );
+      break;
     default:
       return null;
   }
+
+  return (
+    <Stack>
+      {children}
+      {builder}
+    </Stack>
+  );
 };
 
 export default WithFormBuilderFieldOptions;
