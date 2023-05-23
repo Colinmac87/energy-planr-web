@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   FormControl,
   Grid,
   IconButton,
@@ -22,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { saveFormFields } from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
+import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
 
 const FormFieldsManager = ({ asset, onSave }) => {
   const [loading, setLoading] = useState(false);
@@ -218,6 +220,14 @@ const FormFieldsManager = ({ asset, onSave }) => {
                     ))}
                 </Select>
               </FormControl>
+              <Divider>More Options</Divider>
+              <WithFormBuilderFieldOptions
+                type={field.type}
+                meta={field.meta}
+                onChange={(v) => {
+                  onChangeFieldProperty(i, "meta", v);
+                }}
+              />
             </Stack>
           </Paper>
         </Grid>
