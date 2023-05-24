@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Tab, Grid, Button, Stack } from "@mui/material";
+import { Box, Tab, Grid, Button, Stack, Drawer } from "@mui/material";
 import {
   UploadFile,
   Map,
@@ -7,6 +7,7 @@ import {
   Layers,
   DynamicForm,
   Settings,
+  Add,
 } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
@@ -22,6 +23,8 @@ import LocationsManager from "../components/LocationsManager";
 import FormManager from "../components/FormManager";
 import AssetForm from "../components/AssetForm";
 import { getAsset } from "../services/asset.service";
+import EquipmentDataForm from "../components/EquipmentDataForm";
+import { getData } from "../services/data.service";
 
 const Asset = () => {
   const params = useParams();
@@ -35,6 +38,7 @@ const Asset = () => {
   const [asset, setAsset] = useState(null);
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFullScreenViewerOpen, setIsFullScreenViewerOpen] = useState(false);
+  const [isDataFormOpen, setIsDataFormOpen] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -47,6 +51,7 @@ const Asset = () => {
         if (!_asset) navigate("/");
 
         setAsset(_asset);
+        loadData(_asset.id);
       })
       .catch(() => navigate("/"));
   }, []);
@@ -57,8 +62,18 @@ const Asset = () => {
     });
   };
 
+  const loadData = (assetId) => {
+    getData(assetId).then((_data) => {
+      setData(_data);
+    });
+  };
+
   const onTabChange = (e, v) => {
     setSelectedTab(v);
+  };
+
+  const onCloseDataForm = () => {
+    setIsDataFormOpen(false);
   };
 
   const onCSVUploaded = (e) => {
@@ -143,6 +158,14 @@ const Asset = () => {
                   onChange={onCSVUploaded}
                 />
               </Button>
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<Add />}
+                onClick={() => setIsDataFormOpen(true)}
+              >
+                New Record
+              </Button>
             </Stack>
             <AssetRegisterView asset={asset} data={data} />
           </TabPanel>
@@ -171,6 +194,25 @@ const Asset = () => {
         onClose={() => setIsFullScreenViewerOpen(false)}
         data={data}
       />
+
+      <Drawer
+        anchor={"bottom"}
+        open={isDataFormOpen}
+        onClose={onCloseDataForm}
+        sx={{ maxHeight: window.outerHeight - 100 }}
+      >
+        <Box sx={{ p: 4 }}>
+          <EquipmentDataForm
+            asset={asset}
+            onClose={onCloseDataForm}
+            onSaving={() => {}}
+            onSave={() => {
+              onCloseDataForm();
+              // load data
+            }}
+          />
+        </Box>
+      </Drawer>
     </Grid>
   );
 };

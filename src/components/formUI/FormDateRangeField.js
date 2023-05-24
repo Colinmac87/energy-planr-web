@@ -7,12 +7,14 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       <DatePicker
         sx={{ width: "100%" }}
         label={field.name + " - Start"}
+        format="ddd DD-MM-YYYY"
         onChange={onChange}
       />
       <p>-</p>
       <DatePicker
         sx={{ width: "100%" }}
         label={field.name + " - End"}
+        format="ddd DD-MM-YYYY"
         onChange={onChange}
       />
     </Stack>

@@ -10,7 +10,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { uploadFile } from "./storage.service";
-import { generateKey } from "../utils/string.utils";
 
 export const getLocations = async (assetId) => {
   try {
