@@ -2,6 +2,7 @@ import {
   Button,
   Divider,
   FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
@@ -9,6 +10,7 @@ import {
   Paper,
   Select,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -24,13 +26,19 @@ import {
 import { saveFormFields } from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
+import {
+  canBeDefaultField,
+  getDefaultField,
+  validateFormBuilder,
+} from "../utils/form.utils";
 
 const FormFieldsManager = ({ asset, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
 
   useEffect(() => {
-    setFields(asset?.formFields.sort((a, b) => b - a) || []);
+    if (!asset.formFields || asset.formFields.length == 0) addField();
+    else setFields(asset?.formFields.sort((a, b) => b - a) || []);
   }, [asset]);
 
   const getFieldTypesArray = () => {
@@ -47,7 +55,15 @@ const FormFieldsManager = ({ asset, onSave }) => {
   };
 
   const onChangeFieldProperty = (index, property, value) => {
-    const fieldsCopy = JSON.parse(JSON.stringify(fields));
+    let fieldsCopy = JSON.parse(JSON.stringify(fields));
+
+    if (property == "isDefault") {
+      fieldsCopy = fieldsCopy.map((f) => ({
+        ...f,
+        isDefault: false,
+      }));
+    }
+
     fieldsCopy[index][property] = value;
     setFields(fieldsCopy);
   };
@@ -83,10 +99,11 @@ const FormFieldsManager = ({ asset, onSave }) => {
       ...fields,
       {
         name: "",
-        type: "",
+        type: getDefaultField(),
         required: false,
         span: 12,
         group: "none",
+        isDefault: fields.length == 0,
         meta: {},
       },
     ]);
@@ -94,6 +111,12 @@ const FormFieldsManager = ({ asset, onSave }) => {
 
   const handleSave = () => {
     setLoading(true);
+    const validationResult = validateFormBuilder(fields);
+    if (!validationResult.isValid) {
+      validationResult.errors.forEach((error) => alertError(error));
+      setLoading(false);
+      return;
+    }
 
     saveFormFields(asset.id, { formFields: fields })
       .then(() => {
@@ -128,7 +151,10 @@ const FormFieldsManager = ({ asset, onSave }) => {
               mb={4}
               justifyContent={"space-between"}
             >
-              {field.key ? <CloudDone /> : <CloudOff />}
+              <Stack flexDirection={"row"} alignItems={"center"} gap={1}>
+                {field.key ? <CloudDone /> : <CloudOff />}
+                <Typography variant="caption">{field.key}</Typography>
+              </Stack>
               <Stack flexDirection={"row"} gap={4} justifyContent={"flex-end"}>
                 {i > 0 && (
                   <IconButton aria-label="move up" onClick={() => moveUp(i)}>
@@ -149,31 +175,35 @@ const FormFieldsManager = ({ asset, onSave }) => {
               </Stack>
             </Stack>
             <Stack gap={2}>
-              <TextField
-                label={"Name"}
-                fullWidth
-                value={field.name}
-                onChange={(e) => {
-                  onChangeFieldProperty(i, "name", e.target.value);
-                }}
-              />
-              <FormControl>
-                <InputLabel>Type</InputLabel>
-                <Select
+              <Stack flexDirection={"row"} gap={2}>
+                <TextField
+                  sx={{ flex: 1 }}
+                  label={"Name"}
                   fullWidth
-                  label="Type"
-                  value={field.type}
+                  value={field.name}
                   onChange={(e) => {
-                    onChangeFieldProperty(i, "type", e.target.value);
+                    onChangeFieldProperty(i, "name", e.target.value);
                   }}
-                >
-                  {getFieldTypesArray().map((fieldType) => (
-                    <MenuItem value={fieldType.value}>
-                      {fieldType.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                />
+                <FormControl sx={{ flex: 1 }}>
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    fullWidth
+                    label="Type"
+                    value={field.type}
+                    onChange={(e) => {
+                      onChangeFieldProperty(i, "type", e.target.value);
+                    }}
+                    readOnly={field.key != undefined && field.key != null}
+                  >
+                    {getFieldTypesArray().map((fieldType) => (
+                      <MenuItem value={fieldType.value}>
+                        {fieldType.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
               <Stack flexDirection={"row"} gap={2}>
                 <FormControl fullWidth>
                   <InputLabel>Required</InputLabel>
@@ -194,7 +224,7 @@ const FormFieldsManager = ({ asset, onSave }) => {
                   </Select>
                 </FormControl>
                 <TextField
-                  label={"Span"}
+                  label={"Display Span (1-12)"}
                   type="number"
                   fullWidth
                   value={fields[i].span}
@@ -203,6 +233,19 @@ const FormFieldsManager = ({ asset, onSave }) => {
                   }}
                 />
               </Stack>
+              {canBeDefaultField(field.type) && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={field.isDefault}
+                      onChange={(e) =>
+                        onChangeFieldProperty(i, "isDefault", e.target.checked)
+                      }
+                    />
+                  }
+                  label="Default Field"
+                />
+              )}
               <FormControl>
                 <InputLabel>Group</InputLabel>
                 <Select
