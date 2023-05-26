@@ -3,27 +3,30 @@ import {
   Box,
   AppBar,
   Toolbar,
-  IconButton,
   Typography,
   Container,
   Link,
   MenuItem,
   Menu,
+  Button,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../services/auth.service";
+import { setUser } from "../features/account.slice";
 
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const account = useSelector((state) => state.account);
+  const { loginAttempted, user } = useSelector((state) => state.account);
+  const { asset } = useSelector((state) => state.asset);
 
   useEffect(() => {
-    if (account.loginAttempted && !account.user) navigate("/signin");
-  }, [account.loginAttempted]);
+    if (loginAttempted && !user) navigate("/signin");
+  }, [loginAttempted]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,11 +44,12 @@ const DashboardLayout = ({ children }) => {
   const onClickSignout = () => {
     handleClose();
     signOut().then(() => {
+      dispatch(setUser(null));
       navigate("/signin");
     });
   };
 
-  if (!account.loginAttempted) return null;
+  if (!loginAttempted || !user) return null;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -74,18 +78,23 @@ const DashboardLayout = ({ children }) => {
                 Energy Planr
               </Typography>
             </Link>
+            {asset && (
+              <Typography variant="subtitle1">| &nbsp;{asset.name}</Typography>
+            )}
           </Box>
           <div>
-            <IconButton
+            <Button
               size="large"
+              endIcon={<AccountCircle />}
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
+              sx={{ textTransform: "capitalize" }}
             >
-              <AccountCircle />
-            </IconButton>
+              {user.fullName}
+            </Button>
 
             <Menu
               id="menu-appbar"

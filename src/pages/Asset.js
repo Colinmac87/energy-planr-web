@@ -12,6 +12,7 @@ import {
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
 import Papa from "papaparse";
+import { useDispatch, useSelector } from "react-redux";
 
 import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
@@ -25,17 +26,19 @@ import AssetForm from "../components/AssetForm";
 import { getAsset } from "../services/asset.service";
 import EquipmentDataForm from "../components/EquipmentDataForm";
 import { getData } from "../services/data.service";
+import { setAsset } from "../features/asset.slice";
 
 const Asset = () => {
   const params = useParams();
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState(
     params?.tab || "register-view"
   );
 
-  const [asset, setAsset] = useState(null);
+  const { asset } = useSelector((state) => state.asset);
+
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFullScreenViewerOpen, setIsFullScreenViewerOpen] = useState(false);
   const [isDataFormOpen, setIsDataFormOpen] = useState(false);
@@ -50,10 +53,12 @@ const Asset = () => {
       .then((_asset) => {
         if (!_asset) navigate("/");
 
-        setAsset(_asset);
+        dispatch(setAsset(_asset));
         loadData(_asset.id);
       })
       .catch(() => navigate("/"));
+
+    return () => dispatch(setAsset(null));
   }, []);
 
   const onSaveAsset = () => {

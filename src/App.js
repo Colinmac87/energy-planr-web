@@ -14,6 +14,7 @@ import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { setUser } from "./features/account.slice";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { getUser } from "./services/user.service";
 
 const router = createBrowserRouter([
   {
@@ -54,9 +55,11 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUser(user));
+    onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        getUser({ uid: firebaseUser.uid }).then((user) =>
+          dispatch(setUser(user))
+        );
       } else {
         dispatch(setUser(null));
       }
