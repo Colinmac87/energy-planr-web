@@ -18,15 +18,19 @@ const AssetRegisterView = ({ asset, data }) => {
       <Grid item xs={12}>
         <Box sx={{ height: 600, width: "100%" }}>
           <DataGrid
-            rows={data.map((d, i) => ({
+            rows={data?.map((d, i) => ({
               id: v4(),
               ...d,
             }))}
-            columns={asset.formFields.map((field) => ({
-              field: field.key,
-              headerName: field.name,
-              width: 200,
-            }))}
+            columns={
+              asset?.formFields
+                ? asset?.formFields?.map((field) => ({
+                    field: field.key,
+                    headerName: field.name,
+                    width: 200,
+                  }))
+                : []
+            }
             pageSizeOptions={[5, 20, 50, 100]}
             disableRowSelectionOnClick
             slots={{ toolbar: GridToolbar }}

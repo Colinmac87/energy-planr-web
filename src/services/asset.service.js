@@ -28,6 +28,8 @@ export const createAsset = async ({ name, thumbnailFile }) => {
   try {
     const asset = {
       name: name,
+      formFields: [],
+      formGroups: [],
       isDeleted: false,
     };
 
