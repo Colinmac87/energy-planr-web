@@ -1,15 +1,26 @@
 import { useState } from "react";
-import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import WithFormField from "./formUI/WithFormField";
 import { createData, updateData } from "../services/data.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
+import WithDataField from "./dataUI/WithDataField";
 
 const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(data || {}))
   );
+
+  const canEdit = true;
 
   const formGroups = [
     {
@@ -68,22 +79,32 @@ const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
         {formGroups
           .filter((group) => group.fields.length > 0)
           .map((group) => (
-            <Stack spacing={1}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Typography variant="h6">{group.name}</Typography>
+            <Paper sx={{ marginBottom: 2, padding: 2 }}>
+              <Stack spacing={1}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="h6">{group.name}</Typography>
+                  </Grid>
+                  {group.fields.map((field, i) =>
+                    canEdit ? (
+                      <WithFormField
+                        key={i}
+                        field={field}
+                        value={data?.id ? data[field.key] : null}
+                        onChange={(v) => onChangeFormData(field.key, v)}
+                      />
+                    ) : (
+                      <WithDataField
+                        key={i}
+                        field={field}
+                        value={data[field.key]}
+                      />
+                    )
+                  )}
                 </Grid>
-                {group.fields.map((field, i) => (
-                  <WithFormField
-                    key={i}
-                    field={field}
-                    value={data[field.key]}
-                    onChange={(v) => onChangeFormData(field.key, v)}
-                  />
-                ))}
-              </Grid>
-              <br />
-            </Stack>
+                <br />
+              </Stack>
+            </Paper>
           ))}
         <Divider sx={{ mb: 3 }} />
         <Stack flexDirection={"row"} justifyContent={"space-between"}>
@@ -91,7 +112,7 @@ const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
             <Button variant="outlined" disabled={loading} onClick={onClose}>
               Cancel
             </Button>
-            {data?.id && (
+            {canEdit && data?.id && (
               <Button
                 variant="outlined"
                 disabled={loading}
@@ -102,9 +123,11 @@ const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
               </Button>
             )}
           </Stack>
-          <Button type="submit" variant="contained" disabled={loading}>
-            Save
-          </Button>
+          {canEdit && (
+            <Button type="submit" variant="contained" disabled={loading}>
+              Save
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Box>

@@ -3,6 +3,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
 import { v4 } from "uuid";
+import WithDataField from "./dataUI/WithDataField";
 
 const AssetRegisterView = ({ asset, data }) => {
   const [isEquipmentDetailViewerOpen, setIsEquipmentDetailViewerOpen] =
@@ -26,6 +27,9 @@ const AssetRegisterView = ({ asset, data }) => {
               field: field.key,
               headerName: field.name,
               width: 200,
+              renderCell: ({ value }) => (
+                <WithDataField field={field} value={value} withLabel={false} />
+              ),
             }))}
             pageSizeOptions={[5, 20, 50, 100]}
             disableRowSelectionOnClick
@@ -47,6 +51,8 @@ const AssetRegisterView = ({ asset, data }) => {
             <EquipmentDataForm
               asset={asset}
               data={selectedData}
+              onSaving={() => {}}
+              onSave={() => {}}
               onClose={onCloseEquipmentDetailViewer}
             />
           </Box>
