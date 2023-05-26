@@ -22,6 +22,7 @@ const DashboardLayout = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const { loginAttempted, user } = useSelector((state) => state.account);
+  const { asset } = useSelector((state) => state.asset);
 
   useEffect(() => {
     if (loginAttempted && !user) navigate("/signin");
@@ -77,6 +78,9 @@ const DashboardLayout = ({ children }) => {
                 Energy Planr
               </Typography>
             </Link>
+            {asset && (
+              <Typography variant="subtitle1">| &nbsp;{asset.name}</Typography>
+            )}
           </Box>
           <div>
             <Button
