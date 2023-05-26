@@ -36,10 +36,10 @@ const FormImageUploadField = ({ field, value, onChange }) => {
         sx: { p: 1 },
       }}
       placeholderImageDimension={{
-        xs: { width: 128, height: 128 },
-        sm: { width: 128, height: 128 },
-        md: { width: 164, height: 164 },
-        lg: { width: 256, height: 256 },
+        xs: { height: 128 },
+        sm: { height: 128 },
+        md: { height: 164 },
+        lg: { height: 256 },
       }}
     />
   );

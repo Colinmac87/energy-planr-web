@@ -13,8 +13,12 @@ import WithFormField from "./formUI/WithFormField";
 import { createData, updateData } from "../services/data.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithDataField from "./dataUI/WithDataField";
+import { useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
 
-const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
+const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(data || {}))
@@ -124,9 +128,9 @@ const EquipmentDataForm = ({ asset, data, onSaving, onSave, onClose }) => {
             )}
           </Stack>
           {canEdit && (
-            <Button type="submit" variant="contained" disabled={loading}>
+            <LoadingButton type="submit" variant="contained" loading={loading}>
               Save
-            </Button>
+            </LoadingButton>
           )}
         </Stack>
       </Stack>

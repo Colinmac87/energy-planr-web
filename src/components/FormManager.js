@@ -4,8 +4,11 @@ import FormGroupsManager from "./FormGroupsManager";
 import { GroupWork, TextFields } from "@mui/icons-material";
 import { Box, Grid, Tab } from "@mui/material";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
-const FormManager = ({ asset, onSave }) => {
+const FormManager = ({ onSave }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [selectedTab, setSelectedTab] = useState("fields-manager");
 
   const onTabChange = (e, v) => {

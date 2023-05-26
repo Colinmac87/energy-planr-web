@@ -10,14 +10,11 @@ import {
   Add,
 } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
-import { v4 } from "uuid";
-import Papa from "papaparse";
 import { useDispatch, useSelector } from "react-redux";
 
 import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
 import EquipmentFileUpload from "../components/EquipmentFileUpload";
-import { camelize } from "../utils/string.utils";
 import { useNavigate, useParams } from "react-router-dom";
 import FullScreenViewer from "../components/FullScreenViewer";
 import LocationsManager from "../components/LocationsManager";
@@ -81,28 +78,6 @@ const Asset = () => {
     setIsDataFormOpen(false);
   };
 
-  const onCSVUploaded = (e) => {
-    Papa.parse(e.target.files[0], {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (results) {
-        let tempDataArr = [];
-        results.data.map((row) => {
-          const o = {};
-          for (const prop in row) {
-            o.id = v4();
-            o.x = Math.floor(Math.random() * 100);
-            o.y = Math.floor(Math.random() * 100);
-            o[camelize(prop)] = row[prop];
-          }
-
-          tempDataArr.push(o);
-        });
-        setData(tempDataArr);
-      },
-    });
-  };
-
   if (!asset) return null;
 
   return (
@@ -154,14 +129,9 @@ const Asset = () => {
                 variant="outlined"
                 component="label"
                 startIcon={<UploadFile />}
+                onClick={() => setIsFileUploadDialogOpen(true)}
               >
                 Upload Data
-                <input
-                  type="file"
-                  hidden
-                  accept=".csv"
-                  onChange={onCSVUploaded}
-                />
               </Button>
               <Button
                 variant="contained"
@@ -172,19 +142,19 @@ const Asset = () => {
                 New Record
               </Button>
             </Stack>
-            <AssetRegisterView asset={asset} data={data} />
+            <AssetRegisterView data={data} />
           </TabPanel>
           <TabPanel value="map-view">
             <AssetMapView data={data} />
           </TabPanel>
           <TabPanel value="locations-manager">
-            <LocationsManager assetId={asset.id} />
+            <LocationsManager />
           </TabPanel>
           <TabPanel value="form-manager">
-            <FormManager asset={asset} onSave={onSaveAsset} />
+            <FormManager onSave={onSaveAsset} />
           </TabPanel>
           <TabPanel value="asset-settings">
-            <AssetForm asset={asset} onSaving={() => {}} onSave={onSaveAsset} />
+            <AssetForm onSaving={() => {}} onSave={onSaveAsset} />
           </TabPanel>
         </TabContext>
       </Grid>
@@ -192,6 +162,7 @@ const Asset = () => {
       <EquipmentFileUpload
         isOpen={isFileUploadDialogOpen}
         onClose={() => setIsFileUploadDialogOpen(false)}
+        onSave={() => {}}
       />
 
       <FullScreenViewer
@@ -208,7 +179,6 @@ const Asset = () => {
       >
         <Box sx={{ p: 4 }}>
           <EquipmentDataForm
-            asset={asset}
             onClose={onCloseDataForm}
             onSaving={() => {}}
             onSave={() => {

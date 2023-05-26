@@ -19,8 +19,11 @@ import LocationForm from "./LocationForm";
 import { useEffect, useState } from "react";
 import { deleteLocation, getLocations } from "../services/location.service";
 import { alertInfo } from "../utils/alert.utils";
+import { useSelector } from "react-redux";
 
-const LocationsManager = ({ assetId }) => {
+const LocationsManager = () => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [isLocationFormOpen, setIsLocationFormOpen] = useState(false);
   const [isLocationDeleteDialogOpen, setIsLocationDeleteDialogOpen] =
     useState(false);
@@ -32,7 +35,7 @@ const LocationsManager = ({ assetId }) => {
   }, []);
 
   const loadLocations = () => {
-    getLocations(assetId).then((data) => setLocations(data));
+    getLocations(asset.id).then((data) => setLocations(data));
   };
 
   const handleDeleteLocation = () => {
@@ -120,7 +123,7 @@ const LocationsManager = ({ assetId }) => {
       >
         <Box sx={{ p: 4 }}>
           <LocationForm
-            assetId={assetId}
+            assetId={asset.id}
             location={contextLocation}
             onSaving={() => {}}
             onSave={() => {

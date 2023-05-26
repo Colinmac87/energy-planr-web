@@ -3,6 +3,7 @@ import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import { createLocation, updateLocation } from "../services/location.service";
+import { LoadingButton } from "@mui/lab";
 
 const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
@@ -95,10 +96,10 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
               sx: { p: 1 },
             }}
             placeholderImageDimension={{
-              xs: { width: 128, height: 128 },
-              sm: { width: 128, height: 128 },
-              md: { width: 164, height: 164 },
-              lg: { width: 256, height: 256 },
+              xs: { height: 128 },
+              sm: { height: 128 },
+              md: { height: 164 },
+              lg: { height: 256 },
             }}
           />
         </Grid>
@@ -107,9 +108,9 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
             <Button variant="outlined" disabled={loading} onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="submit" variant="contained" disabled={loading}>
+            <LoadingButton type="submit" variant="contained" loading={loading}>
               Save
-            </Button>
+            </LoadingButton>
           </Stack>
         </Grid>
       </Grid>

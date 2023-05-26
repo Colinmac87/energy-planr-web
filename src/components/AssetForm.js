@@ -3,8 +3,11 @@ import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
 import { createAsset, updateAsset } from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
+import { useSelector } from "react-redux";
 
-const AssetForm = ({ asset, onSaving, onSave }) => {
+const AssetForm = ({ onSaving, onSave }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(asset?.name);
   const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -92,10 +95,10 @@ const AssetForm = ({ asset, onSaving, onSave }) => {
               sx: { p: 1 },
             }}
             placeholderImageDimension={{
-              xs: { width: 128, height: 128 },
-              sm: { width: 128, height: 128 },
-              md: { width: 164, height: 164 },
-              lg: { width: 256, height: 256 },
+              xs: { height: 128 },
+              sm: { height: 128 },
+              md: { height: 164 },
+              lg: { height: 256 },
             }}
           />
         </Grid>

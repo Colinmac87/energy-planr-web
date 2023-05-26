@@ -31,14 +31,18 @@ import {
   getDefaultField,
   validateFormBuilder,
 } from "../utils/form.utils";
+import { useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
 
-const FormFieldsManager = ({ asset, onSave }) => {
+const FormFieldsManager = ({ onSave }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
 
   useEffect(() => {
-    if (!asset.formFields || asset.formFields.length == 0) addField();
-    else setFields(asset?.formFields.sort((a, b) => b - a) || []);
+    if (!asset?.formFields || asset.formFields.length == 0) addField();
+    else setFields(asset?.formFields);
   }, [asset]);
 
   const getFieldTypesArray = () => {
@@ -136,9 +140,13 @@ const FormFieldsManager = ({ asset, onSave }) => {
       <Grid item md={12}>
         <Stack flexDirection={"row"} gap={2} justifyContent={"space-between"}>
           <Typography variant="h4">Data Fields</Typography>
-          <Button variant="contained" disabled={loading} onClick={handleSave}>
+          <LoadingButton
+            variant="contained"
+            loading={loading}
+            onClick={handleSave}
+          >
             Save
-          </Button>
+          </LoadingButton>
         </Stack>
       </Grid>
 
