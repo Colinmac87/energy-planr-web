@@ -7,20 +7,25 @@ import {
   Button,
   Drawer,
   Box,
+  Stack,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
 import { getAssets } from "../services/asset.service";
+import { useSelector } from "react-redux";
+import { FolderOpenOutlined } from "@mui/icons-material";
 
 const Home = () => {
+  const { user } = useSelector((state) => state.account);
+
   const [isNewAssetFormOpen, setIsNewAssetFormOpen] = useState(false);
-  const [assets, setAssets] = useState([]);
+  const [assets, setAssets] = useState(null);
 
   useEffect(() => {
     loadAssets();
-  }, []);
+  }, [user]);
 
   const loadAssets = () => {
-    getAssets().then((data) => setAssets(data));
+    getAssets(user.companyId).then((data) => setAssets(data || []));
   };
 
   const onCloseNewAssetForm = () => {
@@ -39,30 +44,52 @@ const Home = () => {
           New Asset
         </Button>
       </Grid>
-      {assets.map((asset) => (
-        <Grid item xs={12} md={4} lg={3}>
-          <Link href={`/asset/${asset.id}`} underline="none">
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <Typography gutterBottom variant="h6" component="div">
-                {asset.name}
-              </Typography>
-              {asset.thumbnailUrl && (
-                <img
-                  src={asset.thumbnailUrl}
-                  style={{ maxWidth: 256, maxHeight: 256 }}
-                  alt="Failed to load"
-                />
-              )}
-            </Paper>
-          </Link>
-        </Grid>
-      ))}
+      {assets &&
+        (assets.length == 0 ? (
+          <Stack
+            style={{
+              flex: 1,
+              alignItems: "center",
+              padding: 64,
+            }}
+          >
+            <FolderOpenOutlined sx={{ fontSize: 64, color: "#888" }} />
+            <Typography sx={{ color: "#888" }}>No assets yet</Typography>
+          </Stack>
+        ) : (
+          assets.map((asset) => (
+            <Grid item xs={12} md={4} lg={3}>
+              <Link href={`/asset/${asset.id}`} underline="none">
+                <Paper
+                  elevation={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    background: asset.thumbnailUrl
+                      ? `url(${asset.thumbnailUrl})`
+                      : "#aaa",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                  }}
+                >
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{
+                      p: 2,
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,0,0.8))",
+                    }}
+                  >
+                    {asset.name}
+                  </Typography>
+                  <div style={{ width: 128, height: 128 }}></div>
+                </Paper>
+              </Link>
+            </Grid>
+          ))
+        ))}
 
       <Drawer
         anchor={"right"}
@@ -70,7 +97,9 @@ const Home = () => {
         onClose={onCloseNewAssetForm}
       >
         <Box sx={{ p: 4 }}>
-          <Typography variant="h4" mb={4}>Create a new asset</Typography>
+          <Typography variant="h4" mb={4}>
+            Create a new asset
+          </Typography>
           <AssetForm
             onSaving={() => {}}
             onSave={() => {

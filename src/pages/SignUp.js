@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   TextField,
-  Button,
   CssBaseline,
   Divider,
   Link,
@@ -14,6 +13,7 @@ import { signUp } from "../services/auth.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../features/account.slice";
 import { alertError } from "../utils/alert.utils";
+import { LoadingButton } from "@mui/lab";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -34,19 +34,21 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
 
-    signUp({ businessName, fullName, email, password })
-      .then((user) => {
-        if (user) {
-          dispatch(setUser(user));
-          navigate("/");
-        } else
-          alertError(
-            "Unable to create account, please try again or contact us."
-          );
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    setTimeout(() => {
+      signUp({ businessName, fullName, email, password })
+        .then((user) => {
+          if (user) {
+            dispatch(setUser(user));
+            navigate("/");
+          } else
+            alertError(
+              "Unable to create account, please try again or contact us."
+            );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 1000);
   };
 
   if (!account.loginAttempted) return null;
@@ -108,15 +110,15 @@ const SignUp = () => {
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            loading={loading}
           >
             Register
-          </Button>
+          </LoadingButton>
           <Divider mt={2} mb={4} />
           <div style={{ textAlign: "center", marginTop: 16 }}>
             <Link href="/signin" underline="none">

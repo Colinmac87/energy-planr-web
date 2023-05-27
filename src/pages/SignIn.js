@@ -5,7 +5,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Button,
   CssBaseline,
   Divider,
   Link,
@@ -16,6 +15,7 @@ import { signIn } from "../services/auth.service";
 import { alertError } from "../utils/alert.utils";
 import { setUser } from "../features/account.slice";
 import { useDispatch, useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -34,16 +34,18 @@ const SignIn = () => {
     e.preventDefault();
     setLoading(true);
 
-    signIn({ email, password })
-      .then((user) => {
-        if (user) {
-          dispatch(setUser(user));
-          navigate("/");
-        } else alertError("Email or password is not correct.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    setTimeout(() => {
+      signIn({ email, password })
+        .then((user) => {
+          if (user) {
+            dispatch(setUser(user));
+            navigate("/");
+          } else alertError("Email or password is not correct.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 1000);
   };
 
   if (!account.loginAttempted) return null;
@@ -91,15 +93,15 @@ const SignIn = () => {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
+          <LoadingButton
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={loading}
+            loading={loading}
           >
             Sign In
-          </Button>
+          </LoadingButton>
           <Divider mt={2} mb={4} />
           <div style={{ textAlign: "center", marginTop: 16 }}>
             <Link href="/signup" underline="none">

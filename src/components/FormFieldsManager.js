@@ -38,7 +38,7 @@ const FormFieldsManager = ({ asset, onSave }) => {
 
   useEffect(() => {
     if (!asset.formFields || asset.formFields.length == 0) addField();
-    else setFields(asset?.formFields.sort((a, b) => b - a) || []);
+    else setFields(asset?.formFields || []);
   }, [asset]);
 
   const getFieldTypesArray = () => {

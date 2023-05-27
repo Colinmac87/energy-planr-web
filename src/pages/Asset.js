@@ -62,6 +62,10 @@ const Asset = () => {
     });
   };
 
+  const onDeleteAsset = () => {
+    navigate("/");
+  };
+
   const onTabChange = (e, v) => {
     setSelectedTab(v);
   };
@@ -161,7 +165,12 @@ const Asset = () => {
             <FormManager asset={asset} onSave={onSaveAsset} />
           </TabPanel>
           <TabPanel value="asset-settings">
-            <AssetForm asset={asset} onSaving={() => {}} onSave={onSaveAsset} />
+            <AssetForm
+              asset={asset}
+              onSaving={() => {}}
+              onSave={onSaveAsset}
+              onDelete={onDeleteAsset}
+            />
           </TabPanel>
         </TabContext>
       </Grid>

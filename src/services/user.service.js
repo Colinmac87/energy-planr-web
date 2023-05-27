@@ -12,9 +12,22 @@ import { generateKey } from "../utils/string.utils";
 
 export const createCompany = async ({ businessName }) => {
   try {
+    businessName = businessName.trim();
+    const code = generateKey(businessName);
+
+    try {
+      const q = query(collection(db, "companies"), where("code", "==", code));
+
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.docs.length > 0) return querySnapshot.docs[0];
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+
     const docRef = await addDoc(collection(db, "companies"), {
       company: businessName,
-      code: generateKey(businessName),
+      code: code,
       status: "active",
     });
     return docRef;

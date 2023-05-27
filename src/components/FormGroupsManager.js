@@ -23,7 +23,7 @@ const FormGroupsManager = ({ asset, onSave }) => {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    setGroups(asset?.formGroups?.sort((a, b) => b - a) || []);
+    setGroups(asset?.formGroups || []);
   }, [asset]);
 
   const onChangeGroupProperty = (index, property, value) => {

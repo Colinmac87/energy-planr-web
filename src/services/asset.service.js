@@ -12,9 +12,13 @@ import { db } from "../firebase";
 import { uploadFile } from "./storage.service";
 import { generateKey } from "../utils/string.utils";
 
-export const getAssets = async () => {
+export const getAssets = async (companyId) => {
   try {
-    const q = query(collection(db, "assets"), where("isDeleted", "==", false));
+    const q = query(
+      collection(db, "assets"),
+      where("companyId", "==", companyId),
+      where("isDeleted", "==", false)
+    );
 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }));
@@ -24,9 +28,10 @@ export const getAssets = async () => {
   }
 };
 
-export const createAsset = async ({ name, thumbnailFile }) => {
+export const createAsset = async ({ companyId, name, thumbnailFile }) => {
   try {
     const asset = {
+      companyId: companyId,
       name: name,
       formFields: [],
       formGroups: [],
@@ -71,6 +76,19 @@ export const updateAsset = async (id, { name, thumbnailFile }) => {
     if (thumbnailFile) {
       asset.thumbnailUrl = await uploadFile(thumbnailFile);
     }
+
+    const docRef = doc(db, "assets", id);
+    return await updateDoc(docRef, asset);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteAsset = async (id) => {
+  try {
+    const asset = {
+      isDeleted: true,
+    };
 
     const docRef = doc(db, "assets", id);
     return await updateDoc(docRef, asset);

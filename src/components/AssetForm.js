@@ -1,10 +1,31 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
-import { createAsset, updateAsset } from "../services/asset.service";
+import {
+  createAsset,
+  deleteAsset,
+  updateAsset,
+} from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
+import { useSelector } from "react-redux";
+import { LoadingButton } from "@mui/lab";
 
-const AssetForm = ({ asset, onSaving, onSave }) => {
+const AssetForm = ({ onSaving, onSave, onDelete }) => {
+  const { user } = useSelector((state) => state.account);
+  const { asset } = useSelector((state) => state.asset);
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(asset?.name);
   const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -30,7 +51,7 @@ const AssetForm = ({ asset, onSaving, onSave }) => {
         })
         .finally(() => setLoading(false));
     } else {
-      createAsset({ name, thumbnailFile })
+      createAsset({ companyId: user.companyId, name, thumbnailFile })
         .then((assetId) => {
           if (assetId) {
             alertSuccess("New asset created.");
@@ -42,6 +63,14 @@ const AssetForm = ({ asset, onSaving, onSave }) => {
           }
         })
         .finally(() => setLoading(false));
+    }
+  };
+
+  const handleDelete = () => {
+    if (asset?.id) {
+      setLoading(true);
+
+      setTimeout(() => deleteAsset(asset.id).then(() => onDelete()), 1000);
     }
   };
 
@@ -100,9 +129,52 @@ const AssetForm = ({ asset, onSaving, onSave }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" variant="contained" disabled={loading}>
-            Save
-          </Button>
+          <Stack flexDirection={"row"} justifyContent={"space-between"}>
+            <LoadingButton type="submit" variant="contained" loading={loading}>
+              Save
+            </LoadingButton>
+            {asset?.id && (
+              <Button
+                color="error"
+                variant="outlined"
+                disabled={loading}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                Delete
+              </Button>
+            )}
+
+            <Dialog
+              open={isDeleteDialogOpen}
+              onClose={() => setIsDeleteDialogOpen(false)}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">Please Confirm</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  All associated data will also be deleted
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  variant="contained"
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <LoadingButton
+                  variant="outlined"
+                  color="error"
+                  onClick={handleDelete}
+                  loading={loading}
+                >
+                  Delete
+                </LoadingButton>
+              </DialogActions>
+            </Dialog>
+          </Stack>
         </Grid>
       </Grid>
     </Box>
