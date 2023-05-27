@@ -69,7 +69,7 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Create an Account
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
