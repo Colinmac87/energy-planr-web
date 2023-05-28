@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Tab, Grid, Button, Stack } from "@mui/material";
+import { Box, Tab, Grid, Button, Stack, Drawer } from "@mui/material";
 import {
   UploadFile,
   Map,
   TableChart,
-  Layers,
-  DynamicForm,
   Settings,
+  Add,
 } from "@mui/icons-material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
@@ -19,11 +18,10 @@ import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
 import { useNavigate, useParams } from "react-router-dom";
 import FullScreenViewer from "../components/FullScreenViewer";
-import LevelsManager from "../components/LevelsManager";
-import FormManager from "../components/FormManager";
-import AssetForm from "../components/AssetForm";
 import { getAsset } from "../services/asset.service";
 import { setAsset } from "../features/asset.slice";
+import EquipmentDataForm from "../components/EquipmentDataForm";
+import AssetSettings from "./AssetSettings";
 
 const Asset = () => {
   const params = useParams();
@@ -38,6 +36,7 @@ const Asset = () => {
 
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isFullScreenViewerOpen, setIsFullScreenViewerOpen] = useState(false);
+  const [isDataFormOpen, setIsDataFormOpen] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -68,6 +67,10 @@ const Asset = () => {
 
   const onTabChange = (e, v) => {
     setSelectedTab(v);
+  };
+
+  const onCloseDataForm = () => {
+    setIsDataFormOpen(false);
   };
 
   const onCSVUploaded = (e) => {
@@ -113,18 +116,6 @@ const Asset = () => {
                 value="map-view"
               />
               <Tab
-                icon={<Layers />}
-                iconPosition="start"
-                label="Levels"
-                value="levels-manager"
-              />
-              <Tab
-                icon={<DynamicForm />}
-                iconPosition="start"
-                label="Form Settings"
-                value="form-manager"
-              />
-              <Tab
                 icon={<Settings />}
                 iconPosition="start"
                 label="Settings"
@@ -152,22 +143,23 @@ const Asset = () => {
                   onChange={onCSVUploaded}
                 />
               </Button>
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<Add />}
+                onClick={() => setIsDataFormOpen(true)}
+              >
+                New Record
+              </Button>
             </Stack>
             <AssetRegisterView asset={asset} data={data} />
           </TabPanel>
           <TabPanel value="map-view">
             <AssetMapView data={data} />
           </TabPanel>
-          <TabPanel value="levels-manager">
-            <LevelsManager />
-          </TabPanel>
-          <TabPanel value="form-manager">
-            <FormManager asset={asset} onSave={onSaveAsset} />
-          </TabPanel>
           <TabPanel value="asset-settings">
-            <AssetForm
+            <AssetSettings
               asset={asset}
-              onSaving={() => {}}
               onSave={onSaveAsset}
               onDelete={onDeleteAsset}
             />
@@ -185,6 +177,25 @@ const Asset = () => {
         onClose={() => setIsFullScreenViewerOpen(false)}
         data={data}
       />
+
+      <Drawer
+        anchor={"bottom"}
+        open={isDataFormOpen}
+        onClose={onCloseDataForm}
+        sx={{ maxHeight: window.outerHeight - 100 }}
+      >
+        <Box sx={{ p: 4 }}>
+          <EquipmentDataForm
+            asset={asset}
+            onClose={onCloseDataForm}
+            onSaving={() => {}}
+            onSave={() => {
+              onCloseDataForm();
+              // load data
+            }}
+          />
+        </Box>
+      </Drawer>
     </Grid>
   );
 };

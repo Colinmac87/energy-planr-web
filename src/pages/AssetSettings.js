@@ -1,11 +1,13 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import FormFieldsManager from "./FormFieldsManager";
-import FormGroupsManager from "./FormGroupsManager";
-import { GroupWork, TextFields } from "@mui/icons-material";
+import { GroupWork, Layers, Settings, TextFields } from "@mui/icons-material";
 import { Box, Grid, Tab } from "@mui/material";
 import { useState } from "react";
+import FormFieldsManager from "../components/FormFieldsManager";
+import FormGroupsManager from "../components/FormGroupsManager";
+import LevelsManager from "../components/LevelsManager";
+import AssetForm from "../components/AssetForm";
 
-const FormManager = ({ asset, onSave }) => {
+const AssetSettings = ({ asset, onSave, onDelete }) => {
   const [selectedTab, setSelectedTab] = useState("fields-manager");
 
   const onTabChange = (e, v) => {
@@ -34,15 +36,42 @@ const FormManager = ({ asset, onSave }) => {
                 label="Groups"
                 value="groups-manager"
               />
+              <br />
+              <Tab
+                icon={<Layers />}
+                iconPosition="start"
+                label="Locations"
+                value="locations-manager"
+              />
+              <br />
+
+              <Tab
+                icon={<Settings />}
+                iconPosition="start"
+                label="Asset Settings"
+                value="settings"
+              />
             </TabList>
           </Box>
         </Grid>
-        <Grid item sm={10}>
+        <Grid item sm={1}></Grid>
+        <Grid item sm={8}>
           <TabPanel value="fields-manager">
             <FormFieldsManager asset={asset} onSave={onSave} />
           </TabPanel>
           <TabPanel value="groups-manager">
             <FormGroupsManager asset={asset} onSave={onSave} />
+          </TabPanel>
+          <TabPanel value="locations-manager">
+            <LevelsManager />
+          </TabPanel>
+          <TabPanel value="settings">
+            <AssetForm
+              asset={asset}
+              onSaving={() => {}}
+              onSave={onSave}
+              onDelete={onDelete}
+            />
           </TabPanel>
         </Grid>
       </TabContext>
@@ -50,4 +79,4 @@ const FormManager = ({ asset, onSave }) => {
   );
 };
 
-export default FormManager;
+export default AssetSettings;
