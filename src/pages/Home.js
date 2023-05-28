@@ -8,16 +8,23 @@ import {
   Drawer,
   Box,
   Stack,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
 import { getAssets } from "../services/asset.service";
 import { useSelector } from "react-redux";
-import { FolderOpenOutlined } from "@mui/icons-material";
+import {
+  FolderOpenOutlined,
+  ViewListOutlined,
+  ViewModuleOutlined,
+} from "@mui/icons-material";
 
 const Home = () => {
   const { user } = useSelector((state) => state.account);
 
   const [isNewAssetFormOpen, setIsNewAssetFormOpen] = useState(false);
+  const [viewType, setViewType] = useState("grid");
   const [assets, setAssets] = useState(null);
 
   useEffect(() => {
@@ -32,6 +39,88 @@ const Home = () => {
     setIsNewAssetFormOpen(false);
   };
 
+  const toggleViewType = (e, newViewType) => {
+    setViewType(newViewType);
+  };
+
+  const renderGridItem = (asset) => (
+    <Grid item xs={12} md={4} lg={3}>
+      <Link href={`/asset/${asset.id}`} underline="none">
+        <Paper
+          elevation={2}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            background: asset.thumbnailUrl
+              ? `url(${asset.thumbnailUrl})`
+              : "#aaa",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            "&:hover": {
+              boxShadow: "0px 0px 2px 4px #fff",
+            },
+          }}
+        >
+          <Typography
+            gutterBottom
+            variant="h6"
+            component="div"
+            sx={{
+              p: 2,
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,0,0.5))",
+            }}
+          >
+            {asset.name}
+          </Typography>
+          <div style={{ width: 128, height: 128 }}></div>
+        </Paper>
+      </Link>
+    </Grid>
+  );
+
+  const renderListItem = (asset) => (
+    <Grid item xs={12}>
+      <Link href={`/asset/${asset.id}`} underline="none">
+        <Paper
+          elevation={2}
+          sx={{
+            "&:hover": {
+              boxShadow: "0px 0px 2px 4px #fff",
+            },
+          }}
+        >
+          <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+            <Box
+              sx={{
+                borderTopLeftRadius: 6,
+                borderBottomLeftRadius: 6,
+                display: "inline-block",
+                width: 128,
+                height: 128,
+                background: asset.thumbnailUrl
+                  ? `url(${asset.thumbnailUrl})`
+                  : "#aaa",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}
+            ></Box>
+            <Typography
+              variant="h6"
+              sx={{
+                display: "inline-block",
+                p: 0,
+                m: 0,
+              }}
+            >
+              {asset.name}
+            </Typography>
+          </Stack>
+        </Paper>
+      </Link>
+    </Grid>
+  );
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -40,9 +129,31 @@ const Home = () => {
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <Button variant="contained" onClick={() => setIsNewAssetFormOpen(true)}>
-          New Asset
-        </Button>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={() => setIsNewAssetFormOpen(true)}
+          >
+            New Asset
+          </Button>
+          <ToggleButtonGroup
+            value={viewType}
+            exclusive
+            onChange={toggleViewType}
+          >
+            <ToggleButton value="grid">
+              <ViewModuleOutlined />
+            </ToggleButton>
+            <ToggleButton value="list">
+              <ViewListOutlined />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
       </Grid>
       {assets &&
         (assets.length == 0 ? (
@@ -57,38 +168,9 @@ const Home = () => {
             <Typography sx={{ color: "#888" }}>No assets yet</Typography>
           </Stack>
         ) : (
-          assets.map((asset) => (
-            <Grid item xs={12} md={4} lg={3}>
-              <Link href={`/asset/${asset.id}`} underline="none">
-                <Paper
-                  elevation={2}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    background: asset.thumbnailUrl
-                      ? `url(${asset.thumbnailUrl})`
-                      : "#aaa",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                  }}
-                >
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="div"
-                    sx={{
-                      p: 2,
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,0,0.8))",
-                    }}
-                  >
-                    {asset.name}
-                  </Typography>
-                  <div style={{ width: 128, height: 128 }}></div>
-                </Paper>
-              </Link>
-            </Grid>
-          ))
+          assets.map((asset) =>
+            viewType == "list" ? renderListItem(asset) : renderGridItem(asset)
+          )
         ))}
 
       <Drawer
