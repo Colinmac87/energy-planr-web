@@ -86,6 +86,7 @@ const SignUp = () => {
             fullWidth
             id="fullName"
             label="Your Full Name"
+            autoComplete="no"
             name="fullName"
             onChange={(e) => setFullName(e.target.value)}
           />
@@ -96,7 +97,7 @@ const SignUp = () => {
             id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"
+            autoComplete="no"
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
@@ -107,7 +108,7 @@ const SignUp = () => {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            autoComplete="no"
             onChange={(e) => setPassword(e.target.value)}
           />
           <LoadingButton

@@ -9,21 +9,15 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { generateKey } from "../utils/string.utils";
+import { getCompany } from "./company.service";
 
 export const createCompany = async ({ businessName }) => {
   try {
     businessName = businessName.trim();
     const code = generateKey(businessName);
 
-    try {
-      const q = query(collection(db, "companies"), where("code", "==", code));
-
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.docs.length > 0) return querySnapshot.docs[0];
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+    const company = await getCompany(code);
+    if (company) return company;
 
     const docRef = await addDoc(collection(db, "companies"), {
       company: businessName,

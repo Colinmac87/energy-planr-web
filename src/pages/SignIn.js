@@ -8,23 +8,37 @@ import {
   CssBaseline,
   Divider,
   Link,
+  Grid,
+  Paper,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { signIn } from "../services/auth.service";
 import { alertError } from "../utils/alert.utils";
 import { setUser } from "../features/account.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
+import logo from "../assets/images/logo.png";
+import { getCompany } from "../services/company.service";
 
 const SignIn = () => {
+  const { companyCode } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const account = useSelector((state) => state.account);
 
+  const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    getCompany(companyCode).then((_company) => {
+      console.log(_company.data());
+      setCompany(_company.data());
+    });
+  }, []);
 
   useEffect(() => {
     if (account.loginAttempted && account.user) navigate("/");
@@ -48,69 +62,119 @@ const SignIn = () => {
     }, 1000);
   };
 
+  if (!companyCode)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          width: "100wh",
+          height: "100vh",
+          textAlign: "center",
+          p: 16,
+        }}
+      >
+        <Typography variant="h4">Looks Like You're Lost</Typography>
+      </Box>
+    );
+
+  if (!company) return null;
+
   if (!account.loginAttempted) return null;
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Grid container component="main" sx={{ height: "100vh" }}>
       <CssBaseline />
-      <Box
+
+      <Grid
+        item
+        xs={0}
+        sm={4}
+        md={7}
         sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          backgroundImage:
+            "url(https://accordantco.com/wp-content/uploads/construction-site-tablet.jpg)",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: (t) =>
+            t.palette.mode === "light"
+              ? t.palette.grey[50]
+              : t.palette.grey[900],
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <Typography variant="h3">Energy Planr</Typography>
-        <br />
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={(e) => setEmail(e.target.value)}
+        <img
+          alt="Energy Planr"
+          src={logo}
+          style={{
+            margin: 32,
+            maxWidth: 256,
+          }}
+        />
+      </Grid>
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Box
+          sx={{
+            pl: 8,
+            pr: 8,
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <img
+            alt={company.name}
+            src={company.logoUrl}
+            style={{
+              maxWidth: 256,
+            }}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <LoadingButton
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            loading={loading}
+          <br />
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ mt: 1 }}
+            autoComplete="off"
           >
-            Sign In
-          </LoadingButton>
-          <Divider mt={2} mb={4} />
-          <div style={{ textAlign: "center", marginTop: 16 }}>
-            <Link href="/signup" underline="none">
-              Create an account
-            </Link>
-          </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              autoComplete="no"
+              autoFocus
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              type="password"
+              autoComplete="no"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <LoadingButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              loading={loading}
+            >
+              Sign In
+            </LoadingButton>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Grid>
+    </Grid>
   );
 };
 
