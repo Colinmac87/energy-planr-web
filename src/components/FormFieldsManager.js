@@ -28,6 +28,7 @@ import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
 import {
   canBeDefaultField,
+  canShowInRegister,
   getDefaultField,
   validateFormBuilder,
 } from "../utils/form.utils";
@@ -56,6 +57,13 @@ const FormFieldsManager = ({ asset, onSave }) => {
 
   const onChangeFieldProperty = (index, property, value) => {
     let fieldsCopy = JSON.parse(JSON.stringify(fields));
+
+    if (property == "type") {
+      fieldsCopy = fieldsCopy.map((f) => ({
+        ...f,
+        showInRegister: canShowInRegister(value),
+      }));
+    }
 
     if (property == "isDefault") {
       fieldsCopy = fieldsCopy.map((f) => ({
@@ -104,6 +112,7 @@ const FormFieldsManager = ({ asset, onSave }) => {
         span: 12,
         group: "none",
         isDefault: fields.length == 0,
+        showInRegister: true,
         meta: {},
       },
     ]);
@@ -233,10 +242,11 @@ const FormFieldsManager = ({ asset, onSave }) => {
                   }}
                 />
               </Stack>
-              {canBeDefaultField(field.type) && (
+              <Stack sx={{ flexDirection: "row", gap: 8 }}>
                 <FormControlLabel
                   control={
                     <Switch
+                      disabled={!canBeDefaultField(field.type)}
                       checked={field.isDefault}
                       onChange={(e) =>
                         onChangeFieldProperty(i, "isDefault", e.target.checked)
@@ -245,7 +255,23 @@ const FormFieldsManager = ({ asset, onSave }) => {
                   }
                   label="Default Field"
                 />
-              )}
+                <FormControlLabel
+                  control={
+                    <Switch
+                      disabled={!canShowInRegister(field.type)}
+                      checked={field.showInRegister}
+                      onChange={(e) =>
+                        onChangeFieldProperty(
+                          i,
+                          "showInRegister",
+                          e.target.checked
+                        )
+                      }
+                    />
+                  }
+                  label="Show in Register"
+                />
+              </Stack>
               <FormControl>
                 <InputLabel>Group</InputLabel>
                 <Select

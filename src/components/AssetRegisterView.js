@@ -24,11 +24,13 @@ const AssetRegisterView = ({ asset, data }) => {
             }))}
             columns={
               asset?.formFields
-                ? asset?.formFields?.map((field) => ({
-                    field: field.key,
-                    headerName: field.name,
-                    width: 200,
-                  }))
+                ? asset?.formFields
+                    ?.filter((field) => field.showInRegister)
+                    .map((field) => ({
+                      field: field.key,
+                      headerName: field.name,
+                      width: 200,
+                    }))
                 : []
             }
             pageSizeOptions={[5, 20, 50, 100]}

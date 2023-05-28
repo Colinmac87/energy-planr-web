@@ -1,6 +1,9 @@
 import {
   FIELD_CHECKBOXES,
   FIELD_DROPDOWN,
+  FIELD_FILES,
+  FIELD_IMAGE,
+  FIELD_RICHTEXT,
   FIELD_TEXT,
 } from "../constants/form.constants";
 
@@ -12,11 +15,19 @@ export const canBeDefaultField = (fieldType) => {
   return [FIELD_TEXT, FIELD_DROPDOWN].includes(fieldType);
 };
 
+export const canShowInRegister = (fieldType) => {
+  return ![FIELD_RICHTEXT, FIELD_FILES, FIELD_IMAGE].includes(fieldType);
+};
+
 export const validateFormBuilder = (formFields) => {
   const result = { isValid: false, errors: [] };
   try {
     let formHasDefaultField = false;
     formFields.forEach((field, i) => {
+      if (!field.name || field.name.trim() == "") {
+        result.errors.push("Field name is required.");
+      }
+
       if (canBeDefaultField(field.type) && field.isDefault == true)
         if (formHasDefaultField)
           result.errors.push("Form can not have more than one default field.");
