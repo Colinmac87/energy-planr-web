@@ -58,21 +58,9 @@ const WithFormField = ({ field, value, onChange }) => {
           <FormDateRangeField field={field} value={value} onChange={onChange} />
         );
       case FIELD_FILES:
-        return (
-          <FormFileUploadField
-            field={field}
-            value={value}
-            onChange={onChange}
-          />
-        );
+        return null;
       case FIELD_IMAGE:
-        return (
-          <FormImageUploadField
-            field={field}
-            value={value}
-            onChange={onChange}
-          />
-        );
+        return null;
       case FIELD_DROPDOWN:
         return (
           <FormDropdownField field={field} value={value} onChange={onChange} />
