@@ -14,6 +14,9 @@ import {
 import WithFormField from "./formUI/WithFormField";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Close } from "@mui/icons-material";
+import FormFileUploadField from "./formUI/FormFileUploadField";
+import DataFileField from "./dataUI/DataFieldField";
+import { FIELD_FILES, FIELD_IMAGE } from "../constants/form.constants";
 
 const EquipmentDataForm = ({ asset, data, onSave, onClose }) => {
   const [selectedTab, setSelectedTab] = useState("data");
@@ -85,7 +88,26 @@ const EquipmentDataForm = ({ asset, data, onSave, onClose }) => {
           </Stack>
         </Stack>
       </TabPanel>
-      <TabPanel value="files"></TabPanel>
+      <TabPanel value="files">
+        <Grid container gap={4}>
+          <Grid item xs={12}>
+            <Paper>
+              <FormFileUploadField onChange={() => {}} />
+            </Paper>
+          </Grid>
+          <Grid item xs={3}>
+            <DataFileField field={{ type: FIELD_IMAGE }} />
+          </Grid>
+
+          <Grid item xs={3}>
+            <DataFileField field={{ type: FIELD_FILES }} />
+          </Grid>
+
+          <Grid item xs={3}>
+            <DataFileField field={{ type: FIELD_IMAGE }} />
+          </Grid>
+        </Grid>
+      </TabPanel>
     </TabContext>
   );
 };
