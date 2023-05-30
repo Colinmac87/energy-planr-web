@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -28,7 +28,12 @@ export const initFirebase = () => {
   app = initializeApp(firebaseConfig);
   analytics = getAnalytics(app);
   auth = getAuth(app);
-  db = getFirestore(app);
+
+  db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+
+  // db = getFirestore(app);
   storage = getStorage(app);
 };
 
