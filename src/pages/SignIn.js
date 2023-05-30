@@ -1,13 +1,10 @@
 import {
-  Container,
   Box,
   Typography,
   TextField,
   FormControlLabel,
   Checkbox,
   CssBaseline,
-  Divider,
-  Link,
   Grid,
   Paper,
 } from "@mui/material";
@@ -20,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 import logo from "../assets/images/logo.png";
 import { getCompany } from "../services/company.service";
+import CompanyRedirect from "./CompanyRedirect";
+import CompanyNotFound from "./CompanyNotFound";
 
 const SignIn = () => {
   const { companyCode } = useParams();
@@ -28,16 +27,18 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const account = useSelector((state) => state.account);
 
+  const [companyLookupCompleted, setCompanyLookupCompleted] = useState(false);
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    getCompany(companyCode).then((_company) => {
-      console.log(_company.data());
-      setCompany(_company.data());
-    });
+    getCompany(companyCode)
+      .then((_company) => {
+        setCompany(_company.data());
+      })
+      .finally(() => setCompanyLookupCompleted(true));
   }, []);
 
   useEffect(() => {
@@ -62,23 +63,11 @@ const SignIn = () => {
     }, 1000);
   };
 
-  if (!companyCode)
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flex: 1,
-          width: "100wh",
-          height: "100vh",
-          textAlign: "center",
-          p: 16,
-        }}
-      >
-        <Typography variant="h4">Looks Like You're Lost</Typography>
-      </Box>
-    );
+  if (!companyCode) return <CompanyRedirect />;
 
-  if (!company) return null;
+  if (!companyLookupCompleted) return null;
+
+  if (!company) return <CompanyNotFound />;
 
   if (!account.loginAttempted) return null;
 
