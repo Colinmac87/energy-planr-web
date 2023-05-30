@@ -10,6 +10,7 @@ import {
   Stack,
   ToggleButtonGroup,
   ToggleButton,
+  Skeleton,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
 import { getAssets } from "../services/asset.service";
@@ -28,7 +29,7 @@ const Home = () => {
   const [assets, setAssets] = useState(null);
 
   useEffect(() => {
-    loadAssets();
+    setTimeout(() => loadAssets(), 1000);
   }, [user]);
 
   const loadAssets = () => {
@@ -155,8 +156,9 @@ const Home = () => {
           </ToggleButtonGroup>
         </Stack>
       </Grid>
-      {assets &&
-        (assets.length == 0 ? (
+
+      {assets ? (
+        assets.length == 0 ? (
           <Stack
             style={{
               flex: 1,
@@ -171,7 +173,41 @@ const Home = () => {
           assets.map((asset) =>
             viewType == "list" ? renderListItem(asset) : renderGridItem(asset)
           )
-        ))}
+        )
+      ) : (
+        <>
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper>
+              <Stack>
+                <Box sx={{ padding: 1 }}>
+                  <Skeleton variant="text" />
+                </Box>
+                <Skeleton variant="rounded" height={128} />
+              </Stack>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper>
+              <Stack>
+                <Box sx={{ padding: 1 }}>
+                  <Skeleton variant="text" />
+                </Box>
+                <Skeleton variant="rounded" height={128} />
+              </Stack>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper>
+              <Stack>
+                <Box sx={{ padding: 1 }}>
+                  <Skeleton variant="text" />
+                </Box>
+                <Skeleton variant="rounded" height={128} />
+              </Stack>
+            </Paper>
+          </Grid>
+        </>
+      )}
 
       <Drawer
         anchor={"right"}
