@@ -20,6 +20,72 @@ const DataFileField = ({ field, value }) => {
     } file type`
   );
 
+  if (field.type != FIELD_IMAGE)
+    return (
+      <Card raised={true}>
+        <CardActionArea
+          sx={{
+            "&:hover > .fileControls": {
+              display: "flex",
+            },
+          }}
+        >
+          <CardContent onClick={() => setEditingCaption(true)}>
+            {editingCaption ? (
+              <TextField
+                label={"Caption"}
+                autoFocus
+                fullWidth
+                multiline
+                rows={4}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                onBlur={() => setEditingCaption(false)}
+              />
+            ) : (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ whiteSpace: "pre-line" }}
+              >
+                {caption}
+              </Typography>
+            )}
+          </CardContent>
+          <Stack
+            className="fileControls"
+            sx={{
+              display: "none",
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "end",
+            }}
+          >
+            <Stack
+              sx={{
+                gap: 2,
+                background: "#0006",
+                p: 0.5,
+                borderRadius: 50,
+              }}
+            >
+              {field.type == FIELD_IMAGE && (
+                <IconButton size="small">
+                  <OpenInNew />
+                </IconButton>
+              )}
+              <IconButton size="small">
+                <Download />
+              </IconButton>
+            </Stack>
+          </Stack>
+        </CardActionArea>
+      </Card>
+    );
+
   return (
     <Card raised={true}>
       <CardActionArea

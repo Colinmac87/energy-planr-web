@@ -4,11 +4,11 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Container,
   Link,
   MenuItem,
   Menu,
   Button,
+  Stack,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -52,12 +52,14 @@ const DashboardLayout = ({ children }) => {
   if (!loginAttempted || !user) return null;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", flex: 1 }}>
       <AppBar position="absolute" open={true}>
         <Toolbar
-          sx={{
-            pr: "24px", // keep right padding when drawer closed
-          }}
+          sx={
+            {
+              // pr: "24px", // keep right padding when drawer closed
+            }
+          }
         >
           <Box
             sx={{
@@ -79,10 +81,17 @@ const DashboardLayout = ({ children }) => {
               </Typography>
             </Link>
             {asset && (
-              <Typography variant="subtitle1">| &nbsp;{asset.name}</Typography>
+              <Stack flexDirection={"row"} alignItems={"center"} gap={2}>
+                <Typography variant="subtitle1" ml={2} mr={2}>
+                  |
+                </Typography>
+                <Typography variant="h6" mr={4}>
+                  {asset.name}
+                </Typography>
+              </Stack>
             )}
           </Box>
-          <div>
+          <Box>
             <Button
               size="large"
               endIcon={<AccountCircle />}
@@ -115,29 +124,36 @@ const DashboardLayout = ({ children }) => {
               <MenuItem onClick={onClickSettings}>Settings</MenuItem>
               <MenuItem onClick={onClickSignout}>Logout</MenuItem>
             </Menu>
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          width: "100wh",
           height: "100vh",
-          overflow: "auto",
+          overflow: "hidden",
         }}
       >
         <Toolbar />
-        <Container
-          maxWidth="xl"
+        <Box
+          component="main"
           sx={{
-            mt: 4,
-            mb: 4,
-            minWidth: "100%",
-            height: "100vh",
+            display: "flex",
+            flex: 1,
+            flexGrow: 1,
+            position: "relative",
+            m: 0,
+            p: 0,
+            overflow: "auto",
+            // alignItems: "flex-start",
           }}
         >
           {children}
-        </Container>
+        </Box>
       </Box>
     </Box>
   );

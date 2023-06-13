@@ -78,7 +78,7 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     if (!editor) return null;
 
     return (
-      <Stack sx={{ margin: 1 }} flexDirection={"row"} gap={1}>
+      <Stack sx={{ margin: 1, pt: 1 }} flexDirection={"row"} gap={1}>
         <ToggleButtonGroup
           value={formats}
           aria-label="text formatting"
@@ -376,8 +376,21 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
   };
 
   return (
-    <Stack>
-      {!readOnly && <Typography variant="caption">{field.name}</Typography>}
+    <Stack style={{ position: "relative" }}>
+      {!readOnly && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: -12,
+            left: 8,
+            pl: 0.4,
+            pr: 0.4,
+            backgroundColor: "#1e1e1e",
+          }}
+        >
+          <Typography variant="caption">{field.name}</Typography>
+        </Box>
+      )}
       <div
         style={{
           border: "1px solid #fff4",

@@ -75,109 +75,122 @@ const AssetForm = ({ onSaving, onSave, onDelete }) => {
   };
 
   return (
-    <Box component={"form"} onSubmit={handleSubmit} noValidate>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            id={"asset-name"}
-            label={"Asset Name"}
-            variant="outlined"
-            fullWidth
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoFocus
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FileUpload
-            getBase64={false}
-            multiFile={false}
-            disabled={loading}
-            title="Thumbnail"
-            header={asset ? "Drag a new file here" : "Drop file here"}
-            leftLabel="or"
-            rightLabel="to select file"
-            buttonLabel="click here"
-            buttonRemoveLabel="Remove all"
-            maxFileSize={20}
-            maxUploadFiles={1}
-            maxFilesContainerHeight={357}
-            acceptedType={"image/*"}
-            onFilesChange={onFileUploadChanges}
-            onError={onFileUploadError}
-            BannerProps={{
-              elevation: 0,
-              variant: "outlined",
-              sx: { background: "black" },
-            }}
-            imageSrc={asset?.thumbnailUrl}
-            showPlaceholderImage={true}
-            onContextReady={(context) => {}}
-            PlaceholderGridProps={{ md: 6 }}
-            LabelsGridProps={{ md: 6 }}
-            ContainerProps={{
-              elevation: 0,
-              variant: "outlined",
-              sx: { p: 1 },
-            }}
-            placeholderImageDimension={{
-              xs: { width: 128, height: 128 },
-              sm: { width: 128, height: 128 },
-              md: { width: 164, height: 164 },
-              lg: { width: 256, height: 256 },
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Stack flexDirection={"row"} justifyContent={"space-between"}>
-            <LoadingButton type="submit" variant="contained" loading={loading}>
-              Save
-            </LoadingButton>
-            {asset?.id && (
-              <Button
-                color="error"
+    <Grid container rowGap={4}>
+      <Grid item xs={12}>
+        <Box component={"form"} onSubmit={handleSubmit} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                id={"asset-name"}
+                label={"Asset Name"}
                 variant="outlined"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FileUpload
+                getBase64={false}
+                multiFile={false}
                 disabled={loading}
-                onClick={() => setIsDeleteDialogOpen(true)}
-              >
-                Delete
-              </Button>
-            )}
-
-            <Dialog
-              open={isDeleteDialogOpen}
-              onClose={() => setIsDeleteDialogOpen(false)}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">Please Confirm</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  All associated data will also be deleted
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  variant="contained"
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                  disabled={loading}
-                >
-                  Cancel
-                </Button>
+                title="Thumbnail"
+                header={asset ? "Drag a new file here" : "Drop file here"}
+                leftLabel="or"
+                rightLabel="to select file"
+                buttonLabel="click here"
+                buttonRemoveLabel="Remove all"
+                maxFileSize={20}
+                maxUploadFiles={1}
+                maxFilesContainerHeight={357}
+                acceptedType={"image/*"}
+                onFilesChange={onFileUploadChanges}
+                onError={onFileUploadError}
+                BannerProps={{
+                  elevation: 0,
+                  variant: "outlined",
+                  sx: { background: "black" },
+                }}
+                imageSrc={
+                  asset?.thumbnailUrl ||
+                  "https://www.pngplay.com/wp-content/uploads/8/Upload-Icon-Logo-Transparent-File.png"
+                }
+                showPlaceholderImage={true}
+                onContextReady={(context) => {}}
+                PlaceholderGridProps={{ md: 6 }}
+                LabelsGridProps={{ md: 6 }}
+                ContainerProps={{
+                  elevation: 0,
+                  variant: "outlined",
+                  sx: { p: 1 },
+                }}
+                placeholderImageDimension={{
+                  xs: { width: 128, height: 128 },
+                  sm: { width: 128, height: 128 },
+                  md: { width: 164, height: 164 },
+                  lg: { width: 256, height: 256 },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Stack flexDirection={"row"} justifyContent={"space-between"}>
                 <LoadingButton
-                  variant="outlined"
-                  color="error"
-                  onClick={handleDelete}
+                  type="submit"
+                  variant="contained"
                   loading={loading}
                 >
-                  Delete
+                  Save
                 </LoadingButton>
-              </DialogActions>
-            </Dialog>
-          </Stack>
-        </Grid>
+                {asset?.id && (
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    disabled={loading}
+                    onClick={() => setIsDeleteDialogOpen(true)}
+                  >
+                    Delete
+                  </Button>
+                )}
+
+                <Dialog
+                  open={isDeleteDialogOpen}
+                  onClose={() => setIsDeleteDialogOpen(false)}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    Please Confirm
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      All associated data will also be deleted
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      variant="contained"
+                      onClick={() => setIsDeleteDialogOpen(false)}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </Button>
+                    <LoadingButton
+                      variant="outlined"
+                      color="error"
+                      onClick={handleDelete}
+                      loading={loading}
+                    >
+                      Delete
+                    </LoadingButton>
+                  </DialogActions>
+                </Dialog>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Box>
       </Grid>
-    </Box>
+    </Grid>
   );
 };
 

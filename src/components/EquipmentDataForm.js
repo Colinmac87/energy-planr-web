@@ -47,6 +47,7 @@ const EquipmentDataForm = ({ asset, data, onSave, onClose }) => {
           <TabList onChange={onTabChange} aria-label="Asset Tabs">
             <Tab label="Data" value="data" />
             <Tab label="Files" value="files" />
+            <Tab label="Images" value="images" />
           </TabList>
           <IconButton onClick={onClose}>
             <Close />
@@ -89,7 +90,27 @@ const EquipmentDataForm = ({ asset, data, onSave, onClose }) => {
         </Stack>
       </TabPanel>
       <TabPanel value="files">
-        <Grid container gap={4}>
+        <Grid container gap={2}>
+          <Grid item xs={12}>
+            <Paper>
+              <FormFileUploadField onChange={() => {}} />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12}>
+            <DataFileField field={{ type: FIELD_FILES }} />
+          </Grid>
+          <Grid item xs={12}>
+            <DataFileField field={{ type: FIELD_FILES }} />
+          </Grid>
+          <Grid item xs={12}>
+            <DataFileField field={{ type: FIELD_FILES }} />
+          </Grid>
+        </Grid>
+      </TabPanel>
+
+      <TabPanel value="images">
+        <Grid container gap={2}>
           <Grid item xs={12}>
             <Paper>
               <FormFileUploadField onChange={() => {}} />
@@ -98,11 +119,9 @@ const EquipmentDataForm = ({ asset, data, onSave, onClose }) => {
           <Grid item xs={3}>
             <DataFileField field={{ type: FIELD_IMAGE }} />
           </Grid>
-
           <Grid item xs={3}>
-            <DataFileField field={{ type: FIELD_FILES }} />
+            <DataFileField field={{ type: FIELD_IMAGE }} />
           </Grid>
-
           <Grid item xs={3}>
             <DataFileField field={{ type: FIELD_IMAGE }} />
           </Grid>

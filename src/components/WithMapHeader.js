@@ -1,4 +1,4 @@
-import { AppBar, Button, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
 import { dummyBackground } from "../constants";
 import {
   Download,
@@ -17,10 +17,26 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
   };
 
   return (
-    <Stack>
+    <Box
+      sx={{
+        display: "flex",
+        flex: 1,
+        position: "relative",
+        flexDirection: "column",
+        backgroundColor: "#eee2",
+        minHeight: "100%",
+        minWidth: "100%",
+        borderRadius: 2,
+        overflow: "hidden",
+      }}
+    >
       <AppBar
-        position="static"
-        sx={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
+        sx={{
+          position: "absolute",
+          borderRadius: 2,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -59,7 +75,7 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
         data={data}
         arePinsVisible={arePinsVisible}
       />
-    </Stack>
+    </Box>
   );
 };
 

@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Box, Tab, Grid, Button, Stack, Drawer } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Drawer,
+  Paper,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import {
   UploadFile,
   Map,
@@ -7,17 +15,14 @@ import {
   Settings,
   Add,
 } from "@mui/icons-material";
-import { TabPanel, TabContext, TabList } from "@mui/lab";
 import { v4 } from "uuid";
 import Papa from "papaparse";
 import { useDispatch, useSelector } from "react-redux";
 
 import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
-import EquipmentFileUpload from "../components/EquipmentFileUpload";
 import { camelize } from "../utils/string.utils";
 import { useNavigate, useParams } from "react-router-dom";
-import FullScreenViewer from "../components/FullScreenViewer";
 import { getAsset } from "../services/asset.service";
 import { setAsset } from "../features/asset.slice";
 import EquipmentDataForm from "../components/EquipmentDataForm";
@@ -65,10 +70,6 @@ const Asset = () => {
     navigate("/");
   };
 
-  const onTabChange = (e, v) => {
-    setSelectedTab(v);
-  };
-
   const onCloseDataForm = () => {
     setIsDataFormOpen(false);
   };
@@ -95,35 +96,11 @@ const Asset = () => {
     });
   };
 
-  if (!asset) return null;
-
-  return (
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
-        <TabContext value={selectedTab}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={onTabChange} aria-label="Asset Tabs">
-              <Tab
-                icon={<TableChart />}
-                iconPosition="start"
-                label="Register"
-                value="register-view"
-              />
-              <Tab
-                icon={<Map />}
-                iconPosition="start"
-                label="Map Viewer"
-                value="map-view"
-              />
-              <Tab
-                icon={<Settings />}
-                iconPosition="start"
-                label="Settings"
-                value="asset-settings"
-              />
-            </TabList>
-          </Box>
-          <TabPanel value="register-view">
+  const renderPage = () => {
+    switch (selectedTab) {
+      case "register-view":
+        return (
+          <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 4 }}>
             <Stack
               spacing={2}
               direction={"row"}
@@ -153,50 +130,141 @@ const Asset = () => {
               </Button>
             </Stack>
             <AssetRegisterView asset={asset} data={data} />
-          </TabPanel>
-          <TabPanel value="map-view">
-            <AssetMapView data={data} />
-          </TabPanel>
-          <TabPanel value="asset-settings">
-            <AssetSettings
-              asset={asset}
-              onSave={onSaveAsset}
-              onDelete={onDeleteAsset}
-            />
-          </TabPanel>
-        </TabContext>
-      </Grid>
-
-      <EquipmentFileUpload
-        isOpen={isFileUploadDialogOpen}
-        onClose={() => setIsFileUploadDialogOpen(false)}
-      />
-
-      <FullScreenViewer
-        isOpen={isFullScreenViewerOpen}
-        onClose={() => setIsFullScreenViewerOpen(false)}
-        data={data}
-      />
-
-      <Drawer
-        anchor={"bottom"}
-        open={isDataFormOpen}
-        onClose={onCloseDataForm}
-        sx={{ maxHeight: window.outerHeight - 100, height: "100vh" }}
-      >
-        <Box sx={{ p: 4, height: "100vh" }}>
-          <EquipmentDataForm
+          </Box>
+        );
+      case "map-view":
+        return <AssetMapView data={data} />;
+      case "settings-view":
+        return (
+          <AssetSettings
             asset={asset}
-            onClose={onCloseDataForm}
-            onSaving={() => {}}
-            onSave={() => {
-              onCloseDataForm();
-              // load data
-            }}
+            onSave={onSaveAsset}
+            onDelete={onDeleteAsset}
           />
-        </Box>
-      </Drawer>
-    </Grid>
+        );
+      default:
+        return null;
+    }
+  };
+
+  if (!asset) return null;
+
+  return (
+    <Box
+      component="main"
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        flex: 1,
+        flexGrow: 1,
+        m: 0,
+        p: 0,
+        position: "relative",
+      }}
+    >
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          width: 70,
+          borderRadius: 0,
+          justifyContent: "space-between",
+          pt: 3,
+          pb: 3,
+        }}
+      >
+        <Stack
+          sx={{
+            flex: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <Tooltip title="Register" placement="right">
+            <IconButton
+              aria-label="register"
+              onClick={() =>
+                selectedTab != "register-view" &&
+                setSelectedTab("register-view")
+              }
+              color={selectedTab == "register-view" ? "primary" : "default"}
+            >
+              <TableChart fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Map" placement="right">
+            <IconButton
+              aria-label="map"
+              onClick={() =>
+                selectedTab != "map-view" && setSelectedTab("map-view")
+              }
+              color={selectedTab == "map-view" ? "primary" : "default"}
+            >
+              <Map fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Settings" placement="right">
+            <IconButton
+              aria-label="form"
+              onClick={() =>
+                selectedTab != "settings-view" &&
+                setSelectedTab("settings-view")
+              }
+              color={selectedTab == "settings-view" ? "primary" : "default"}
+            >
+              <Settings fontSize="large" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+        {/* <Stack
+          sx={{
+            flex: 1,
+            flexDirection: "column-reverse",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <IconButton aria-label="settings">
+            <Settings fontSize="large" />
+          </IconButton>
+        </Stack> */}
+      </Paper>
+
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          flexGrow: 1,
+          position: "relative",
+          m: 0,
+          p: 0,
+          overflow: "auto",
+        }}
+      >
+        {renderPage()}
+
+        <Drawer
+          anchor={"bottom"}
+          open={isDataFormOpen}
+          onClose={onCloseDataForm}
+          sx={{ maxHeight: window.outerHeight - 100, height: "100vh" }}
+        >
+          <Box sx={{ p: 4, height: "100vh" }}>
+            <EquipmentDataForm
+              asset={asset}
+              onClose={onCloseDataForm}
+              onSaving={() => {}}
+              onSave={() => {
+                onCloseDataForm();
+                // load data
+              }}
+            />
+          </Box>
+        </Drawer>
+      </Box>
+    </Box>
   );
 };
 

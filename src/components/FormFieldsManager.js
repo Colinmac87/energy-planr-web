@@ -141,7 +141,13 @@ const FormFieldsManager = ({ asset, onSave }) => {
   };
 
   return (
-    <Grid container rowGap={4}>
+    <Grid
+      container
+      rowGap={4}
+      sx={{
+        alignContent: "flex-start",
+      }}
+    >
       <Grid item md={12}>
         <Stack flexDirection={"row"} gap={2} justifyContent={"space-between"}>
           <Typography variant="h4">Data Fields</Typography>
@@ -215,32 +221,29 @@ const FormFieldsManager = ({ asset, onSave }) => {
               </Stack>
               <Stack flexDirection={"row"} gap={2}>
                 <FormControl fullWidth>
-                  <InputLabel>Required</InputLabel>
+                  <InputLabel>Display Span</InputLabel>
                   <Select
                     fullWidth
-                    label="Required"
-                    value={field.required ? "yes" : "no"}
+                    label="Display Span"
+                    value={field.span}
                     onChange={(e) => {
-                      onChangeFieldProperty(
-                        i,
-                        "required",
-                        e.target.value == "yes" ? true : false
-                      );
+                      onChangeFieldProperty(i, "span", e.target.value);
                     }}
                   >
-                    <MenuItem value={"yes"}>Yes</MenuItem>
-                    <MenuItem value={"no"}>No</MenuItem>
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={6}>6</MenuItem>
+                    <MenuItem value={7}>7</MenuItem>
+                    <MenuItem value={8}>8</MenuItem>
+                    <MenuItem value={9}>9</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={11}>11</MenuItem>
+                    <MenuItem value={12}>12</MenuItem>
                   </Select>
                 </FormControl>
-                <TextField
-                  label={"Display Span (1-12)"}
-                  type="number"
-                  fullWidth
-                  value={fields[i].span}
-                  onChange={(e) => {
-                    onChangeFieldProperty(i, "span", e.target.value);
-                  }}
-                />
               </Stack>
               <Stack sx={{ flexDirection: "row", gap: 8 }}>
                 <FormControlLabel
@@ -250,6 +253,17 @@ const FormFieldsManager = ({ asset, onSave }) => {
                       checked={field.isDefault}
                       onChange={(e) =>
                         onChangeFieldProperty(i, "isDefault", e.target.checked)
+                      }
+                    />
+                  }
+                  label="Required"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={field.required}
+                      onChange={(e) =>
+                        onChangeFieldProperty(i, "required", e.target.checked)
                       }
                     />
                   }

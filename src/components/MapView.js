@@ -1,6 +1,7 @@
 import { Add, Remove } from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/material";
 import React, { useRef, useMemo, useEffect, useState } from "react";
+import deck from "../assets/Lower-Deck.png";
 
 const SCROLL_SENSITIVITY = 0.0005;
 const MAX_ZOOM = 5;
@@ -30,7 +31,6 @@ const MapView = ({ image, data, arePinsVisible }) => {
             if (target.clientWidth < width) {
               // Calculate scale
               const scale = target.clientWidth / width;
-
               // Redraw image
               canvasRef.current.width = width * scale;
               canvasRef.current.height = height * scale;
@@ -44,7 +44,6 @@ const MapView = ({ image, data, arePinsVisible }) => {
       });
     });
     observer.current.observe(containerRef.current);
-
     canvasRef.current.addEventListener(
       "click",
       function () {
@@ -52,7 +51,6 @@ const MapView = ({ image, data, arePinsVisible }) => {
       },
       false
     );
-
     return () => {
       if (containerRef.current)
         observer.current.unobserve(containerRef.current);
@@ -184,24 +182,30 @@ const MapView = ({ image, data, arePinsVisible }) => {
   };
 
   return (
-    <div
+    <Box
       ref={containerRef}
-      style={{
+      sx={{
         position: "relative",
-        width: "100%",
+        maxWidth: "100%",
         height: "100%",
-        backgroundColor: "#fff2",
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
+        backgroundColor: "#eee2",
+        overflow: "hidden",
       }}
     >
       <canvas
+        style={{
+          width: "100%",
+          height: "100%",
+          maxWidth: "100%",
+          maxHeight: "100%",
+        }}
         ref={canvasRef}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onMouseMove={onMouseMove}
         onWheel={onMouseWheel}
       />
+
       {/* <Box sx={{ position: "absolute", top: 12, right: 12 }}>
         <Button
           key="btnMapDownload"
@@ -245,7 +249,7 @@ const MapView = ({ image, data, arePinsVisible }) => {
           </Button>
         </Stack>
       </Box>
-    </div>
+    </Box>
   );
 };
 

@@ -79,7 +79,13 @@ const FormGroupsManager = ({ asset, onSave }) => {
   };
 
   return (
-    <Grid container rowGap={4}>
+    <Grid
+      container
+      rowGap={4}
+      sx={{
+        alignContent: "flex-start",
+      }}
+    >
       <Grid item xs={12}>
         <Stack flexDirection={"row"} gap={2} justifyContent={"space-between"}>
           <Typography variant="h4">Data Groups</Typography>

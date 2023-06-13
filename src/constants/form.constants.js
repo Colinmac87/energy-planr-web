@@ -36,11 +36,11 @@ export const FIELD_DICT = {
     name: "Yes / No",
     value: FIELD_YESNO,
   },
-  FIELD_DROPDOWN:{
+  FIELD_DROPDOWN: {
     name: "Dropdown",
     value: FIELD_DROPDOWN,
   },
-  FIELD_CHECKBOXES:{
+  FIELD_CHECKBOXES: {
     name: "Checkbox List",
     value: FIELD_CHECKBOXES,
   },
@@ -51,13 +51,5 @@ export const FIELD_DICT = {
   FIELD_DATERANGE: {
     name: "Date Range",
     value: FIELD_DATERANGE,
-  },
-  FIELD_FILES: {
-    name: "File Uploads",
-    value: FIELD_FILES,
-  },
-  FIELD_IMAGE: {
-    name: "Image Upload",
-    value: FIELD_IMAGE,
   },
 };

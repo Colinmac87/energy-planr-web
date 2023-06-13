@@ -63,13 +63,13 @@ const SignIn = () => {
     }, 1000);
   };
 
+  if (!account.loginAttempted) return null;
+
   if (!companyCode) return <CompanyRedirect />;
 
   if (!companyLookupCompleted) return null;
 
   if (!company) return <CompanyNotFound />;
-
-  if (!account.loginAttempted) return null;
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>

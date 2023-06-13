@@ -1,6 +1,14 @@
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { GroupWork, Layers, Settings, TextFields } from "@mui/icons-material";
-import { Box, Grid, Tab } from "@mui/material";
+import { GroupWork, Info, Layers, TextFields } from "@mui/icons-material";
+import {
+  Box,
+  MenuList,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Divider,
+  Paper,
+} from "@mui/material";
 import { useState } from "react";
 import FormFieldsManager from "../components/FormFieldsManager";
 import FormGroupsManager from "../components/FormGroupsManager";
@@ -10,72 +18,116 @@ import AssetForm from "../components/AssetForm";
 const AssetSettings = ({ asset, onSave, onDelete }) => {
   const [selectedTab, setSelectedTab] = useState("fields-manager");
 
-  const onTabChange = (e, v) => {
+  const onTabChange = (v) => {
     setSelectedTab(v);
   };
 
-  return (
-    <Grid container spacing={1}>
-      <TabContext value={selectedTab}>
-        <Grid item sm={2}>
-          <Box>
-            <TabList
-              onChange={onTabChange}
-              aria-label="Asset Tabs"
-              orientation="vertical"
-            >
-              <Tab
-                icon={<TextFields />}
-                iconPosition="start"
-                label="Fields"
-                value="fields-manager"
-              />
-              <Tab
-                icon={<GroupWork />}
-                iconPosition="start"
-                label="Groups"
-                value="groups-manager"
-              />
-              <br />
-              <Tab
-                icon={<Layers />}
-                iconPosition="start"
-                label="Locations"
-                value="locations-manager"
-              />
-              <br />
+  const renderTab = () => {
+    switch (selectedTab) {
+      case "fields-manager":
+        return <FormFieldsManager asset={asset} onSave={onSave} />;
+      case "groups-manager":
+        return <FormGroupsManager asset={asset} onSave={onSave} />;
+      case "locations-manager":
+        return <LevelsManager />;
+      case "settings":
+        return (
+          <AssetForm
+            asset={asset}
+            onSaving={() => {}}
+            onSave={onSave}
+            onDelete={onDelete}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
-              <Tab
-                icon={<Settings />}
-                iconPosition="start"
-                label="Asset Settings"
-                value="settings"
-              />
-            </TabList>
-          </Box>
-        </Grid>
-        <Grid item sm={1}></Grid>
-        <Grid item sm={8}>
-          <TabPanel value="fields-manager">
-            <FormFieldsManager asset={asset} onSave={onSave} />
-          </TabPanel>
-          <TabPanel value="groups-manager">
-            <FormGroupsManager asset={asset} onSave={onSave} />
-          </TabPanel>
-          <TabPanel value="locations-manager">
-            <LevelsManager />
-          </TabPanel>
-          <TabPanel value="settings">
-            <AssetForm
-              asset={asset}
-              onSaving={() => {}}
-              onSave={onSave}
-              onDelete={onDelete}
-            />
-          </TabPanel>
-        </Grid>
-      </TabContext>
-    </Grid>
+  return (
+    <Box
+      component="main"
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        flex: 1,
+        flexGrow: 1,
+        m: 0,
+        p: 0,
+        position: "relative",
+      }}
+    >
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          minWidth: 256,
+          borderRadius: 0,
+          justifyContent: "space-between",
+          pt: 3,
+          pb: 3,
+          backgroundColor: "#eee1",
+        }}
+      >
+        <Typography variant="h6" sx={{ p: 1.8 }}>
+          Settings
+        </Typography>
+        <MenuList sx={{ flexGrow: 1 }}>
+          <MenuItem
+            selected={selectedTab == "fields-manager"}
+            onClick={() => onTabChange("fields-manager")}
+          >
+            <ListItemIcon>
+              <TextFields fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Fields</ListItemText>
+          </MenuItem>
+          <MenuItem
+            selected={selectedTab == "groups-manager"}
+            onClick={() => onTabChange("groups-manager")}
+          >
+            <ListItemIcon>
+              <GroupWork fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Groups</ListItemText>
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            selected={selectedTab == "locations-manager"}
+            onClick={() => onTabChange("locations-manager")}
+          >
+            <ListItemIcon>
+              <Layers fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Locations</ListItemText>
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            selected={selectedTab == "settings"}
+            onClick={() => onTabChange("settings")}
+          >
+            <ListItemIcon>
+              <Info fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Asset Details</ListItemText>
+          </MenuItem>
+        </MenuList>
+      </Paper>
+
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          m: 0,
+          p: 4,
+          overflow: "auto",
+          position: "relative",
+        }}
+      >
+        {renderTab()}
+      </Box>
+    </Box>
   );
 };
 

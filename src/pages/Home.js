@@ -45,7 +45,7 @@ const Home = () => {
   };
 
   const renderGridItem = (asset) => (
-    <Grid item xs={12} md={4} lg={3}>
+    <Grid item xs={12} md={4} lg={3} gap={2} spacing={2}>
       <Link href={`/asset/${asset.id}`} underline="none">
         <Paper
           elevation={2}
@@ -123,7 +123,14 @@ const Home = () => {
   );
 
   return (
-    <Grid container spacing={3}>
+    <Grid
+      container
+      p={4}
+      spacing={2}
+      sx={{
+        alignContent: "flex-start",
+      }}
+    >
       <Grid item xs={12}>
         <Typography gutterBottom variant="h3" component="div">
           Assets
@@ -159,16 +166,18 @@ const Home = () => {
 
       {assets ? (
         assets.length == 0 ? (
-          <Stack
-            style={{
-              flex: 1,
-              alignItems: "center",
-              padding: 64,
-            }}
-          >
-            <FolderOpenOutlined sx={{ fontSize: 64, color: "#888" }} />
-            <Typography sx={{ color: "#888" }}>No assets yet</Typography>
-          </Stack>
+          <Grid item xs={12}>
+            <Stack
+              style={{
+                flex: 1,
+                alignItems: "center",
+                padding: 64,
+              }}
+            >
+              <FolderOpenOutlined sx={{ fontSize: 64, color: "#888" }} />
+              <Typography sx={{ color: "#888" }}>No assets yet</Typography>
+            </Stack>
+          </Grid>
         ) : (
           assets.map((asset) =>
             viewType == "list" ? renderListItem(asset) : renderGridItem(asset)

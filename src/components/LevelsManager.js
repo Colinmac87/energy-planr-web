@@ -23,7 +23,13 @@ const LevelsManager = () => {
   };
 
   return (
-    <Grid container>
+    <Grid
+      container
+      rowGap={4}
+      sx={{
+        alignContent: "flex-start",
+      }}
+    >
       <Grid item md={8}>
         <Typography variant="h4">Site Levels</Typography>
       </Grid>
@@ -70,7 +76,10 @@ const LevelsManager = () => {
                 </Stack>
               }
             >
-              <ListItemText primary="Ground Floor" secondary="contains 3 assets" />
+              <ListItemText
+                primary="Ground Floor"
+                secondary="contains 3 assets"
+              />
             </ListItem>
             <Divider />
             <ListItem
