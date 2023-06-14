@@ -224,9 +224,28 @@ const FormFieldsManager = ({ onSave }) => {
                   mb={4}
                   justifyContent={"space-between"}
                 >
-                  <Stack flexDirection={"row"} alignItems={"center"} gap={1}>
-                    {field.key ? <CloudDone /> : <CloudOff />}
-                    <Typography variant="caption">{field.key}</Typography>
+                  <Stack
+                    sx={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                      p: 0,
+                      pl: 2,
+                      pr: 2,
+                      border: "1px solid",
+                      borderRadius: 100,
+                    }}
+                  >
+                    {field.key ? (
+                      <CloudDone fontSize="small" sx={{ color: "green" }} />
+                    ) : (
+                      <CloudOff fontSize="small" />
+                    )}
+                    {field.key && (
+                      <Typography variant="caption" sx={{ color: "green" }}>
+                        saved
+                      </Typography>
+                    )}
                   </Stack>
                   <Stack
                     flexDirection={"row"}
