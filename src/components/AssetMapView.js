@@ -98,7 +98,7 @@ const AssetMapView = ({ preSelected, data }) => {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          width: '16%',
+          width: "16%",
           minWidth: 224,
           maxWidth: 296,
           borderRadius: 0,
@@ -120,34 +120,36 @@ const AssetMapView = ({ preSelected, data }) => {
           </MenuItem>
         </MenuList>
 
-        {treeViewData.map((treeViewObject) => (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMore />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>{treeViewObject.group}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <List dense={true}>
-                {treeViewObject.entries.map((propertyValue, i) => (
-                  <ListItemButton
-                    key={`${treeViewObject.group}-${propertyValue}`}
-                    selected={
-                      selected == `${treeViewObject.group}-${propertyValue}`
-                    }
-                    onClick={() =>
-                      setSelected(`${treeViewObject.group}-${propertyValue}`)
-                    }
-                  >
-                    <ListItemText primary={propertyValue} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+        <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>
+          {treeViewData.map((treeViewObject) => (
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>{treeViewObject.group}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List dense={true}>
+                  {treeViewObject.entries.map((propertyValue, i) => (
+                    <ListItemButton
+                      key={`${treeViewObject.group}-${propertyValue}`}
+                      selected={
+                        selected == `${treeViewObject.group}-${propertyValue}`
+                      }
+                      onClick={() =>
+                        setSelected(`${treeViewObject.group}-${propertyValue}`)
+                      }
+                    >
+                      <ListItemText primary={propertyValue} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
       </Paper>
 
       <Box
