@@ -35,7 +35,7 @@ const FormCheckboxField = ({ field, value, onChange }) => {
         borderRadius: 1,
         p: 1.4,
         pt: 0.6,
-        pb: 0,
+        pb: 0.6,
       }}
     >
       <Box
@@ -51,7 +51,13 @@ const FormCheckboxField = ({ field, value, onChange }) => {
         <Typography variant="caption">{field.name}</Typography>
       </Box>
       <FormControl fullWidth>
-        <FormGroup>
+        <FormGroup
+          sx={{
+            gap: 0,
+            flexDirection:
+              field.meta.orientation == "horizontal" ? "row" : "column",
+          }}
+        >
           {field.meta?.options
             ?.filter((option) => !option.isDeleted)
             .map((option) => (

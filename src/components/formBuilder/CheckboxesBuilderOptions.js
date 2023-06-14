@@ -1,15 +1,28 @@
 import { Clear, PlaylistAdd } from "@mui/icons-material";
-import { Button, IconButton, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { generateId } from "../../utils/string.utils";
 
 const CheckboxesBuilderOptions = ({ meta, onChangeMeta }) => {
+  const [orientation, setOrientation] = useState(
+    meta?.orientation || "vertical"
+  );
   const [options, setOptions] = useState(meta?.options || []);
   const [newOption, setNewOption] = useState("");
 
   useEffect(() => {
-    onChangeMeta({ options: options });
-  }, [options]);
+    onChangeMeta({ orientation: orientation, options: options });
+  }, [orientation, options]);
 
   const edit = (key, value) => {
     const optionsCopy = JSON.parse(JSON.stringify(options));
@@ -17,6 +30,7 @@ const CheckboxesBuilderOptions = ({ meta, onChangeMeta }) => {
     optionsCopy[index]["text"] = value;
     setOptions(optionsCopy);
   };
+
   const add = () => {
     setOptions([
       ...options,
@@ -28,6 +42,7 @@ const CheckboxesBuilderOptions = ({ meta, onChangeMeta }) => {
     ]);
     setNewOption("");
   };
+
   const remove = (key) => {
     const optionsCopy = JSON.parse(JSON.stringify(options));
     const index = optionsCopy.findIndex((o) => o.key == key);
@@ -37,6 +52,19 @@ const CheckboxesBuilderOptions = ({ meta, onChangeMeta }) => {
 
   return (
     <Stack gap={2}>
+      <FormControl fullWidth>
+        <InputLabel>Orientation</InputLabel>
+        <Select
+          value={orientation}
+          label="Orientation"
+          onChange={(e) => setOrientation(e.target.value)}
+        >
+          <MenuItem value={"vertical"}>Vertical</MenuItem>
+          <MenuItem value={"horizontal"}>Horizontal</MenuItem>
+        </Select>
+      </FormControl>
+
+      <Typography variant="subtitle2">Checkbox Options</Typography>
       {options
         .filter((option) => !option.isDeleted)
         .map((option) => (
