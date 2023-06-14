@@ -12,10 +12,13 @@ import {
 import { useState } from "react";
 import FormFieldsManager from "../components/FormFieldsManager";
 import FormGroupsManager from "../components/FormGroupsManager";
-import LevelsManager from "../components/LevelsManager";
+import LocationsManager from "../components/LocationsManager";
 import AssetForm from "../components/AssetForm";
+import { useSelector } from "react-redux";
 
-const AssetSettings = ({ asset, onSave, onDelete }) => {
+const AssetSettings = ({ onSave, onDelete }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [selectedTab, setSelectedTab] = useState("fields-manager");
 
   const onTabChange = (v) => {
@@ -29,7 +32,7 @@ const AssetSettings = ({ asset, onSave, onDelete }) => {
       case "groups-manager":
         return <FormGroupsManager asset={asset} onSave={onSave} />;
       case "locations-manager":
-        return <LevelsManager />;
+        return <LocationsManager />;
       case "settings":
         return (
           <AssetForm

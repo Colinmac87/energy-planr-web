@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { saveFormGroups } from "../services/asset.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
+import { LoadingButton } from "@mui/lab";
 
 const FormGroupsManager = ({ asset, onSave }) => {
   const [loading, setLoading] = useState(false);
@@ -89,9 +90,13 @@ const FormGroupsManager = ({ asset, onSave }) => {
       <Grid item xs={12}>
         <Stack flexDirection={"row"} gap={2} justifyContent={"space-between"}>
           <Typography variant="h4">Data Groups</Typography>
-          <Button variant="contained" disabled={loading} onClick={handleSave}>
+          <LoadingButton
+            variant="contained"
+            loading={loading}
+            onClick={handleSave}
+          >
             Save
-          </Button>
+          </LoadingButton>
         </Stack>
       </Grid>
       {groups.map((group, i) => (

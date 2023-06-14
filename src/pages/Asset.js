@@ -15,17 +15,18 @@ import {
   Settings,
   Add,
 } from "@mui/icons-material";
-import { v4 } from "uuid";
-import Papa from "papaparse";
 import { useDispatch, useSelector } from "react-redux";
 
 import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
-import { camelize } from "../utils/string.utils";
 import { useNavigate, useParams } from "react-router-dom";
+import EquipmentFileUpload from "../components/EquipmentFileUpload";
+
 import { getAsset } from "../services/asset.service";
-import { setAsset } from "../features/asset.slice";
 import EquipmentDataForm from "../components/EquipmentDataForm";
+import { getData } from "../services/data.service";
+import { setAsset } from "../features/asset.slice";
+
 import AssetSettings from "./AssetSettings";
 
 const Asset = () => {
@@ -40,7 +41,6 @@ const Asset = () => {
   const { asset } = useSelector((state) => state.asset);
 
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
-  const [isFullScreenViewerOpen, setIsFullScreenViewerOpen] = useState(false);
   const [isDataFormOpen, setIsDataFormOpen] = useState(false);
 
   const [data, setData] = useState([]);
@@ -54,6 +54,7 @@ const Asset = () => {
         if (!_asset) navigate("/");
 
         dispatch(setAsset(_asset));
+        loadData(_asset.id);
       })
       .catch(() => navigate("/"));
 
@@ -70,30 +71,14 @@ const Asset = () => {
     navigate("/");
   };
 
-  const onCloseDataForm = () => {
-    setIsDataFormOpen(false);
+  const loadData = (assetId) => {
+    getData(assetId).then((_data) => {
+      setData(_data);
+    });
   };
 
-  const onCSVUploaded = (e) => {
-    Papa.parse(e.target.files[0], {
-      header: true,
-      skipEmptyLines: true,
-      complete: function (results) {
-        let tempDataArr = [];
-        results.data.map((row) => {
-          const o = {};
-          for (const prop in row) {
-            o.id = v4();
-            o.x = Math.floor(Math.random() * 100);
-            o.y = Math.floor(Math.random() * 100);
-            o[camelize(prop)] = row[prop];
-          }
-
-          tempDataArr.push(o);
-        });
-        setData(tempDataArr);
-      },
-    });
+  const onCloseDataForm = () => {
+    setIsDataFormOpen(false);
   };
 
   const renderPage = () => {
@@ -111,14 +96,9 @@ const Asset = () => {
                 variant="outlined"
                 component="label"
                 startIcon={<UploadFile />}
+                onClick={() => setIsFileUploadDialogOpen(true)}
               >
                 Upload Data
-                <input
-                  type="file"
-                  hidden
-                  accept=".csv"
-                  onChange={onCSVUploaded}
-                />
               </Button>
               <Button
                 variant="contained"
@@ -129,19 +109,13 @@ const Asset = () => {
                 New Record
               </Button>
             </Stack>
-            <AssetRegisterView asset={asset} data={data} />
+            <AssetRegisterView data={data} />
           </Box>
         );
       case "map-view":
         return <AssetMapView data={data} />;
       case "settings-view":
-        return (
-          <AssetSettings
-            asset={asset}
-            onSave={onSaveAsset}
-            onDelete={onDeleteAsset}
-          />
-        );
+        return <AssetSettings onSave={onSaveAsset} onDelete={onDeleteAsset} />;
       default:
         return null;
     }
@@ -245,6 +219,12 @@ const Asset = () => {
       >
         {renderPage()}
 
+        <EquipmentFileUpload
+          isOpen={isFileUploadDialogOpen}
+          onClose={() => setIsFileUploadDialogOpen(false)}
+          onSave={() => {}}
+        />
+
         <Drawer
           anchor={"bottom"}
           open={isDataFormOpen}
@@ -253,7 +233,6 @@ const Asset = () => {
         >
           <Box sx={{ p: 4, height: "100vh" }}>
             <EquipmentDataForm
-              asset={asset}
               onClose={onCloseDataForm}
               onSaving={() => {}}
               onSave={() => {

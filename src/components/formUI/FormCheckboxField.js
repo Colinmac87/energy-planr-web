@@ -4,12 +4,28 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  FormLabel,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 
 const FormCheckboxField = ({ field, value, onChange }) => {
-  // value will be array of keys
+  const [selectedOptions, setSelectedOptions] = useState(
+    JSON.parse(value || "[]")
+  );
+
+  const onToggleCheckbox = (key, checked) => {
+    const selectedOptionsCopy = JSON.parse(JSON.stringify(selectedOptions));
+
+    if (checked) {
+      selectedOptionsCopy.push(key);
+    } else {
+      const index = selectedOptionsCopy.findIndex((o) => o == key);
+      selectedOptionsCopy.splice(index, 1);
+    }
+
+    setSelectedOptions(selectedOptionsCopy);
+    onChange(JSON.stringify(selectedOptionsCopy));
+  };
 
   return (
     <Box
@@ -43,8 +59,10 @@ const FormCheckboxField = ({ field, value, onChange }) => {
                 control={
                   <Checkbox
                     name={option.key}
-                    //  checked={gilad}
-                    onChange={onChange}
+                    checked={selectedOptions.includes(option.key)}
+                    onChange={(e) =>
+                      onToggleCheckbox(option.key, e.target.checked)
+                    }
                   />
                 }
                 label={option.text}

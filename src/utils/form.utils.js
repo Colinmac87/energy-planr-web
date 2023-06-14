@@ -23,18 +23,20 @@ export const validateFormBuilder = (formFields) => {
   const result = { isValid: false, errors: [] };
   try {
     let formHasDefaultField = false;
-    formFields.forEach((field, i) => {
-      if (!field.name || field.name.trim() == "") {
-        result.errors.push("Field name is required.");
-      }
+    formFields.forEach((field, index) => {
+      const i = index + 1;
+      if (!field.name || field.name.trim() == "")
+        result.errors.push(`${i}: Field name is required`);
 
       if (canBeDefaultField(field.type) && field.isDefault == true)
         if (formHasDefaultField)
-          result.errors.push("Form can not have more than one default field.");
+          result.errors.push(
+            `${i}: Form can not have more than one default field.`
+          );
         else formHasDefaultField = true;
 
       if (!field.span || field.span < 1 || field.span > 12)
-        result.errors.push("Display must be between 1 and 12.");
+        result.errors.push(`${i}: Display must be between 1 and 12.`);
 
       switch (field.type) {
         case FIELD_DROPDOWN:
@@ -42,7 +44,9 @@ export const validateFormBuilder = (formFields) => {
             !field.meta.options ||
             field.meta.options.filter((o) => o.isDeleted == false).length == 0
           )
-            result.errors.push("Dropdown field must have at least one option.");
+            result.errors.push(
+              `${i}: Dropdown field must have at least one option.`
+            );
           break;
         case FIELD_CHECKBOXES:
           if (
@@ -50,7 +54,7 @@ export const validateFormBuilder = (formFields) => {
             field.meta.options.filter((o) => o.isDeleted == false).length == 0
           )
             result.errors.push(
-              "Checkbox list field must have at least one option."
+              `${i}: Checkbox list field must have at least one option.`
             );
           break;
         default:

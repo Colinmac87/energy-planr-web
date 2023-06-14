@@ -1,0 +1,61 @@
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../firebase";
+
+export const createData = async (assetId, data) => {
+  try {
+    const docRef = await addDoc(collection(db, "data"), {
+      assetId: assetId,
+      ...data,
+      isDeleted: false,
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const updateData = async (id, data) => {
+  try {
+    const docRef = doc(db, "data", id);
+    return await updateDoc(docRef, data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteData = async (id) => {
+  try {
+    const docRef = doc(db, "data", id);
+    return await updateDoc(docRef, {
+      isDeleted: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getData = async (assetId) => {
+  try {
+    const q = query(
+      collection(db, "data"),
+      where("assetId", "==", assetId),
+      where("isDeleted", "==", false)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }));
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

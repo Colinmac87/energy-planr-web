@@ -3,8 +3,12 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
 import { v4 } from "uuid";
+import WithDataField from "./dataUI/WithDataField";
+import { useSelector } from "react-redux";
 
-const AssetRegisterView = ({ asset, data }) => {
+const AssetRegisterView = ({ data }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [isEquipmentDetailViewerOpen, setIsEquipmentDetailViewerOpen] =
     useState(false);
   const [selectedData, setSelectedData] = useState(null);
@@ -30,6 +34,13 @@ const AssetRegisterView = ({ asset, data }) => {
                       field: field.key,
                       headerName: field.name,
                       width: 200,
+                      renderCell: ({ value }) => (
+                        <WithDataField
+                          field={field}
+                          value={value}
+                          withLabel={false}
+                        />
+                      ),
                     }))
                 : []
             }
@@ -53,6 +64,8 @@ const AssetRegisterView = ({ asset, data }) => {
             <EquipmentDataForm
               asset={asset}
               data={selectedData}
+              onSaving={() => {}}
+              onSave={() => {}}
               onClose={onCloseEquipmentDetailViewer}
             />
           </Box>
