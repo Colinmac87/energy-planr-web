@@ -91,6 +91,7 @@ const AssetMapView = ({ preSelected, data }) => {
         m: 0,
         p: 0,
         position: "relative",
+        overflow: "hidden",
       }}
     >
       <Paper
@@ -106,6 +107,7 @@ const AssetMapView = ({ preSelected, data }) => {
           pt: 3,
           pb: 3,
           backgroundColor: "#eee1",
+          overflow: "auto",
         }}
       >
         <MenuList>
@@ -123,11 +125,7 @@ const AssetMapView = ({ preSelected, data }) => {
         <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>
           {treeViewData.map((treeViewObject) => (
             <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMore />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
+              <AccordionSummary expandIcon={<ExpandMore />}>
                 <Typography>{treeViewObject.group}</Typography>
               </AccordionSummary>
               <AccordionDetails>
