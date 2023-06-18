@@ -28,7 +28,7 @@ import {
   Delete,
   Save,
 } from "@mui/icons-material";
-import { saveFormFields } from "../services/asset.service";
+import { saveFormFields } from "../services/register.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
 import {
@@ -40,16 +40,18 @@ import {
 import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 
-const FormFieldsManager = ({ onSave }) => {
-  const { asset } = useSelector((state) => state.asset);
+const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
+  const { registers } = useSelector((state) => state.asset);
 
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState([]);
 
   useEffect(() => {
-    if (!asset.formFields || asset.formFields.length == 0) addField();
-    else setFields(asset?.formFields || []);
-  }, [asset]);
+    if (register) {
+      if (!register.formFields || register.formFields.length == 0) addField();
+      else setFields(register?.formFields || []);
+    }
+  }, [register]);
 
   const getFieldTypesArray = () => {
     let arr = [];
@@ -68,10 +70,7 @@ const FormFieldsManager = ({ onSave }) => {
     let fieldsCopy = JSON.parse(JSON.stringify(fields));
 
     if (property == "type") {
-      fieldsCopy = fieldsCopy.map((f) => ({
-        ...f,
-        showInRegister: canShowInRegister(value),
-      }));
+      fieldsCopy[index].showInRegister = canShowInRegister(value);
     }
 
     if (property == "isDefault") {
@@ -136,7 +135,7 @@ const FormFieldsManager = ({ onSave }) => {
       return;
     }
 
-    saveFormFields(asset.id, { formFields: fields })
+    saveFormFields(register.id, { formFields: fields })
       .then(() => {
         alertSuccess("Changes saved.");
         onSave();
@@ -160,23 +159,48 @@ const FormFieldsManager = ({ onSave }) => {
         pb: 8,
         overflow: "hidden",
         position: "relative",
-        borderRadius: 2,
+        borderRadius: 1,
       }}
     >
       <AppBar
         sx={{
           position: "absolute",
-          borderRadius: 2,
+          borderRadius: 1,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
         }}
       >
         <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-            Data Fields
-          </Typography>
+          <Stack
+            sx={{
+              flexGrow: 2,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Fields
+            </Typography>
+            <FormControl fullWidth sx={{ m: 2 }}>
+              <InputLabel>Register</InputLabel>
+              <Select
+                value={register}
+                label="Register"
+                onChange={(e) => onChangeRegister(e.target.value)}
+              >
+                {registers.map((r) => (
+                  <MenuItem value={r}>{r.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
 
-          <Stack flexDirection={"row"} gap={2}>
+          <Stack
+            flexDirection={"row"}
+            gap={2}
+            flexGrow={1}
+            justifyContent={"flex-end"}
+          >
             <Button variant="outlined" startIcon={<Add />} onClick={addField}>
               New Field
             </Button>
@@ -204,8 +228,9 @@ const FormFieldsManager = ({ onSave }) => {
           borderBottomLeftRadius: 2,
           borderBottomRightRadius: 2,
           overflow: "auto",
-          mt: 8,
+          mt: 11,
           p: 2,
+          pb: 3,
         }}
       >
         <Grid
@@ -347,7 +372,7 @@ const FormFieldsManager = ({ onSave }) => {
                           }
                         />
                       }
-                      label="Required"
+                      label="Default Field"
                     />
                     <FormControlLabel
                       control={
@@ -362,7 +387,7 @@ const FormFieldsManager = ({ onSave }) => {
                           }
                         />
                       }
-                      label="Default Field"
+                      label="Required"
                     />
                     <FormControlLabel
                       control={
@@ -392,8 +417,8 @@ const FormFieldsManager = ({ onSave }) => {
                       }}
                     >
                       <MenuItem value={"none"}>-</MenuItem>
-                      {asset.formGroups?.length > 0 &&
-                        asset.formGroups.map((group) => (
+                      {register?.formGroups?.length > 0 &&
+                        register.formGroups.map((group) => (
                           <MenuItem value={group.key}>{group.name}</MenuItem>
                         ))}
                     </Select>

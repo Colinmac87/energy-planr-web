@@ -1,33 +1,18 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Stack,
-  Drawer,
-  Paper,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import {
-  UploadFile,
-  Map,
-  TableChart,
-  Settings,
-  Add,
-} from "@mui/icons-material";
+import { Box, Stack, Drawer, Paper, IconButton, Tooltip } from "@mui/material";
+import { Map, TableChart, Settings } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 
 import AssetRegisterView from "../components/AssetRegisterView";
 import AssetMapView from "../components/AssetMapView";
 import { useNavigate, useParams } from "react-router-dom";
-import EquipmentFileUpload from "../components/EquipmentFileUpload";
 
 import { getAsset } from "../services/asset.service";
 import EquipmentDataForm from "../components/EquipmentDataForm";
-import { getData } from "../services/data.service";
-import { setAsset } from "../features/asset.slice";
+import { setAsset, setRegisters } from "../features/asset.slice";
 
 import AssetSettings from "./AssetSettings";
+import { getRegisters } from "../services/register.service";
 
 const Asset = () => {
   const params = useParams();
@@ -40,10 +25,7 @@ const Asset = () => {
 
   const { asset } = useSelector((state) => state.asset);
 
-  const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
   const [isDataFormOpen, setIsDataFormOpen] = useState(false);
-
-  const [data, setData] = useState([]);
 
   useEffect(() => {
     const id = params?.id;
@@ -54,27 +36,21 @@ const Asset = () => {
         if (!_asset) navigate("/");
 
         dispatch(setAsset(_asset));
-        loadData(_asset.id);
+
+        getRegisters(_asset.id).then((_registers) => {
+          dispatch(setRegisters(_registers));
+        });
       })
       .catch(() => navigate("/"));
 
-    return () => dispatch(setAsset(null));
+    return () => {
+      dispatch(setAsset(null));
+      dispatch(setRegisters([]));
+    };
   }, []);
-
-  const onSaveAsset = () => {
-    getAsset(asset.id).then((_asset) => {
-      setAsset(_asset);
-    });
-  };
 
   const onDeleteAsset = () => {
     navigate("/");
-  };
-
-  const loadData = (assetId) => {
-    getData(assetId).then((_data) => {
-      setData(_data);
-    });
   };
 
   const onCloseDataForm = () => {
@@ -84,38 +60,11 @@ const Asset = () => {
   const renderPage = () => {
     switch (selectedTab) {
       case "register-view":
-        return (
-          <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 4 }}>
-            <Stack
-              spacing={2}
-              direction={"row"}
-              justifyContent={"flex-end"}
-              mb={2}
-            >
-              <Button
-                variant="outlined"
-                component="label"
-                startIcon={<UploadFile />}
-                onClick={() => setIsFileUploadDialogOpen(true)}
-              >
-                Upload Data
-              </Button>
-              <Button
-                variant="contained"
-                component="label"
-                startIcon={<Add />}
-                onClick={() => setIsDataFormOpen(true)}
-              >
-                New Record
-              </Button>
-            </Stack>
-            <AssetRegisterView data={data} />
-          </Box>
-        );
+        return <AssetRegisterView />;
       case "map-view":
-        return <AssetMapView data={data} />;
+        return <AssetMapView />;
       case "settings-view":
-        return <AssetSettings onSave={onSaveAsset} onDelete={onDeleteAsset} />;
+        return <AssetSettings onDeleteAsset={onDeleteAsset} />;
       default:
         return null;
     }
@@ -218,12 +167,6 @@ const Asset = () => {
         }}
       >
         {renderPage()}
-
-        <EquipmentFileUpload
-          isOpen={isFileUploadDialogOpen}
-          onClose={() => setIsFileUploadDialogOpen(false)}
-          onSave={() => {}}
-        />
 
         <Drawer
           anchor={"bottom"}

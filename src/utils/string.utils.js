@@ -13,9 +13,9 @@ export function generateId() {
 }
 
 export function generateKey(str) {
-  return str
-    .replace(/[^a-zA-Z ]/g, "")
-    .trim()
-    .toLowerCase()
-    .replace(" ", "-");
+  return removeSpecialCharacters(str).toLowerCase().replace(" ", "-");
+}
+
+export function removeSpecialCharacters(str) {
+  return str.replace(/[^a-zA-Z ]/g, "").trim();
 }

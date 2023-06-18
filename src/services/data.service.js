@@ -9,10 +9,11 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-export const createData = async (assetId, data) => {
+export const createData = async (assetId, registerId, data) => {
   try {
     const docRef = await addDoc(collection(db, "data"), {
       assetId: assetId,
+      registerId: registerId,
       ...data,
       isDeleted: false,
     });
@@ -44,11 +45,11 @@ export const deleteData = async (id) => {
   }
 };
 
-export const getData = async (assetId) => {
+export const getDataByRegister = async (registerId) => {
   try {
     const q = query(
       collection(db, "data"),
-      where("assetId", "==", assetId),
+      where("registerId", "==", registerId),
       where("isDeleted", "==", false)
     );
 

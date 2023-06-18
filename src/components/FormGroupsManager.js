@@ -11,26 +11,35 @@ import {
   AppBar,
   Box,
   Button,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { saveFormGroups } from "../services/asset.service";
+import { saveFormGroups } from "../services/register.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import { LoadingButton } from "@mui/lab";
+import { useSelector } from "react-redux";
 
-const FormGroupsManager = ({ asset, onSave }) => {
+const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
+  const { registers } = useSelector((state) => state.asset);
+
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    setGroups(asset?.formGroups || []);
-  }, [asset]);
+    if (register) {
+      setGroups(register?.formGroups || []);
+    }
+  }, [register]);
 
   const onChangeGroupProperty = (index, property, value) => {
     const groupsCopy = JSON.parse(JSON.stringify(groups));
@@ -71,7 +80,7 @@ const FormGroupsManager = ({ asset, onSave }) => {
   const handleSave = () => {
     setLoading(true);
 
-    saveFormGroups(asset.id, { formGroups: groups })
+    saveFormGroups(register.id, { formGroups: groups })
       .then(() => {
         alertSuccess("Changes saved.");
         onSave();
@@ -107,11 +116,36 @@ const FormGroupsManager = ({ asset, onSave }) => {
         }}
       >
         <Toolbar>
-          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-            Data Groups
-          </Typography>
+          <Stack
+            sx={{
+              flexGrow: 2,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Groups
+            </Typography>
+            <FormControl fullWidth sx={{ m: 2 }}>
+              <InputLabel>Register</InputLabel>
+              <Select
+                value={register}
+                label="Register"
+                onChange={(e) => onChangeRegister(e.target.value)}
+              >
+                {registers.map((r) => (
+                  <MenuItem value={r}>{r.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
 
-          <Stack flexDirection={"row"} gap={2}>
+          <Stack
+            flexDirection={"row"}
+            gap={2}
+            flexGrow={1}
+            justifyContent={"flex-end"}
+          >
             <Button variant="outlined" startIcon={<Add />} onClick={addGroup}>
               New Group
             </Button>
@@ -139,8 +173,9 @@ const FormGroupsManager = ({ asset, onSave }) => {
           borderBottomLeftRadius: 2,
           borderBottomRightRadius: 2,
           overflow: "auto",
-          mt: 8,
+          mt: 11,
           p: 2,
+          pb: 3,
         }}
       >
         <Grid

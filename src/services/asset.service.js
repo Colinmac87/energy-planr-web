@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { uploadFile } from "./storage.service";
-import { generateKey } from "../utils/string.utils";
+import { createRegister } from "./register.service";
 
 export const getAssets = async (companyId) => {
   try {
@@ -33,8 +33,6 @@ export const createAsset = async ({ companyId, name, thumbnailFile }) => {
     const asset = {
       companyId: companyId,
       name: name,
-      formFields: [],
-      formGroups: [],
       isDeleted: false,
     };
 
@@ -43,6 +41,8 @@ export const createAsset = async ({ companyId, name, thumbnailFile }) => {
     }
 
     const docRef = await addDoc(collection(db, "assets"), asset);
+
+    await createRegister({ assetId: docRef.id, name: "Default" });
 
     return docRef.id;
   } catch (error) {
@@ -91,40 +91,6 @@ export const deleteAsset = async (id) => {
     };
 
     const docRef = doc(db, "assets", id);
-    return await updateDoc(docRef, asset);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const saveFormGroups = async (assetId, { formGroups }) => {
-  try {
-    const asset = {
-      formGroups: formGroups.map((group, i) => ({
-        ...group,
-        key: group.key || generateKey(group.name),
-        order: i,
-      })),
-    };
-
-    const docRef = doc(db, "assets", assetId);
-    return await updateDoc(docRef, asset);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const saveFormFields = async (assetId, { formFields }) => {
-  try {
-    const asset = {
-      formFields: formFields.map((field, i) => ({
-        ...field,
-        key: field.key || generateKey(field.name),
-        order: i,
-      })),
-    };
-
-    const docRef = doc(db, "assets", assetId);
     return await updateDoc(docRef, asset);
   } catch (error) {
     console.log(error);

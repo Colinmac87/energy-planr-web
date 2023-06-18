@@ -151,7 +151,7 @@ const LocationsManager = () => {
         <DialogActions>
           <Button onClick={onCloseLocationDeleteDialogOpen}>Cancel</Button>
           <Button onClick={handleDeleteLocation} color="error">
-            Yes
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

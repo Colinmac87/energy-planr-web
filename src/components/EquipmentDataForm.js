@@ -20,12 +20,9 @@ import { FIELD_FILES, FIELD_IMAGE } from "../constants/form.constants";
 import { createData, updateData } from "../services/data.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithDataField from "./dataUI/WithDataField";
-import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 
-const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
-  const { asset } = useSelector((state) => state.asset);
-
+const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(data || {}))
@@ -37,11 +34,11 @@ const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
   const formGroups = [
     {
       name: "",
-      fields: asset.formFields.filter((field) => field.group == "none"),
+      fields: register.formFields.filter((field) => field.group == "none"),
     },
-    ...asset.formGroups.map((group) => ({
+    ...register.formGroups.map((group) => ({
       ...group,
-      fields: asset.formFields.filter((field) => field.group == group.key),
+      fields: register.formFields.filter((field) => field.group == group.key),
     })),
   ];
 
@@ -57,12 +54,11 @@ const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     onSaving();
     setLoading(true);
 
-    if (data?.id) {
-      updateData(data.id, formData)
+    if (formData?.id) {
+      updateData(formData.id, formData)
         .then(() => {
           alertSuccess("Changes saved.");
           onSave();
@@ -72,7 +68,7 @@ const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
         })
         .finally(() => setLoading(false));
     } else {
-      createData(asset.id, formData)
+      createData(register.assetId, register.id, formData)
         .then((dataId) => {
           if (dataId) {
             alertSuccess("New data created.");
@@ -121,14 +117,14 @@ const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
                           <WithFormField
                             key={i}
                             field={field}
-                            value={data?.id ? data[field.key] : null}
+                            value={formData?.id ? formData[field.key] : null}
                             onChange={(v) => onChangeFormData(field.key, v)}
                           />
                         ) : (
                           <WithDataField
                             key={i}
                             field={field}
-                            value={data[field.key]}
+                            value={formData[field.key]}
                           />
                         )
                       )}
@@ -143,7 +139,7 @@ const EquipmentDataForm = ({ data, onSaving, onSave, onClose }) => {
                 <Button variant="outlined" disabled={loading} onClick={onClose}>
                   Cancel
                 </Button>
-                {canEdit && data?.id && (
+                {canEdit && formData?.id && (
                   <Button
                     variant="outlined"
                     disabled={loading}
