@@ -3,6 +3,8 @@ import {
   FIELD_DROPDOWN,
   FIELD_FILES,
   FIELD_IMAGE,
+  FIELD_MULTILINE,
+  FIELD_NUMERIC,
   FIELD_RICHTEXT,
   FIELD_TEXT,
 } from "../constants/form.constants";
@@ -17,6 +19,24 @@ export const canBeDefaultField = (fieldType) => {
 
 export const canShowInRegister = (fieldType) => {
   return ![FIELD_RICHTEXT, FIELD_FILES, FIELD_IMAGE].includes(fieldType);
+};
+
+export const muiDataGridCellEditProps = (fieldType) => {
+  switch (fieldType) {
+    case FIELD_TEXT:
+    case FIELD_MULTILINE:
+      return {
+        editable: true,
+        type: "string",
+      };
+    case FIELD_NUMERIC:
+      return {
+        editable: true,
+        type: "number",
+      };
+    default:
+      return {};
+  }
 };
 
 export const validateFormBuilder = (formFields) => {

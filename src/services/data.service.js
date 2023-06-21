@@ -34,6 +34,17 @@ export const updateData = async (id, data) => {
   }
 };
 
+export const updateDataValue = async (id, field, value) => {
+  try {
+    const docRef = doc(db, "data", id);
+    return await updateDoc(docRef, {
+      [field]: value,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deleteData = async (id) => {
   try {
     const docRef = doc(db, "data", id);

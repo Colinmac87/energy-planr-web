@@ -9,17 +9,20 @@ import {
   Select,
   Stack,
 } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import EquipmentDataForm from "./EquipmentDataForm";
-import { v4 } from "uuid";
+
 import WithDataField from "./dataUI/WithDataField";
 import { useSelector } from "react-redux";
 import { Add, UploadFile } from "@mui/icons-material";
 import EquipmentFileUpload from "./EquipmentFileUpload";
-import { getDataByRegister } from "../services/data.service";
+import { getDataByRegister, updateDataValue } from "../services/data.service";
+import { muiDataGridCellEditProps } from "../utils/form.utils";
+import { alertSuccess } from "../utils/alert.utils";
 
 const AssetRegisterView = ({ onDataSelect }) => {
+  const gridApiRef = useGridApiRef();
   const { registers } = useSelector((state) => state.asset);
 
   const [isFileUploadDialogOpen, setIsFileUploadDialogOpen] = useState(false);
@@ -34,7 +37,6 @@ const AssetRegisterView = ({ onDataSelect }) => {
     setSelectedData(null);
     setIsEquipmentDetailViewerOpen(false);
   };
-
   useEffect(() => {
     if (register) loadData();
   }, [register]);
@@ -42,6 +44,12 @@ const AssetRegisterView = ({ onDataSelect }) => {
   const loadData = () => {
     getDataByRegister(register.id).then((_data) => {
       setData(_data);
+    });
+  };
+
+  const onCellEdit = (id, field, value) => {
+    updateDataValue(id, field, value).then(() => {
+      alertSuccess("Changes saved");
     });
   };
 
@@ -101,18 +109,18 @@ const AssetRegisterView = ({ onDataSelect }) => {
         <Grid item xs={12}>
           <Box sx={{ height: 600, width: "100%" }}>
             <DataGrid
-              rows={data?.map((d, i) => ({
-                id: v4(),
-                ...d,
-              }))}
+              apiRef={gridApiRef}
+              rows={data}
               columns={
                 register?.formFields
                   ? register?.formFields
                       ?.filter((field) => field.showInRegister)
                       .map((field) => ({
+                        meta: field,
                         field: field.key,
                         headerName: field.name,
                         width: 200,
+                        ...muiDataGridCellEditProps(field.type),
                         renderCell: ({ value }) => (
                           <WithDataField
                             field={field}
@@ -123,10 +131,14 @@ const AssetRegisterView = ({ onDataSelect }) => {
                       }))
                   : []
               }
+              onCellEditStop={(params, event, details) => {
+                if (event.key == "Enter")
+                  onCellEdit(params.id, params.field, event.target.value);
+              }}
               pageSizeOptions={[5, 20, 50, 100]}
               disableRowSelectionOnClick
               slots={{ toolbar: GridToolbar }}
-              onRowClick={(params) => {
+              onRowDoubleClick={(params) => {
                 setSelectedData(params.row);
                 setIsEquipmentDetailViewerOpen(true);
               }}
