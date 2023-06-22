@@ -7,11 +7,12 @@ const DataDateRangeField = ({ field, value }) => {
 
     return (
       <Typography>
-        {moment(start, "YYYY-MM-DD").toDate().toDateString()} -{" "}
-        {moment(end, "YYYY-MM-DD").toDate().toDateString()}
+        {moment(start).format("ddd DD-MM-YYYY")} -{" "}
+        {moment(end).format("ddd DD-MM-YYYY")}
       </Typography>
     );
   } catch (error) {
+    console.log(error);
     return <i>*failed to load data*</i>;
   }
 };

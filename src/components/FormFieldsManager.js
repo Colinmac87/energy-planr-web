@@ -39,6 +39,7 @@ import {
 } from "../utils/form.utils";
 import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
+import FieldTriggerOptions from "./formBuilder/FieldTriggerOptions";
 
 const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
   const { registers } = useSelector((state) => state.asset);
@@ -122,6 +123,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         isDefault: fields.length == 0,
         showInRegister: true,
         meta: {},
+        triggers: [],
       },
     ]);
   };
@@ -433,6 +435,15 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                     <Divider>More Options</Divider>
                     <br />
                   </WithFormBuilderFieldOptions>
+                  <FieldTriggerOptions
+                    field={field}
+                    onChange={(v) => {
+                      onChangeFieldProperty(i, "triggers", v);
+                    }}
+                  >
+                    <Divider>Triggers</Divider>
+                    <br />
+                  </FieldTriggerOptions>
                 </Stack>
               </Paper>
             </Grid>

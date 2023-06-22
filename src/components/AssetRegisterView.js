@@ -20,6 +20,7 @@ import EquipmentFileUpload from "./EquipmentFileUpload";
 import { getDataByRegister, updateDataValue } from "../services/data.service";
 import { muiDataGridCellEditProps } from "../utils/form.utils";
 import { alertSuccess } from "../utils/alert.utils";
+import WithCellTriggerEffect from "./dataUI/WithCellTriggerEffect";
 
 const AssetRegisterView = ({ onDataSelect }) => {
   const gridApiRef = useGridApiRef();
@@ -122,11 +123,13 @@ const AssetRegisterView = ({ onDataSelect }) => {
                         width: 200,
                         ...muiDataGridCellEditProps(field.type),
                         renderCell: ({ value }) => (
-                          <WithDataField
-                            field={field}
-                            value={value}
-                            withLabel={false}
-                          />
+                          <WithCellTriggerEffect field={field} value={value}>
+                            <WithDataField
+                              field={field}
+                              value={value}
+                              withLabel={false}
+                            />
+                          </WithCellTriggerEffect>
                         ),
                       }))
                   : []

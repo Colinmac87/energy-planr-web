@@ -5,15 +5,19 @@ const FormDateTimeField = ({ field, value, onChange }) => {
   let momentDate = moment();
 
   try {
-    if (value) momentDate = moment(value, moment.defaultFormatUtc);
-  } catch (error) {}
+    if (value) momentDate = moment(value);
+  } catch (error) {
+    console.log(error);
+  }
 
   return (
     <DatePicker
       format="ddd DD-MM-YYYY"
       label={field.name}
       value={momentDate}
-      onChange={onChange}
+      onChange={(v) => {
+        onChange(v.valueOf());
+      }}
     />
   );
 };
