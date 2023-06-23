@@ -11,16 +11,20 @@ import { TwitterPicker } from "react-color";
 import WithFormField from "../../components/formUI/WithFormField";
 import {
   FIELD_CHECKBOXES,
+  FIELD_DATERANGE,
   FIELD_DATETIME,
   FIELD_DROPDOWN,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
   FIELD_TEXT,
+  FIELD_TRIGGER_OPERATOR_BETWEEN,
   FIELD_TRIGGER_OPERATOR_EQUALTO,
   FIELD_TRIGGER_OPERATOR_GREATEREQUAL,
   FIELD_TRIGGER_OPERATOR_GREATERTHAN,
   FIELD_TRIGGER_OPERATOR_LESSEQUAL,
   FIELD_TRIGGER_OPERATOR_LESSTHAN,
+  FIELD_TRIGGER_OPERATOR_NOTEQUALTO,
+  FIELD_TRIGGER_OPERATOR_OUTSIDE,
   FIELD_YESNO,
 } from "../../constants/form.constants";
 
@@ -37,6 +41,10 @@ const allOperators = {
     text: "Equals to",
     value: FIELD_TRIGGER_OPERATOR_EQUALTO,
   },
+  notEqual: {
+    text: "Not equals to",
+    value: FIELD_TRIGGER_OPERATOR_NOTEQUALTO,
+  },
   greaterEqual: {
     text: "Greater than or equals to",
     value: FIELD_TRIGGER_OPERATOR_GREATEREQUAL,
@@ -45,9 +53,17 @@ const allOperators = {
     text: "Greater than",
     value: FIELD_TRIGGER_OPERATOR_GREATERTHAN,
   },
+  betweenRange: {
+    text: "Within range",
+    value: FIELD_TRIGGER_OPERATOR_BETWEEN,
+  },
+  outsideRange: {
+    text: "Out of range",
+    value: FIELD_TRIGGER_OPERATOR_OUTSIDE,
+  },
 };
 
-const FieldTriggerOptions = ({ field, onChange }) => {
+const FieldTriggerOptions = ({ field, onChange, children }) => {
   const [conditions, setConditions] = useState([]);
   const [availableOperators, setAvailableOperators] = useState([]);
 
@@ -77,7 +93,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
       case FIELD_DROPDOWN:
       case FIELD_CHECKBOXES:
       case FIELD_YESNO:
-        setAvailableOperators([allOperators.equal]);
+        setAvailableOperators([allOperators.equal, allOperators.notEqual]);
         break;
 
       case FIELD_NUMERIC:
@@ -86,8 +102,16 @@ const FieldTriggerOptions = ({ field, onChange }) => {
           allOperators.less,
           allOperators.lessEqual,
           allOperators.equal,
+          allOperators.notEqual,
           allOperators.greaterEqual,
           allOperators.greater,
+        ]);
+        break;
+
+      case FIELD_DATERANGE:
+        setAvailableOperators([
+          allOperators.betweenRange,
+          allOperators.outsideRange,
         ]);
         break;
 
@@ -109,6 +133,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
 
   return (
     <Stack>
+      {children}
       <Grid container spacing={2}>
         <Grid item xs={3}>
           Comparer
@@ -132,6 +157,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
             field={field}
             value={compareValue}
             onChange={(v) => setCompareValue(v)}
+            showLabel={false}
           />
         </Grid>
 

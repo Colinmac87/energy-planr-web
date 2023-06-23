@@ -1,11 +1,14 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
+  FIELD_TRIGGER_OPERATOR_BETWEEN,
   FIELD_TRIGGER_OPERATOR_EQUALTO,
   FIELD_TRIGGER_OPERATOR_GREATEREQUAL,
   FIELD_TRIGGER_OPERATOR_GREATERTHAN,
   FIELD_TRIGGER_OPERATOR_LESSEQUAL,
   FIELD_TRIGGER_OPERATOR_LESSTHAN,
+  FIELD_TRIGGER_OPERATOR_NOTEQUALTO,
+  FIELD_TRIGGER_OPERATOR_OUTSIDE,
 } from "../../constants/form.constants";
 
 const WithCellTriggerEffect = ({ field, value, children }) => {
@@ -31,6 +34,10 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
             if (value == compareValue)
               setStyles({ backgroundColor: cellHighlightColor });
             break;
+          case FIELD_TRIGGER_OPERATOR_NOTEQUALTO:
+            if (value != compareValue)
+              setStyles({ backgroundColor: cellHighlightColor });
+            break;
           case FIELD_TRIGGER_OPERATOR_GREATEREQUAL:
             if (value >= compareValue)
               setStyles({ backgroundColor: cellHighlightColor });
@@ -39,13 +46,27 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
             if (value > compareValue)
               setStyles({ backgroundColor: cellHighlightColor });
             break;
+          case FIELD_TRIGGER_OPERATOR_BETWEEN:
+            const [start, end] = value.split(",");
+            if (value >= start && value <= end)
+              setStyles({ backgroundColor: cellHighlightColor });
+            break;
+          case FIELD_TRIGGER_OPERATOR_OUTSIDE:
+            const [start1, end1] = value.split(",");
+            if (value < start1 || value > end1)
+              setStyles({ backgroundColor: cellHighlightColor });
+            break;
           default:
         }
       }
     }
   }, [value]);
 
-  return <Box sx={styles}>{children}</Box>;
+  return (
+    <Box flex={1} sx={styles}>
+      {children}
+    </Box>
+  );
 };
 
 export default WithCellTriggerEffect;
