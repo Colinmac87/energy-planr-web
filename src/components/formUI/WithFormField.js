@@ -25,7 +25,7 @@ import FormImageUploadField from "./FormImageUploadField";
 import FormDropdownField from "./FormDropdownField";
 import FormCheckboxField from "./FormCheckboxField";
 
-const WithFormField = ({ field, value, onChange }) => {
+const WithFormField = ({ field, value, onChange, showLabel = true }) => {
   const renderFormField = () => {
     switch (field.type) {
       case FIELD_TEXT:
@@ -76,9 +76,11 @@ const WithFormField = ({ field, value, onChange }) => {
 
   return (
     <Grid item sm={field.span}>
-      <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-        {field.name}
-      </Typography>
+      {showLabel && (
+        <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
+          {field.name}
+        </Typography>
+      )}
       {renderFormField()}
     </Grid>
   );

@@ -33,12 +33,13 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
 
   const formGroups = [
     {
-      name: "",
-      fields: register.formFields.filter((field) => field.group == "none"),
+      hasFields:
+        register.formFields.findIndex((field) => field.group == "none") >= 0,
     },
     ...register.formGroups.map((group) => ({
       ...group,
-      fields: register.formFields.filter((field) => field.group == group.key),
+      hasFields:
+        register.formFields.findIndex((field) => field.group == group.key) >= 0,
     })),
   ];
 
@@ -104,7 +105,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
         <Box component={"form"} onSubmit={handleSubmit} noValidate>
           <Stack spacing={0}>
             {formGroups
-              .filter((group) => group.fields.length > 0)
+              .filter((group) => group.hasFields == true)
               .map((group) => (
                 <Paper sx={{ marginBottom: 2, padding: 2 }}>
                   <Stack spacing={1}>
@@ -112,22 +113,24 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
                       <Grid item xs={12}>
                         <Typography variant="h6">{group.name}</Typography>
                       </Grid>
-                      {group.fields.map((field, i) =>
-                        canEdit ? (
-                          <WithFormField
-                            key={i}
-                            field={field}
-                            value={formData?.id ? formData[field.key] : null}
-                            onChange={(v) => onChangeFormData(field.key, v)}
-                          />
-                        ) : (
-                          <WithDataField
-                            key={i}
-                            field={field}
-                            value={formData[field.key]}
-                          />
-                        )
-                      )}
+                      {register.formFields
+                        .filter((field) => field.group == (group.key || "none"))
+                        .map((field, i) =>
+                          canEdit ? (
+                            <WithFormField
+                              key={i}
+                              field={field}
+                              value={formData[field.key] || null}
+                              onChange={(v) => onChangeFormData(field.key, v)}
+                            />
+                          ) : (
+                            <WithDataField
+                              key={i}
+                              field={field}
+                              value={formData[field.key]}
+                            />
+                          )
+                        )}
                     </Grid>
                     <br />
                   </Stack>

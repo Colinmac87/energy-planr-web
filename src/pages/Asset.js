@@ -172,7 +172,7 @@ const Asset = () => {
           anchor={"bottom"}
           open={isDataFormOpen}
           onClose={onCloseDataForm}
-          sx={{ maxHeight: window.outerHeight - 100, height: "100vh" }}
+          sx={{ height: "100vh" }}
         >
           <Box sx={{ p: 4, height: "100vh" }}>
             <EquipmentDataForm
