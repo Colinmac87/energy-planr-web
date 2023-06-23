@@ -377,20 +377,6 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
 
   return (
     <Stack style={{ position: "relative" }}>
-      {!readOnly && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: -12,
-            left: 8,
-            pl: 0.4,
-            pr: 0.4,
-            backgroundColor: "#1e1e1e",
-          }}
-        >
-          <Typography variant="caption">{field.name}</Typography>
-        </Box>
-      )}
       <div
         style={{
           border: "1px solid #fff4",

@@ -13,7 +13,6 @@ const FormDateTimeField = ({ field, value, onChange }) => {
   return (
     <DatePicker
       format="ddd DD-MM-YYYY"
-      label={field.name}
       value={momentDate}
       onChange={(v) => {
         onChange(v.valueOf());

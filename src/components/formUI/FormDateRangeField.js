@@ -31,7 +31,6 @@ const FormDateTimeField = ({ field, value, onChange }) => {
     <Stack flexDirection={"row"} gap={2}>
       <DatePicker
         sx={{ width: "100%" }}
-        label={field.name + " - Start"}
         format="ddd DD-MM-YYYY"
         value={start}
         onChange={(v) => {
@@ -41,7 +40,6 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       <p>-</p>
       <DatePicker
         sx={{ width: "100%" }}
-        label={field.name + " - End"}
         format="ddd DD-MM-YYYY"
         value={end}
         onChange={(v) => {

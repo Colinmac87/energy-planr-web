@@ -3,7 +3,6 @@ import { TextField } from "@mui/material";
 const FormMultilineField = ({ field, value, onChange }) => {
   return (
     <TextField
-      label={field.name}
       fullWidth
       multiline
       rows={4}

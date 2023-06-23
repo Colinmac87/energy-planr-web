@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import {
   FIELD_CHECKBOXES,
   FIELD_DATERANGE,
@@ -76,6 +76,9 @@ const WithFormField = ({ field, value, onChange }) => {
 
   return (
     <Grid item sm={field.span}>
+      <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
+        {field.name}
+      </Typography>
       {renderFormField()}
     </Grid>
   );

@@ -4,7 +4,6 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  Typography,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -38,18 +37,6 @@ const FormCheckboxField = ({ field, value, onChange }) => {
         pb: 0.6,
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: -14,
-          left: 8,
-          pl: 0.4,
-          pr: 0.4,
-          backgroundColor: "#1e1e1e",
-        }}
-      >
-        <Typography variant="caption">{field.name}</Typography>
-      </Box>
       <FormControl fullWidth>
         <FormGroup
           sx={{
