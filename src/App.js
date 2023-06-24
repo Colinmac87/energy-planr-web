@@ -8,13 +8,15 @@ import Asset from "./pages/Asset";
 import DashboardLayout from "./layout/DashboardLayout";
 import Settings from "./pages/Settings";
 import SignUp from "./pages/SignUp";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "./features/account.slice";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { getUser } from "./services/user.service";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +55,20 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useDispatch();
+  const { colorMode } = useSelector((state) => state.system);
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: colorMode,
+        },
+        typography: {
+          fontFamily: `"Inter", "Roboto", "Helvetica", "Arial", sans-serif`,
+        },
+      }),
+    [colorMode]
+  );
 
   useEffect(() => {
     onAuthStateChanged(auth, (firebaseUser) => {
@@ -67,9 +83,13 @@ function App() {
   }, []);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterMoment}>
-      <RouterProvider router={router} />
-    </LocalizationProvider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <RouterProvider router={router} />
+      </LocalizationProvider>
+      <Toaster />
+    </ThemeProvider>
   );
 }
 

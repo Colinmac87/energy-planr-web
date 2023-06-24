@@ -4,10 +4,13 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 
 const FormCheckboxField = ({ field, value, onChange }) => {
+  const theme = useTheme();
+
   const [selectedOptions, setSelectedOptions] = useState(
     JSON.parse(value || "[]")
   );
@@ -30,7 +33,7 @@ const FormCheckboxField = ({ field, value, onChange }) => {
     <Box
       sx={{
         position: "relative",
-        border: "1px solid #fff4",
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: 1,
         p: 1.4,
         pt: 0.6,

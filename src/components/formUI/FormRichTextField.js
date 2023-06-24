@@ -15,7 +15,7 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
+  useTheme,
 } from "@mui/material";
 import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
@@ -24,6 +24,8 @@ import StarterKit from "@tiptap/starter-kit";
 import { useState } from "react";
 
 const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
+  const theme = useTheme();
+
   const [writeTimeout, setWriteTimeout] = useState(null);
   const [formats, setFormats] = useState([
     "bold",
@@ -379,7 +381,7 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     <Stack style={{ position: "relative" }}>
       <div
         style={{
-          border: "1px solid #fff4",
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: 4,
         }}
       >

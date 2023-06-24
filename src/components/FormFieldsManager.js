@@ -151,7 +151,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
   };
 
   return (
-    <Box
+    <Paper
       sx={{
         display: "flex",
         flex: 1,
@@ -450,7 +450,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
           ))}
         </Grid>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

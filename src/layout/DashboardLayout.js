@@ -9,18 +9,21 @@ import {
   Menu,
   Button,
   Stack,
+  IconButton,
 } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
+import { AccountCircle, DarkMode, LightMode } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../services/auth.service";
 import { setUser } from "../features/account.slice";
+import { toggleColorMode } from "../features/system.slice";
 
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const { colorMode } = useSelector((state) => state.system);
   const { loginAttempted, user } = useSelector((state) => state.account);
   const { asset } = useSelector((state) => state.asset);
 
@@ -70,12 +73,11 @@ const DashboardLayout = ({ children }) => {
               alignItems: "center",
             }}
           >
-            <Link href={`/`} underline="none">
+            <Link href={`/`} underline="none" color="inherit">
               <Typography
                 component="h1"
-                variant="h6"
-                color="inherit"
-                sx={{ display: "inline-block" }}
+                variant="h5"
+                sx={{ display: "inline-block", fontWeight: "bold" }}
               >
                 Energy Planr
               </Typography>
@@ -92,6 +94,12 @@ const DashboardLayout = ({ children }) => {
             )}
           </Box>
           <Box>
+            <IconButton
+              sx={{ mr: 4 }}
+              onClick={() => dispatch(toggleColorMode())}
+            >
+              {colorMode == "dark" ? <LightMode /> : <DarkMode />}
+            </IconButton>
             <Button
               size="large"
               endIcon={<AccountCircle />}

@@ -94,7 +94,7 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
   };
 
   return (
-    <Box
+    <Paper
       sx={{
         display: "flex",
         flex: 1,
@@ -239,7 +239,7 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
           ))}
         </Grid>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 
