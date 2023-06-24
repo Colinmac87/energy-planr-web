@@ -185,6 +185,7 @@ const FieldTriggerOptions = ({ field, onChange, children }) => {
                 label="Register Cell Highlight"
               />
               <TwitterPicker
+                triangle="hide"
                 disabled={!actions.registerCellHighlight.isActive}
                 color={actions.registerCellHighlight.color}
                 onChangeComplete={(color) =>
@@ -217,6 +218,7 @@ const FieldTriggerOptions = ({ field, onChange, children }) => {
                 label="Map Pin Highlight"
               />
               <TwitterPicker
+                triangle="hide"
                 disabled={!actions.mapPinHighlight.isActive}
                 color={actions.mapPinHighlight.color}
                 onChangeComplete={(color) =>

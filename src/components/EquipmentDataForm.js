@@ -14,13 +14,12 @@ import {
 import WithFormField from "./formUI/WithFormField";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Close } from "@mui/icons-material";
-import FormFileUploadField from "./formUI/FormFileUploadField";
-import DataFileField from "./dataUI/DataFieldField";
-import { FIELD_FILES, FIELD_IMAGE } from "../constants/form.constants";
-import { createData, updateData } from "../services/data.service";
+import { FIELD_FILE, FIELD_IMAGE } from "../constants/form.constants";
+import { createData, deleteData, updateData } from "../services/data.service";
 import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithDataField from "./dataUI/WithDataField";
 import { LoadingButton } from "@mui/lab";
+import EquipmentFilesForm from "./EquipmentFilesForm";
 
 const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
   const [loading, setLoading] = useState(false);
@@ -84,127 +83,128 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     }
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    setLoading(true);
+
+    deleteData(formData.id)
+      .then(() => {
+        alertSuccess("Data deleted.");
+        onSave();
+        onClose();
+      })
+      .catch(() => {
+        alertError("Unable to delete, please try again or contact us.");
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const renderTabs = () => {
+    if (formData?.id)
+      return (
+        <TabList onChange={onTabChange} aria-label="Asset Tabs">
+          <Tab label="Data" value="data" />
+          <Tab label="Files" value="files" />
+          <Tab label="Images" value="images" />
+        </TabList>
+      );
+    return (
+      <TabList onChange={onTabChange} aria-label="Asset Tabs">
+        <Tab label="Data" value="data" />
+      </TabList>
+    );
+  };
 
   return (
-    <TabContext value={selectedTab}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <TabList onChange={onTabChange} aria-label="Asset Tabs">
-            <Tab label="Data" value="data" />
-            <Tab label="Files" value="files" />
-            <Tab label="Images" value="images" />
-          </TabList>
-          <IconButton onClick={onClose}>
-            <Close />
-          </IconButton>
-        </Stack>
-      </Box>
+    <Box sx={{ height: "100%" }}>
+      <TabContext value={selectedTab}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+            {renderTabs()}
+            <IconButton onClick={onClose}>
+              <Close />
+            </IconButton>
+          </Stack>
+        </Box>
 
-      <TabPanel value="data">
-        <Box component={"form"} onSubmit={handleSubmit} noValidate>
-          <Stack spacing={0}>
-            {formGroups
-              .filter((group) => group.hasFields == true)
-              .map((group) => (
-                <Paper sx={{ marginBottom: 2, padding: 2 }}>
-                  <Stack spacing={1}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="h6">{group.name}</Typography>
-                      </Grid>
-                      {register.formFields
-                        .filter((field) => field.group == (group.key || "none"))
-                        .map((field, i) =>
-                          canEdit ? (
-                            <WithFormField
-                              key={i}
-                              field={field}
-                              value={formData[field.key] || null}
-                              onChange={(v) => onChangeFormData(field.key, v)}
-                            />
-                          ) : (
-                            <WithDataField
-                              key={i}
-                              field={field}
-                              value={formData[field.key]}
-                            />
+        <TabPanel value="data">
+          <Box component={"form"} onSubmit={handleSubmit} noValidate>
+            <Stack spacing={0}>
+              {formGroups
+                .filter((group) => group.hasFields == true)
+                .map((group) => (
+                  <Paper sx={{ marginBottom: 2, padding: 2 }}>
+                    <Stack spacing={1}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Typography variant="h6">{group.name}</Typography>
+                        </Grid>
+                        {register.formFields
+                          .filter(
+                            (field) => field.group == (group.key || "none")
                           )
-                        )}
-                    </Grid>
-                    <br />
-                  </Stack>
-                </Paper>
-              ))}
-            <Divider sx={{ mb: 3 }} />
-            <Stack flexDirection={"row"} justifyContent={"space-between"}>
-              <Stack flexDirection={"row"} gap={6}>
-                <Button variant="outlined" disabled={loading} onClick={onClose}>
-                  Cancel
-                </Button>
-                {canEdit && formData?.id && (
+                          .map((field, i) =>
+                            canEdit ? (
+                              <WithFormField
+                                key={i}
+                                field={field}
+                                value={formData[field.key] || null}
+                                onChange={(v) => onChangeFormData(field.key, v)}
+                              />
+                            ) : (
+                              <WithDataField
+                                key={i}
+                                field={field}
+                                value={formData[field.key]}
+                              />
+                            )
+                          )}
+                      </Grid>
+                      <br />
+                    </Stack>
+                  </Paper>
+                ))}
+              <Divider sx={{ mb: 3 }} />
+              <Stack flexDirection={"row"} justifyContent={"space-between"}>
+                <Stack flexDirection={"row"} gap={6}>
                   <Button
                     variant="outlined"
                     disabled={loading}
-                    onClick={handleDelete}
-                    color="error"
+                    onClick={onClose}
                   >
-                    Delete
+                    Cancel
                   </Button>
+                  {canEdit && formData?.id && (
+                    <Button
+                      variant="outlined"
+                      disabled={loading}
+                      onClick={handleDelete}
+                      color="error"
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </Stack>
+                {canEdit && (
+                  <LoadingButton
+                    type="submit"
+                    variant="contained"
+                    loading={loading}
+                  >
+                    Save
+                  </LoadingButton>
                 )}
               </Stack>
-              {canEdit && (
-                <LoadingButton
-                  type="submit"
-                  variant="contained"
-                  loading={loading}
-                >
-                  Save
-                </LoadingButton>
-              )}
             </Stack>
-          </Stack>
-        </Box>
-      </TabPanel>
-      <TabPanel value="files">
-        <Grid container gap={2}>
-          <Grid item xs={12}>
-            <Paper>
-              <FormFileUploadField onChange={() => {}} />
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            <DataFileField field={{ type: FIELD_FILES }} />
-          </Grid>
-          <Grid item xs={12}>
-            <DataFileField field={{ type: FIELD_FILES }} />
-          </Grid>
-          <Grid item xs={12}>
-            <DataFileField field={{ type: FIELD_FILES }} />
-          </Grid>
-        </Grid>
-      </TabPanel>
-
-      <TabPanel value="images">
-        <Grid container gap={2}>
-          <Grid item xs={12}>
-            <Paper>
-              <FormFileUploadField onChange={() => {}} />
-            </Paper>
-          </Grid>
-          <Grid item xs={3}>
-            <DataFileField field={{ type: FIELD_IMAGE }} />
-          </Grid>
-          <Grid item xs={3}>
-            <DataFileField field={{ type: FIELD_IMAGE }} />
-          </Grid>
-          <Grid item xs={3}>
-            <DataFileField field={{ type: FIELD_IMAGE }} />
-          </Grid>
-        </Grid>
-      </TabPanel>
-    </TabContext>
+          </Box>
+        </TabPanel>
+        <TabPanel value="files">
+          <EquipmentFilesForm dataId={formData.id} type={FIELD_FILE} />
+        </TabPanel>
+        <TabPanel value="images">
+          <EquipmentFilesForm dataId={formData.id} type={FIELD_IMAGE} />
+        </TabPanel>
+      </TabContext>
+    </Box>
   );
 };
 

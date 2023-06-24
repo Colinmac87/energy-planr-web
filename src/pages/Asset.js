@@ -167,25 +167,24 @@ const Asset = () => {
         }}
       >
         {renderPage()}
-
-        <Drawer
-          anchor={"bottom"}
-          open={isDataFormOpen}
-          onClose={onCloseDataForm}
-          sx={{ height: "100vh" }}
-        >
-          <Box sx={{ p: 4, height: "100vh" }}>
-            <EquipmentDataForm
-              onClose={onCloseDataForm}
-              onSaving={() => {}}
-              onSave={() => {
-                onCloseDataForm();
-                // load data
-              }}
-            />
-          </Box>
-        </Drawer>
       </Box>
+      <Drawer
+        anchor={"bottom"}
+        open={isDataFormOpen}
+        onClose={onCloseDataForm}
+        sx={{ height: "100%" }}
+      >
+        <Box sx={{ p: 4, height: "100%" }}>
+          <EquipmentDataForm
+            onClose={onCloseDataForm}
+            onSaving={() => {}}
+            onSave={() => {
+              onCloseDataForm();
+              // load data
+            }}
+          />
+        </Box>
+      </Drawer>
     </Box>
   );
 };

@@ -5,34 +5,47 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  Link,
+  ListItem,
+  ListItemText,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { FIELD_IMAGE } from "../../constants/form.constants";
+import { FIELD_FILE } from "../../constants/form.constants";
 import { useState } from "react";
+import { saveFileCaption } from "../../services/data.service";
+import { alertSuccess } from "../../utils/alert.utils";
 
-const DataFileField = ({ field, value }) => {
+const DataFileField = ({ file }) => {
   const [editingCaption, setEditingCaption] = useState(false);
-  const [caption, setCaption] = useState(
-    `This is example caption of an ${
-      field.type == FIELD_IMAGE ? "image" : "non-image"
-    } file type`
-  );
+  const [caption, setCaption] = useState(file.caption);
 
-  if (field.type != FIELD_IMAGE)
+  const saveCaption = () => {
+    if (caption.trim() != file.caption) {
+      saveFileCaption(file.id, caption).then(() =>
+        alertSuccess("Caption saved")
+      );
+    }
+  };
+
+  if (file.type == FIELD_FILE)
     return (
-      <Card raised={true}>
-        <CardActionArea
-          sx={{
-            "&:hover > .fileControls": {
-              display: "flex",
-            },
-          }}
-        >
-          <CardContent onClick={() => setEditingCaption(true)}>
-            {editingCaption ? (
+      <ListItem
+        secondaryAction={
+          <Link href={file.url} target="_blank">
+            <IconButton>
+              <Download />
+            </IconButton>
+          </Link>
+        }
+      >
+        <ListItemText
+          primary={file.name}
+          secondary={
+            editingCaption ? (
               <TextField
+                sx={{ marginTop: 1 }}
                 label={"Caption"}
                 autoFocus
                 fullWidth
@@ -40,50 +53,22 @@ const DataFileField = ({ field, value }) => {
                 rows={4}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
-                onBlur={() => setEditingCaption(false)}
+                onBlur={() => {
+                  setEditingCaption(false);
+                  saveCaption();
+                }}
               />
             ) : (
               <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ whiteSpace: "pre-line" }}
+                onClick={() => setEditingCaption(true)}
+                variant="caption"
               >
                 {caption}
               </Typography>
-            )}
-          </CardContent>
-          <Stack
-            className="fileControls"
-            sx={{
-              display: "none",
-              position: "absolute",
-              top: 8,
-              right: 8,
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "end",
-            }}
-          >
-            <Stack
-              sx={{
-                gap: 2,
-                background: "#0006",
-                p: 0.5,
-                borderRadius: 50,
-              }}
-            >
-              {field.type == FIELD_IMAGE && (
-                <IconButton size="small">
-                  <OpenInNew />
-                </IconButton>
-              )}
-              <IconButton size="small">
-                <Download />
-              </IconButton>
-            </Stack>
-          </Stack>
-        </CardActionArea>
-      </Card>
+            )
+          }
+        />
+      </ListItem>
     );
 
   return (
@@ -98,12 +83,8 @@ const DataFileField = ({ field, value }) => {
         <CardMedia
           component="img"
           height="180"
-          image={
-            field.type == FIELD_IMAGE
-              ? "http://placekitten.com/g/200/300"
-              : "https://www.malvernjoggers.co.uk/wp-content/plugins/responsive-menu/v4.0.0/assets/images/no-preview.jpeg"
-          }
-          alt="green iguana"
+          image={file.url}
+          alt={caption}
         ></CardMedia>
         <CardContent onClick={() => setEditingCaption(true)}>
           {editingCaption ? (
@@ -115,7 +96,10 @@ const DataFileField = ({ field, value }) => {
               rows={4}
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              onBlur={() => setEditingCaption(false)}
+              onBlur={() => {
+                setEditingCaption(false);
+                saveCaption();
+              }}
             />
           ) : (
             <Typography
@@ -147,14 +131,14 @@ const DataFileField = ({ field, value }) => {
               borderRadius: 50,
             }}
           >
-            {field.type == FIELD_IMAGE && (
+            <Link href={file.url} target="_blank">
               <IconButton size="small">
                 <OpenInNew />
               </IconButton>
-            )}
-            <IconButton size="small">
+            </Link>
+            {/* <IconButton size="small">
               <Download />
-            </IconButton>
+            </IconButton> */}
           </Stack>
         </Stack>
       </CardActionArea>

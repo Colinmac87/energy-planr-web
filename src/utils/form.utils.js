@@ -1,7 +1,7 @@
 import {
   FIELD_CHECKBOXES,
   FIELD_DROPDOWN,
-  FIELD_FILES,
+  FIELD_FILE,
   FIELD_IMAGE,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
@@ -18,7 +18,7 @@ export const canBeDefaultField = (fieldType) => {
 };
 
 export const canShowInRegister = (fieldType) => {
-  return ![FIELD_RICHTEXT, FIELD_FILES, FIELD_IMAGE].includes(fieldType);
+  return ![FIELD_RICHTEXT, FIELD_FILE, FIELD_IMAGE].includes(fieldType);
 };
 
 export const muiDataGridCellEditProps = (fieldType) => {

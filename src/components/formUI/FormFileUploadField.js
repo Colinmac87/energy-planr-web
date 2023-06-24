@@ -1,133 +1,88 @@
-import { Close, UploadFile } from "@mui/icons-material";
-import {
-  Button,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { UploadFile } from "@mui/icons-material";
+import { Button, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { FIELD_FILES } from "../../constants/form.constants";
+import { FIELD_IMAGE } from "../../constants/form.constants";
+import { LoadingButton } from "@mui/lab";
+import { uploadFile } from "../../services/storage.service";
+import { alertError, alertSuccess } from "../../utils/alert.utils";
 
-const FormFileUploadField = ({ onChange }) => {
-  const { asset } = useSelector((state) => state.asset);
-
-  const [field, setField] = useState(FIELD_FILES);
+const FormFileUploadField = ({ type, onUpload }) => {
   const [file, setFile] = useState(null);
   const [caption, setCaption] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onFileSelect = (e) => {
     setFile(e.target.files[0]);
   };
 
+  const handleUpload = () => {
+    setLoading(true);
+
+    uploadFile(file)
+      .then((url) => {
+        onUpload({ name: file.name, url: url, caption: caption })
+          .then(() => {
+            setFile(null);
+            setCaption("");
+            alertSuccess("File uploaded.");
+          })
+          .finally(() => setLoading(false));
+      })
+      .catch((error) => {
+        alertError("Unable to upload file.");
+        setLoading(false);
+      });
+  };
+
   return (
-    <Stack sx={{ padding: 2, gap: 2 }}>
-      <Stack sx={{ flexDirection: "row", gap: 1, alignItems: "center" }}>
-        {/* <FormControl sx={{ flex: 1 }}>
-          <InputLabel>Field</InputLabel>
-          <Select
-            fullWidth
-            label={"Field"}
-            value={field}
-            onChange={(e) => {
-              setField(e.target.value);
-            }}
-            readOnly={file != null}
-          >
-            {asset.formFields
-              .filter(
-                (field) =>
-                  field.type == FIELD_FILES || field.type == FIELD_IMAGE
-              )
-              .map((field) => (
-                <MenuItem value={field.type}>
-                  {field.type == FIELD_IMAGE ? "Image" : "File"}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl> */}
-        <Stack
-          sx={{
-            flex: 1,
-            height: 56,
-            flexDirection: "row",
-            border: "1px solid #555",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderRadius: 1,
-            p: 1,
-            gap: 3,
-          }}
-        >
-          <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-            <Button variant="outlined" component="label">
-              {file ? "Change File" : "Select File"}
-              <input type="file" hidden onChange={onFileSelect} />
-            </Button>
-            <Typography>{file?.name}</Typography>
-          </Stack>
-          {file && (
-            <IconButton onClick={() => setFile(null)}>
-              <Close />
-            </IconButton>
-          )}
-        </Stack>
-        <Button
-          variant="contained"
-          startIcon={<UploadFile />}
-          sx={{
-            flexDirection: "column",
-          }}
-        >
-          Upload
+    <Stack
+      sx={{
+        flexDirection: "row",
+        gap: 2,
+        alignItems: "center",
+        padding: 2,
+      }}
+    >
+      <Stack
+        sx={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button variant="outlined" component="label" disabled={loading}>
+          {file ? "Change File" : "Select File"}
+          <input
+            type="file"
+            accept={type == FIELD_IMAGE ? "image/*" : "*"}
+            hidden
+            onChange={onFileSelect}
+          />
         </Button>
       </Stack>
       <TextField
+        flex={1}
         fullWidth
         label="Caption"
         placeholder="Write about the file here"
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
-      ></TextField>
+        disabled={loading}
+      />
+      <LoadingButton
+        disabled={file == null}
+        loading={loading}
+        variant="contained"
+        startIcon={<UploadFile />}
+        sx={{
+          flexDirection: "column",
+        }}
+        onClick={handleUpload}
+      >
+        Upload
+      </LoadingButton>
     </Stack>
-    // <FileUpload
-    //   getBase64={false}
-    //   multiFile={false}
-    //   //   disabled={loading}
-    //   title={field.name}
-    //   header={"Drop file here"}
-    //   leftLabel="or"
-    //   rightLabel="to select file"
-    //   buttonLabel="click here"
-    //   buttonRemoveLabel="Remove all"
-    //   maxFileSize={20}
-    //   maxUploadFiles={field.meta?.maxNoOfFiles || 1}
-    //   maxFilesContainerHeight={357}
-    //   //   acceptedType={"image/*"}
-    //   onFilesChange={onFileUploadChanges}
-    //   onError={onFileUploadError}
-    //   BannerProps={{
-    //     elevation: 0,
-    //     variant: "outlined",
-    //     sx: { background: "black" },
-    //   }}
-    //   showPlaceholderImage={true}
-    //   onContextReady={(context) => {}}
-    //   PlaceholderGridProps={{ md: 6 }}
-    //   LabelsGridProps={{ md: 6 }}
-    //   ContainerProps={{
-    //     elevation: 0,
-    //     variant: "outlined",
-    //     sx: { p: 1 },
-    //   }}
-    //   placeholderImageDimension={{
-    //     xs: { height: 128 },
-    //     sm: { height: 128 },
-    //     md: { height: 164 },
-    //     lg: { height: 256 },
-    //   }}
-    // />
   );
 };
 

@@ -71,3 +71,67 @@ export const getDataByRegister = async (registerId) => {
     return null;
   }
 };
+
+export const addFile = async (
+  dataId,
+  { fileName, fileCaption, fileUrl, fileType }
+) => {
+  try {
+    const docRef = await addDoc(collection(db, "files"), {
+      dataId: dataId,
+      name: fileName,
+      caption: fileCaption,
+      url: fileUrl,
+      type: fileType,
+      isDeleted: false,
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const getFiles = async (dataId, type) => {
+  try {
+    const q = query(
+      collection(db, "files"),
+      where("dataId", "==", dataId),
+      where("type", "==", type),
+      where("isDeleted", "==", false)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }));
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const saveFileCaption = async (id, caption) => {
+  try {
+    try {
+      const docRef = doc(db, "files", id);
+      return await updateDoc(docRef, {
+        caption: caption,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {}
+};
+
+export const deleteFile = async (id) => {
+  try {
+    try {
+      const docRef = doc(db, "files", id);
+      return await updateDoc(docRef, {
+        isDeleted: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {}
+};

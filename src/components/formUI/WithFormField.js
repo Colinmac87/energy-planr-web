@@ -4,8 +4,6 @@ import {
   FIELD_DATERANGE,
   FIELD_DATETIME,
   FIELD_DROPDOWN,
-  FIELD_FILES,
-  FIELD_IMAGE,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
   FIELD_RICHTEXT,
@@ -20,8 +18,6 @@ import FormRichTextField from "./FormRichTextField";
 import FormYesNoField from "./FormYesNoField";
 import FormDateTimeField from "./FormDateTimeField";
 import FormDateRangeField from "./FormDateRangeField";
-import FormFileUploadField from "./FormFileUploadField";
-import FormImageUploadField from "./FormImageUploadField";
 import FormDropdownField from "./FormDropdownField";
 import FormCheckboxField from "./FormCheckboxField";
 
@@ -57,10 +53,6 @@ const WithFormField = ({ field, value, onChange, showLabel = true }) => {
         return (
           <FormDateRangeField field={field} value={value} onChange={onChange} />
         );
-      case FIELD_FILES:
-        return null;
-      case FIELD_IMAGE:
-        return null;
       case FIELD_DROPDOWN:
         return (
           <FormDropdownField field={field} value={value} onChange={onChange} />

@@ -4,8 +4,6 @@ import {
   FIELD_DATERANGE,
   FIELD_DATETIME,
   FIELD_DROPDOWN,
-  FIELD_FILES,
-  FIELD_IMAGE,
   FIELD_MULTILINE,
   FIELD_NUMERIC,
   FIELD_RICHTEXT,
@@ -33,10 +31,6 @@ const WithDataField = ({ field, value, withLabel = true }) => {
         return <DataDateTimeField field={field} value={value} />;
       case FIELD_DATERANGE:
         return <DataDateRangeField field={field} value={value} />;
-      case FIELD_FILES:
-        return value;
-      case FIELD_IMAGE:
-        return value;
       case FIELD_DROPDOWN:
         return <DataDropdownField field={field} value={value} />;
       case FIELD_CHECKBOXES:
