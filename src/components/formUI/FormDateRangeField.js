@@ -4,46 +4,38 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 
 const FormDateTimeField = ({ field, value, onChange }) => {
-  const [tempValue, setTempValue] = useState(",");
-
-  let start = moment(),
-    end = moment();
-  try {
-    [start, end] = value.split(",");
-    start = moment(start);
-    end = moment(end);
-  } catch (error) {}
+  const [startDate, setStartDate] = useState(moment().valueOf());
+  const [endDate, setEndDate] = useState(moment().valueOf());
 
   useEffect(() => {
-    onChange(tempValue);
-  }, [tempValue]);
+    try {
+      const [first, second] = value.split(",");
+      setStartDate(first);
+      setEndDate(second);
+    } catch (error) {}
+  }, []);
 
-  const setStart = (date) => {
-    const [first, second] = tempValue.split(",");
-    setTempValue([date, second].join(","));
-  };
-  const setEnd = (date) => {
-    const [first, second] = tempValue.split(",");
-    setTempValue([first, date].join(","));
-  };
+  useEffect(() => {
+    onChange(`${startDate},${endDate}`);
+  }, [startDate, endDate]);
 
   return (
     <Stack flexDirection={"row"} gap={2}>
       <DatePicker
         sx={{ width: "100%" }}
         format="ddd DD-MM-YYYY"
-        value={start}
+        value={moment(startDate)}
         onChange={(v) => {
-          setStart(v.valueOf().toString());
+          setStartDate(v.valueOf());
         }}
       />
       <p>-</p>
       <DatePicker
         sx={{ width: "100%" }}
         format="ddd DD-MM-YYYY"
-        value={end}
+        value={moment(endDate)}
         onChange={(v) => {
-          setEnd(v.valueOf().toString());
+          setEndDate(v.valueOf());
         }}
       />
     </Stack>

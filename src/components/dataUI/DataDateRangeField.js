@@ -7,8 +7,8 @@ const DataDateRangeField = ({ field, value }) => {
 
     return (
       <Typography>
-        {moment(start).format("ddd DD-MM-YYYY")} -{" "}
-        {moment(end).format("ddd DD-MM-YYYY")}
+        {moment(parseInt(start)).format("ddd DD-MM-YYYY")} -{" "}
+        {moment(parseInt(end)).format("ddd DD-MM-YYYY")}
       </Typography>
     );
   } catch (error) {
