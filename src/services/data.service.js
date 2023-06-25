@@ -25,6 +25,33 @@ export const createData = async (assetId, registerId, data) => {
   }
 };
 
+export const createDataBulk = async (assetId, registerId, data) => {
+  try {
+    let errors = [];
+
+    for (const row in data) {
+      try {
+        delete data[row].id;
+        const docRef = await addDoc(collection(db, "data"), {
+          assetId: assetId,
+          registerId: registerId,
+          ...data[row],
+          isDeleted: false,
+        });
+
+        if (!docRef?.id) throw Error();
+      } catch (error) {
+        errors.push(row);
+      }
+    }
+
+    return errors;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const updateData = async (id, data) => {
   try {
     const docRef = doc(db, "data", id);

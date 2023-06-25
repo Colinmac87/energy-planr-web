@@ -141,18 +141,6 @@ const Asset = () => {
             </IconButton>
           </Tooltip>
         </Stack>
-        {/* <Stack
-          sx={{
-            flex: 1,
-            flexDirection: "column-reverse",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <IconButton aria-label="settings">
-            <Settings fontSize="large" />
-          </IconButton>
-        </Stack> */}
       </Paper>
 
       <Box

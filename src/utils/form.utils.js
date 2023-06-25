@@ -1,5 +1,6 @@
 import {
   FIELD_CHECKBOXES,
+  FIELD_DATETIME,
   FIELD_DROPDOWN,
   FIELD_FILE,
   FIELD_IMAGE,
@@ -7,6 +8,8 @@ import {
   FIELD_NUMERIC,
   FIELD_RICHTEXT,
   FIELD_TEXT,
+  FIELD_URL,
+  FIELD_YESNO,
 } from "../constants/form.constants";
 
 export const getDefaultField = () => {
@@ -25,6 +28,7 @@ export const muiDataGridCellEditProps = (fieldType) => {
   switch (fieldType) {
     case FIELD_TEXT:
     case FIELD_MULTILINE:
+    case FIELD_URL:
       return {
         editable: true,
         type: "string",
@@ -37,6 +41,17 @@ export const muiDataGridCellEditProps = (fieldType) => {
     default:
       return {};
   }
+};
+
+export const isFieldUploadParsable = (fieldType) => {
+  return [
+    FIELD_TEXT,
+    FIELD_MULTILINE,
+    FIELD_NUMERIC,
+    FIELD_URL,
+    FIELD_DATETIME,
+    FIELD_YESNO,
+  ].includes(fieldType);
 };
 
 export const validateFormBuilder = (formFields) => {
@@ -90,4 +105,8 @@ export const validateFormBuilder = (formFields) => {
     result.errors.push(error);
   }
   return result;
+};
+
+export const tryParseValue = (field, value) => {
+  return value;
 };

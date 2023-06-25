@@ -117,7 +117,6 @@ const AssetRegisterView = ({ onDataSelect }) => {
                   ? register?.formFields
                       ?.filter((field) => field.showInRegister)
                       .map((field) => ({
-                        meta: field,
                         field: field.key,
                         headerName: field.name,
                         width: 200,
@@ -168,9 +167,10 @@ const AssetRegisterView = ({ onDataSelect }) => {
       </Grid>
 
       <EquipmentFileUpload
+        register={register}
         isOpen={isFileUploadDialogOpen}
         onClose={() => setIsFileUploadDialogOpen(false)}
-        onSave={() => {}}
+        onSave={loadData}
       />
     </Box>
   );

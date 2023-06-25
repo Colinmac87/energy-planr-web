@@ -6,10 +6,10 @@ export const FIELD_RICHTEXT = "richtext";
 export const FIELD_DROPDOWN = "dropdown";
 export const FIELD_YESNO = "yesno";
 export const FIELD_CHECKBOXES = "checkboxes";
-export const FIELD_FILE = "file";
-export const FIELD_IMAGE = "image";
 export const FIELD_DATETIME = "datetime";
 export const FIELD_DATERANGE = "daterange";
+export const FIELD_FILE = "file";
+export const FIELD_IMAGE = "image";
 
 export const FIELD_DICT = {
   FIELD_TEXT: {
