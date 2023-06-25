@@ -20,8 +20,11 @@ import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithDataField from "./dataUI/WithDataField";
 import { LoadingButton } from "@mui/lab";
 import EquipmentFilesForm from "./EquipmentFilesForm";
+import { useSelector } from "react-redux";
 
 const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(data || {}))
@@ -116,14 +119,17 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
 
   return (
     <Box sx={{ height: "100%" }}>
+      <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          {asset.name} - {register.name}
+        </Typography>
+        <IconButton onClick={onClose}>
+          <Close fontSize="large" />
+        </IconButton>
+      </Stack>
       <TabContext value={selectedTab}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
-            {renderTabs()}
-            <IconButton onClick={onClose}>
-              <Close />
-            </IconButton>
-          </Stack>
+          {renderTabs()}
         </Box>
 
         <TabPanel value="data">
