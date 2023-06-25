@@ -63,7 +63,7 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
   }, [value]);
 
   return (
-    <Box flex={1} sx={styles}>
+    <Box flex={1} p={2} sx={styles}>
       {children}
     </Box>
   );

@@ -22,6 +22,7 @@ import {
   TextField,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { saveFormGroups } from "../services/register.service";
@@ -30,6 +31,7 @@ import { LoadingButton } from "@mui/lab";
 import { useSelector } from "react-redux";
 
 const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
+  const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
 
   const [loading, setLoading] = useState(false);
@@ -113,6 +115,10 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
           borderRadius: 2,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
+          backgroundColor:
+            theme.palette.mode == "light"
+              ? theme.palette.grey.A200
+              : theme.palette.background.default,
         }}
       >
         <Toolbar>
@@ -123,7 +129,15 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" component="div">
+            <Typography
+              variant="h5"
+              sx={{
+                color:
+                  theme.palette.mode == "light"
+                    ? theme.palette.text.primary
+                    : null,
+              }}
+            >
               Groups
             </Typography>
             <FormControl fullWidth sx={{ m: 2 }}>

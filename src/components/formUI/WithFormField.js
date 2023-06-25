@@ -70,7 +70,7 @@ const WithFormField = ({ field, value, onChange, showLabel = true }) => {
     <Grid item sm={field.span}>
       {showLabel && (
         <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-          {field.name}
+          {field.name}{field.required && "*"}
         </Typography>
       )}
       {renderFormField()}

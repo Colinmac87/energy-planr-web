@@ -110,6 +110,11 @@ const AssetRegisterView = ({ onDataSelect }) => {
         <Grid item xs={12}>
           <Box sx={{ height: 600, width: "100%" }}>
             <DataGrid
+              sx={{
+                "& .MuiDataGrid-cell": {
+                  padding: 0,
+                },
+              }}
               apiRef={gridApiRef}
               rows={data}
               columns={

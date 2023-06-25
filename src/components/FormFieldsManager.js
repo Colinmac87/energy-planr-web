@@ -16,6 +16,7 @@ import {
   TextField,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { FIELD_DICT } from "../constants/form.constants";
@@ -42,6 +43,7 @@ import { LoadingButton } from "@mui/lab";
 import FieldTriggerOptions from "./formBuilder/FieldTriggerOptions";
 
 const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
+  const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
 
   const [loading, setLoading] = useState(false);
@@ -170,6 +172,10 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
           borderRadius: 1,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
+          backgroundColor:
+            theme.palette.mode == "light"
+              ? theme.palette.grey.A200
+              : theme.palette.background.default,
         }}
       >
         <Toolbar>
@@ -180,7 +186,15 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5" component="div">
+            <Typography
+              variant="h5"
+              sx={{
+                color:
+                  theme.palette.mode == "light"
+                    ? theme.palette.text.primary
+                    : null,
+              }}
+            >
               Fields
             </Typography>
             <FormControl fullWidth sx={{ m: 2 }}>
