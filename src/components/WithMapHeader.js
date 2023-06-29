@@ -26,14 +26,12 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
         backgroundColor: "#eee2",
         minHeight: "100%",
         minWidth: "100%",
-        borderRadius: 2,
         overflow: "hidden",
       }}
     >
       <AppBar
         sx={{
           position: "absolute",
-          borderRadius: 2,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
         }}

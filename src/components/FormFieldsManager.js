@@ -30,7 +30,6 @@ import {
   Save,
 } from "@mui/icons-material";
 import { saveFormFields } from "../services/register.service";
-import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
 import {
   canBeDefaultField,
@@ -41,8 +40,10 @@ import {
 import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 import FieldTriggerOptions from "./formBuilder/FieldTriggerOptions";
+import { useSnackbar } from "notistack";
 
 const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
 
@@ -134,18 +135,23 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
     setLoading(true);
     const validationResult = validateFormBuilder(fields);
     if (!validationResult.isValid) {
-      validationResult.errors.forEach((error) => alertError(error));
+      validationResult.errors.forEach((error) =>
+        enqueueSnackbar(error, { variant: "error" })
+      );
       setLoading(false);
       return;
     }
 
     saveFormFields(register.id, { formFields: fields })
       .then(() => {
-        alertSuccess("Changes saved.");
+        enqueueSnackbar("Changes saved.", { variant: "success" });
         onSave();
       })
       .catch(() => {
-        alertError("Unable to save changes, please try again or contact us.");
+        enqueueSnackbar(
+          "Unable to save changes, please try again or contact us.",
+          { variant: "error" }
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -163,19 +169,14 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         pb: 8,
         overflow: "hidden",
         position: "relative",
-        borderRadius: 1,
       }}
     >
       <AppBar
         sx={{
           position: "absolute",
-          borderRadius: 1,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
-          backgroundColor:
-            theme.palette.mode == "light"
-              ? theme.palette.grey.A200
-              : theme.palette.background.default,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Toolbar>
@@ -238,7 +239,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
           flex: 1,
           position: "relative",
           flexDirection: "column",
-          backgroundColor: "#eee2",
+          backgroundColor: theme.palette.background.default,
           minHeight: "100%",
           minWidth: "100%",
           borderBottomLeftRadius: 2,
@@ -274,7 +275,6 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                       pl: 2,
                       pr: 2,
                       border: "1px solid",
-                      borderRadius: 100,
                     }}
                   >
                     {field.key ? (
@@ -454,10 +454,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                     onChange={(v) => {
                       onChangeFieldProperty(i, "triggers", v);
                     }}
-                  >
-                    <Divider>Triggers</Divider>
-                    <br />
-                  </FieldTriggerOptions>
+                  />
                 </Stack>
               </Paper>
             </Grid>

@@ -15,16 +15,18 @@ import {
 import { FIELD_FILE } from "../../constants/form.constants";
 import { useState } from "react";
 import { saveFileCaption } from "../../services/data.service";
-import { alertSuccess } from "../../utils/alert.utils";
+import { useSnackbar } from "notistack";
 
 const DataFileField = ({ file }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [editingCaption, setEditingCaption] = useState(false);
   const [caption, setCaption] = useState(file.caption);
 
   const saveCaption = () => {
     if (caption.trim() != file.caption) {
       saveFileCaption(file.id, caption).then(() =>
-        alertSuccess("Caption saved")
+        enqueueSnackbar("Caption saved", { variant: "success" })
       );
     }
   };
@@ -128,7 +130,6 @@ const DataFileField = ({ file }) => {
               gap: 2,
               background: "#0006",
               p: 0.5,
-              borderRadius: 50,
             }}
           >
             <Link href={file.url} target="_blank">

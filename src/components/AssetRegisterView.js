@@ -8,6 +8,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  useTheme,
 } from "@mui/material";
 import { DataGrid, GridToolbar, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -19,10 +20,12 @@ import { Add, UploadFile } from "@mui/icons-material";
 import EquipmentFileUpload from "./EquipmentFileUpload";
 import { getDataByRegister, updateDataValue } from "../services/data.service";
 import { muiDataGridCellEditProps } from "../utils/form.utils";
-import { alertSuccess } from "../utils/alert.utils";
 import WithCellTriggerEffect from "./dataUI/WithCellTriggerEffect";
+import { useSnackbar } from "notistack";
 
 const AssetRegisterView = ({ onDataSelect }) => {
+  const theme = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   const gridApiRef = useGridApiRef();
   const { registers } = useSelector((state) => state.asset);
 
@@ -38,6 +41,15 @@ const AssetRegisterView = ({ onDataSelect }) => {
     setSelectedData(null);
     setIsEquipmentDetailViewerOpen(false);
   };
+
+  useEffect(() => {
+    if (registers && registers.length > 0) {
+      try {
+        setRegister(registers[0]);
+      } catch (error) {}
+    }
+  }, [registers]);
+
   useEffect(() => {
     if (register) loadData();
   }, [register]);
@@ -50,7 +62,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
 
   const onCellEdit = (id, field, value) => {
     updateDataValue(id, field, value).then(() => {
-      alertSuccess("Changes saved");
+      enqueueSnackbar("Changes saved", { variant: "success" });
     });
   };
 
@@ -66,12 +78,15 @@ const AssetRegisterView = ({ onDataSelect }) => {
           <FormControl fullWidth>
             <InputLabel>Register</InputLabel>
             <Select
-              value={register}
+              autoFocus
+              value={register?.id}
               label="Register"
-              onChange={(e) => setRegister(e.target.value)}
+              onChange={(e) => {
+                setRegister(registers.find((r) => r.id == e.target.value));
+              }}
             >
-              {registers.map((r) => (
-                <MenuItem value={r}>{r.name}</MenuItem>
+              {registers?.map((r) => (
+                <MenuItem value={r.id}>{r.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -158,7 +173,13 @@ const AssetRegisterView = ({ onDataSelect }) => {
             onClose={onCloseEquipmentDetailViewer}
             sx={{ maxHeight: window.outerHeight - 100 }}
           >
-            <Box sx={{ p: 4 }}>
+            <Box
+              sx={{
+                p: 4,
+                height: "100%",
+                backgroundColor: theme.palette.background.default,
+              }}
+            >
               <EquipmentDataForm
                 register={register}
                 data={selectedData}

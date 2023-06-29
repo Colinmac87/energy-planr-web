@@ -1,13 +1,14 @@
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
-import { alertError, alertSuccess } from "../utils/alert.utils";
 import { createLocation, updateLocation } from "../services/location.service";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
 
 const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
-  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState(location?.name);
   const [backgroundMapFile, setBackgroundMapFile] = useState(null);
 
@@ -24,22 +25,26 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
     if (location?.id) {
       updateLocation(location.id, { name, backgroundMapFile })
         .then(() => {
-          alertSuccess("Changes saved.");
+          enqueueSnackbar("Changes saved.", { variant: "success" });
           onSave();
         })
         .catch(() => {
-          alertError("Unable to save changes, please try again or contact us.");
+          enqueueSnackbar(
+            "Unable to save changes, please try again or contact us.",
+            { variant: "error" }
+          );
         })
         .finally(() => setLoading(false));
     } else {
       createLocation(assetId, { name, backgroundMapFile })
         .then((locationId) => {
           if (locationId) {
-            alertSuccess("New location created.");
+            enqueueSnackbar("New location created.", { variant: "success" });
             onSave();
           } else {
-            alertError(
-              "Unable to create location, please try again or contact us."
+            enqueueSnackbar(
+              "Unable to create location, please try again or contact us.",
+              { variant: "error" }
             );
           }
         })

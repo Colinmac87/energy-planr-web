@@ -13,7 +13,6 @@ const FullScreenViewer = ({ isOpen, onClose, children }) => {
     bgcolor: "background.paper",
     border: "2px solid #888",
     boxShadow: 24,
-    borderRadius: 1,
     p: 0,
   };
 

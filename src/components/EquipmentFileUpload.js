@@ -22,9 +22,10 @@ import {
 } from "../utils/form.utils";
 import WithDataField from "./dataUI/WithDataField";
 import { createDataBulk } from "../services/data.service";
-import { alertError, alertSuccess } from "../utils/alert.utils";
+import { useSnackbar } from "notistack";
 
 const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
   const gridApiRef = useGridApiRef();
 
@@ -104,10 +105,12 @@ const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
     )
       .then((errors) => {
         if (errors.length == 0) {
-          alertSuccess("Data uploaded");
+          enqueueSnackbar("Data uploaded", { variant: "success" });
           onSave();
         } else {
-          alertError(`Unable to upload ${errors.length} records`);
+          enqueueSnackbar(`Unable to upload ${errors.length} records`, {
+            variant: "error",
+          });
         }
       })
       .finally(() => setLoading(false));

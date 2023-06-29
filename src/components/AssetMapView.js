@@ -102,7 +102,6 @@ const AssetMapView = ({ preSelected, data }) => {
           width: "16%",
           minWidth: 224,
           maxWidth: 296,
-          borderRadius: 0,
           justifyContent: "space-between",
           pt: 3,
           pb: 3,

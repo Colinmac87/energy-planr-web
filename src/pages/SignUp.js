@@ -12,10 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { signUp } from "../services/auth.service";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../features/account.slice";
-import { alertError } from "../utils/alert.utils";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
 
 const SignUp = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const account = useSelector((state) => state.account);
@@ -41,8 +42,9 @@ const SignUp = () => {
             dispatch(setUser(user));
             navigate("/");
           } else
-            alertError(
-              "Unable to create account, please try again or contact us."
+            enqueueSnackbar(
+              "Unable to create account, please try again or contact us.",
+              { variant: "error" }
             );
         })
         .finally(() => {

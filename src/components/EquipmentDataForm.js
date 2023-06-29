@@ -2,6 +2,9 @@ import { useState } from "react";
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   Divider,
   Grid,
   IconButton,
@@ -16,13 +19,14 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Close } from "@mui/icons-material";
 import { FIELD_FILE, FIELD_IMAGE } from "../constants/form.constants";
 import { createData, deleteData, updateData } from "../services/data.service";
-import { alertError, alertSuccess } from "../utils/alert.utils";
 import WithDataField from "./dataUI/WithDataField";
 import { LoadingButton } from "@mui/lab";
 import EquipmentFilesForm from "./EquipmentFilesForm";
 import { useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
 
 const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
 
   const [loading, setLoading] = useState(false);
@@ -30,6 +34,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     JSON.parse(JSON.stringify(data || {}))
   );
   const [selectedTab, setSelectedTab] = useState("data");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const canEdit = true;
 
@@ -63,22 +68,26 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     if (formData?.id) {
       updateData(formData.id, formData)
         .then(() => {
-          alertSuccess("Changes saved.");
+          enqueueSnackbar("Changes saved.", { variant: "success" });
           onSave();
         })
         .catch(() => {
-          alertError("Unable to save changes, please try again or contact us.");
+          enqueueSnackbar(
+            "Unable to save changes, please try again or contact us.",
+            { variant: "error" }
+          );
         })
         .finally(() => setLoading(false));
     } else {
       createData(register.assetId, register.id, formData)
         .then((dataId) => {
           if (dataId) {
-            alertSuccess("New data created.");
+            enqueueSnackbar("New data created.", { variant: "success" });
             onSave();
           } else {
-            alertError(
-              "Unable to create data, please try again or contact us."
+            enqueueSnackbar(
+              "Unable to create data, please try again or contact us.",
+              { variant: "error" }
             );
           }
         })
@@ -91,12 +100,14 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
 
     deleteData(formData.id)
       .then(() => {
-        alertSuccess("Data deleted.");
+        enqueueSnackbar("Data deleted.", { variant: "success" });
         onSave();
         onClose();
       })
       .catch(() => {
-        alertError("Unable to delete, please try again or contact us.");
+        enqueueSnackbar("Unable to delete, please try again or contact us.", {
+          variant: "error",
+        });
       })
       .finally(() => setLoading(false));
   };
@@ -179,26 +190,28 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
                   >
                     Cancel
                   </Button>
+                </Stack>
+                <Stack flexDirection={"row"} gap={6}>
                   {canEdit && formData?.id && (
                     <Button
                       variant="outlined"
                       disabled={loading}
-                      onClick={handleDelete}
+                      onClick={() => setIsDeleteDialogOpen(true)}
                       color="error"
                     >
                       Delete
                     </Button>
                   )}
+                  {canEdit && (
+                    <LoadingButton
+                      type="submit"
+                      variant="contained"
+                      loading={loading}
+                    >
+                      Save
+                    </LoadingButton>
+                  )}
                 </Stack>
-                {canEdit && (
-                  <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    loading={loading}
-                  >
-                    Save
-                  </LoadingButton>
-                )}
               </Stack>
             </Stack>
           </Box>
@@ -210,6 +223,26 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
           <EquipmentFilesForm dataId={formData.id} type={FIELD_IMAGE} />
         </TabPanel>
       </TabContext>
+
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+      >
+        <DialogTitle>
+          Are you sure you want to delete this data permanently?
+        </DialogTitle>
+        <DialogActions>
+          <Button
+            disabled={loading}
+            onClick={() => setIsDeleteDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <LoadingButton loading={loading} onClick={handleDelete} color="error">
+            Delete
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

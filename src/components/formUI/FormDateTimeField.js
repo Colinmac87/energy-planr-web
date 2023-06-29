@@ -4,7 +4,7 @@ import moment from "moment";
 const FormDateTimeField = ({ field, value, onChange }) => {
   return (
     <DatePicker
-      format="ddd DD-MM-YYYY"
+      format="DD-MM-YYYY"
       value={value ? moment(value) : moment()}
       onChange={(v) => {
         onChange(v.valueOf());

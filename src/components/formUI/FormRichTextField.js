@@ -80,7 +80,7 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     if (!editor) return null;
 
     return (
-      <Stack sx={{ margin: 1, pt: 1 }} flexDirection={"row"} gap={1}>
+      <Stack sx={{ margin: 1 }} flexDirection={"row"} gap={1}>
         <ToggleButtonGroup
           value={formats}
           aria-label="text formatting"
@@ -382,7 +382,6 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
       <div
         style={{
           border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 4,
         }}
       >
         {!readOnly && (

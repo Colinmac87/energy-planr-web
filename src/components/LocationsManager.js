@@ -18,10 +18,11 @@ import {
 import LocationForm from "./LocationForm";
 import { useEffect, useState } from "react";
 import { deleteLocation, getLocations } from "../services/location.service";
-import { alertInfo } from "../utils/alert.utils";
 import { useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
 
 const LocationsManager = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
 
   const [isLocationFormOpen, setIsLocationFormOpen] = useState(false);
@@ -42,11 +43,14 @@ const LocationsManager = () => {
     deleteLocation(contextLocation.id)
       .then(() => {
         loadLocations();
-        alertInfo("Location deleted.");
+        enqueueSnackbar("Location deleted.", { variant: "success" });
         onCloseLocationDeleteDialogOpen();
       })
       .catch(() => {
-        alertInfo("Unable to delete location, please try again or contact us");
+        enqueueSnackbar(
+          "Unable to delete location, please try again or contact us",
+          { variant: "error" }
+        );
         onCloseLocationDeleteDialogOpen();
       });
   };

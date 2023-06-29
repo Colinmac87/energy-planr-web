@@ -19,11 +19,12 @@ import {
   deleteRegister,
   updateRegister,
 } from "../services/register.service";
-import { alertError, alertInfo, alertSuccess } from "../utils/alert.utils";
 import { removeSpecialCharacters } from "../utils/string.utils";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
 
 const RegistersManager = ({ onSave }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { asset, registers: _registers } = useSelector((state) => state.asset);
 
   const [isRegisterDeleteDialogOpen, setIsRegisterDeleteDialogOpen] =
@@ -64,22 +65,25 @@ const RegistersManager = ({ onSave }) => {
 
       register.name = removeSpecialCharacters(register.name);
       if (register.name == "") {
-        alertError("Please enter a valid register name");
+        enqueueSnackbar("Please enter a valid register name", {
+          variant: "error",
+        });
         return;
       }
 
       if (
         registers.find((r) => r.id != register.id && r.name == register.name)
       ) {
-        alertError(
-          "Another register with a same name already exist, please use a different one"
+        enqueueSnackbar(
+          "Another register with a same name already exist, please use a different one",
+          { variant: "error" }
         );
         return;
       }
       if (register.id) {
         updateRegister(register.id, { name: register.name })
           .then(() => {
-            alertSuccess("Changes saved.");
+            enqueueSnackbar("Changes saved.", { variant: "success" });
             onSave();
           })
           .finally(() => setLoading(false));
@@ -89,13 +93,16 @@ const RegistersManager = ({ onSave }) => {
           name: register.name,
         })
           .then(() => {
-            alertSuccess("Changes saved.");
+            enqueueSnackbar("Changes saved.", { variant: "success" });
             onSave();
           })
           .finally(() => setLoading(false));
       }
     } catch (error) {
-      alertError("Unable to save changes, please try again or contact us.");
+      enqueueSnackbar(
+        "Unable to save changes, please try again or contact us.",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
@@ -107,11 +114,12 @@ const RegistersManager = ({ onSave }) => {
       deleteRegister(contextRegister.id)
         .then(() => {
           onSave();
-          alertInfo("Register deleted.");
+          enqueueSnackbar("Register deleted.", { variant: "success" });
         })
         .catch((error) => {
-          alertInfo(
-            "Unable to delete location, please try again or contact us"
+          enqueueSnackbar(
+            "Unable to delete location, please try again or contact us",
+            { variant: "error" }
           );
         })
         .finally(() => {

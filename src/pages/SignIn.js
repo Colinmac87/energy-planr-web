@@ -11,7 +11,6 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { signIn } from "../services/auth.service";
-import { alertError } from "../utils/alert.utils";
 import { setUser } from "../features/account.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
@@ -19,8 +18,11 @@ import logo from "../assets/images/logo.png";
 import { getCompany } from "../services/company.service";
 import CompanyRedirect from "./CompanyRedirect";
 import CompanyNotFound from "./CompanyNotFound";
+import { useSnackbar } from "notistack";
 
 const SignIn = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const { companyCode } = useParams();
 
   const navigate = useNavigate();
@@ -55,7 +57,10 @@ const SignIn = () => {
           if (user) {
             dispatch(setUser(user));
             navigate("/");
-          } else alertError("Email or password is not correct.");
+          } else
+            enqueueSnackbar("Email or password is not correct.", {
+              variant: "error",
+            });
         })
         .finally(() => {
           setLoading(false);

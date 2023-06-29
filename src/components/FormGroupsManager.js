@@ -26,11 +26,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { saveFormGroups } from "../services/register.service";
-import { alertError, alertSuccess } from "../utils/alert.utils";
 import { LoadingButton } from "@mui/lab";
 import { useSelector } from "react-redux";
+import { useSnackbar } from "notistack";
 
 const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
 
@@ -84,11 +85,14 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
 
     saveFormGroups(register.id, { formGroups: groups })
       .then(() => {
-        alertSuccess("Changes saved.");
+        enqueueSnackbar("Changes saved.", { variant: "success" });
         onSave();
       })
       .catch(() => {
-        alertError("Unable to save changes, please try again or contact us.");
+        enqueueSnackbar(
+          "Unable to save changes, please try again or contact us.",
+          { variant: "error" }
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -106,19 +110,14 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
         pb: 8,
         overflow: "hidden",
         position: "relative",
-        borderRadius: 2,
       }}
     >
       <AppBar
         sx={{
           position: "absolute",
-          borderRadius: 2,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
-          backgroundColor:
-            theme.palette.mode == "light"
-              ? theme.palette.grey.A200
-              : theme.palette.background.default,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Toolbar>
@@ -181,7 +180,7 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
           flex: 1,
           position: "relative",
           flexDirection: "column",
-          backgroundColor: "#eee2",
+          backgroundColor: theme.palette.background.default,
           minHeight: "100%",
           minWidth: "100%",
           borderBottomLeftRadius: 2,

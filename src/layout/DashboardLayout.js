@@ -56,14 +56,8 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <Box sx={{ display: "flex", flex: 1 }}>
-      <AppBar position="absolute" open={true}>
-        <Toolbar
-          sx={
-            {
-              // pr: "24px", // keep right padding when drawer closed
-            }
-          }
-        >
+      <AppBar position="absolute" open={true} sx={{ height: 60 }}>
+        <Toolbar>
           <Box
             sx={{
               display: "flex",
@@ -116,17 +110,9 @@ const DashboardLayout = ({ children }) => {
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
               open={Boolean(anchorEl)}
               onClose={handleClose}
+              keepMounted
             >
               <MenuItem onClick={handleClose}>Profile</MenuItem>
               <MenuItem onClick={onClickSettings}>Settings</MenuItem>

@@ -1,4 +1,10 @@
-import { GroupWork, Info, Layers, TableChart, TextFields } from "@mui/icons-material";
+import {
+  GroupWork,
+  Info,
+  Layers,
+  TableChart,
+  TextFields,
+} from "@mui/icons-material";
 import {
   Box,
   MenuList,
@@ -102,7 +108,6 @@ const AssetSettings = ({ onDeleteAsset }) => {
           flexDirection: "column",
           height: "100%",
           minWidth: 256,
-          borderRadius: 0,
           justifyContent: "space-between",
           pt: 3,
           pb: 3,

@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Drawer, Paper, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Drawer,
+  Paper,
+  IconButton,
+  Tooltip,
+  useTheme,
+} from "@mui/material";
 import { Map, TableChart, Settings } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,6 +23,7 @@ import AssetSettings from "./AssetSettings";
 import { getRegisters } from "../services/register.service";
 
 const Asset = () => {
+  const theme = useTheme();
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,8 +99,7 @@ const Asset = () => {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          width: 70,
-          borderRadius: 0,
+          width: 60,
           justifyContent: "space-between",
           pt: 3,
           pb: 3,
@@ -162,7 +170,13 @@ const Asset = () => {
         onClose={onCloseDataForm}
         sx={{ height: "100%" }}
       >
-        <Box sx={{ p: 4, height: "100%" }}>
+        <Box
+          sx={{
+            p: 4,
+            height: "100%",
+            backgroundColor: theme.palette.background.default,
+          }}
+        >
           <EquipmentDataForm
             onClose={onCloseDataForm}
             onSaving={() => {}}

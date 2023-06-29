@@ -23,7 +23,7 @@ const FormDateTimeField = ({ field, value, onChange }) => {
     <Stack flexDirection={"row"} gap={2}>
       <DatePicker
         sx={{ width: "100%" }}
-        format="ddd DD-MM-YYYY"
+        format="DD-MM-YYYY"
         value={moment(startDate)}
         onChange={(v) => {
           setStartDate(v.valueOf());
@@ -32,7 +32,7 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       <p>-</p>
       <DatePicker
         sx={{ width: "100%" }}
-        format="ddd DD-MM-YYYY"
+        format="DD-MM-YYYY"
         value={moment(endDate)}
         onChange={(v) => {
           setEndDate(v.valueOf());

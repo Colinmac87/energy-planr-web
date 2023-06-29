@@ -4,9 +4,11 @@ import { useState } from "react";
 import { FIELD_IMAGE } from "../../constants/form.constants";
 import { LoadingButton } from "@mui/lab";
 import { uploadFile } from "../../services/storage.service";
-import { alertError, alertSuccess } from "../../utils/alert.utils";
+import { useSnackbar } from "notistack";
 
 const FormFileUploadField = ({ type, onUpload }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [file, setFile] = useState(null);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,12 +26,12 @@ const FormFileUploadField = ({ type, onUpload }) => {
           .then(() => {
             setFile(null);
             setCaption("");
-            alertSuccess("File uploaded.");
+            enqueueSnackbar("File uploaded.", { variant: "success" });
           })
           .finally(() => setLoading(false));
       })
       .catch((error) => {
-        alertError("Unable to upload file.");
+        enqueueSnackbar("Unable to upload file.", { variant: "error" });
         setLoading(false);
       });
   };

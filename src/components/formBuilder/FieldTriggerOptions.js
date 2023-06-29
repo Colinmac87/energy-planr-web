@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Checkbox,
   FormControlLabel,
   Grid,
   MenuItem,
   Select,
   Stack,
+  Typography,
 } from "@mui/material";
 import { TwitterPicker } from "react-color";
 import WithFormField from "../../components/formUI/WithFormField";
@@ -27,6 +31,7 @@ import {
   FIELD_TRIGGER_OPERATOR_OUTSIDE,
   FIELD_YESNO,
 } from "../../constants/form.constants";
+import { ExpandMore } from "@mui/icons-material";
 
 const allOperators = {
   less: {
@@ -63,7 +68,7 @@ const allOperators = {
   },
 };
 
-const FieldTriggerOptions = ({ field, onChange, children }) => {
+const FieldTriggerOptions = ({ field, onChange }) => {
   const [conditions, setConditions] = useState([]);
   const [availableOperators, setAvailableOperators] = useState([]);
 
@@ -132,110 +137,116 @@ const FieldTriggerOptions = ({ field, onChange, children }) => {
   if (availableOperators.length == 0) return null;
 
   return (
-    <Stack>
-      {children}
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          Comparer
-        </Grid>
-        <Grid item xs={9}>
-          <Select
-            value={operator}
-            onChange={(e) => setOperator(e.target.value)}
-          >
-            {availableOperators.map((op) => (
-              <MenuItem value={op.value}>{op.text}</MenuItem>
-            ))}
-          </Select>
-        </Grid>
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMore />}>
+        <Typography>Triggers</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Stack>
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              Format
+            </Grid>
+            <Grid item xs={9}>
+              <Select
+                value={operator}
+                onChange={(e) => setOperator(e.target.value)}
+              >
+                {availableOperators.map((op) => (
+                  <MenuItem value={op.value}>{op.text}</MenuItem>
+                ))}
+              </Select>
+            </Grid>
 
-        <Grid item xs={3}>
-          Value
-        </Grid>
-        <Grid item xs={9}>
-          <WithFormField
-            field={field}
-            value={compareValue}
-            onChange={(v) => setCompareValue(v)}
-            showLabel={false}
-          />
-        </Grid>
+            <Grid item xs={3}>
+              Value
+            </Grid>
+            <Grid item xs={9}>
+              <WithFormField
+                field={field}
+                value={compareValue}
+                onChange={(v) => setCompareValue(v)}
+                showLabel={false}
+              />
+            </Grid>
 
-        <Grid item xs={3}>
-          Action
-        </Grid>
-        <Grid item xs={9}>
-          <Stack flexDirection={"row"} gap={2}>
-            <Stack flex={1} gap={2}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={actions.registerCellHighlight.isActive}
-                    onChange={(e) =>
+            <Grid item xs={3}>
+              Action
+            </Grid>
+            <Grid item xs={9}>
+              <Stack flexDirection={"row"} gap={2}>
+                <Stack flex={1} gap={2}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={actions.registerCellHighlight.isActive}
+                        onChange={(e) =>
+                          setActions({
+                            ...actions,
+                            registerCellHighlight: {
+                              ...actions.registerCellHighlight,
+                              isActive: e.target.checked,
+                            },
+                          })
+                        }
+                      />
+                    }
+                    label="Register Cell Highlight"
+                  />
+                  <TwitterPicker
+                    triangle="hide"
+                    disabled={!actions.registerCellHighlight.isActive}
+                    color={actions.registerCellHighlight.color}
+                    onChangeComplete={(color) =>
                       setActions({
                         ...actions,
                         registerCellHighlight: {
                           ...actions.registerCellHighlight,
-                          isActive: e.target.checked,
+                          color: color.hex,
                         },
                       })
                     }
                   />
-                }
-                label="Register Cell Highlight"
-              />
-              <TwitterPicker
-                triangle="hide"
-                disabled={!actions.registerCellHighlight.isActive}
-                color={actions.registerCellHighlight.color}
-                onChangeComplete={(color) =>
-                  setActions({
-                    ...actions,
-                    registerCellHighlight: {
-                      ...actions.registerCellHighlight,
-                      color: color.hex,
-                    },
-                  })
-                }
-              />
-            </Stack>
-            <Stack flex={1} gap={2}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={actions.mapPinHighlight.isActive}
-                    onChange={(e) =>
+                </Stack>
+                <Stack flex={1} gap={2}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={actions.mapPinHighlight.isActive}
+                        onChange={(e) =>
+                          setActions({
+                            ...actions,
+                            mapPinHighlight: {
+                              ...actions.mapPinHighlight,
+                              isActive: e.target.checked,
+                            },
+                          })
+                        }
+                      />
+                    }
+                    label="Map Pin Highlight"
+                  />
+                  <TwitterPicker
+                    triangle="hide"
+                    disabled={!actions.mapPinHighlight.isActive}
+                    color={actions.mapPinHighlight.color}
+                    onChangeComplete={(color) =>
                       setActions({
                         ...actions,
                         mapPinHighlight: {
                           ...actions.mapPinHighlight,
-                          isActive: e.target.checked,
+                          color: color.hex,
                         },
                       })
                     }
                   />
-                }
-                label="Map Pin Highlight"
-              />
-              <TwitterPicker
-                triangle="hide"
-                disabled={!actions.mapPinHighlight.isActive}
-                color={actions.mapPinHighlight.color}
-                onChangeComplete={(color) =>
-                  setActions({
-                    ...actions,
-                    mapPinHighlight: {
-                      ...actions.mapPinHighlight,
-                      color: color.hex,
-                    },
-                  })
-                }
-              />
-            </Stack>
-          </Stack>
-        </Grid>
-      </Grid>
-    </Stack>
+                </Stack>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Stack>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

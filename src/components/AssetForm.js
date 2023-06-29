@@ -17,11 +17,12 @@ import {
   deleteAsset,
   updateAsset,
 } from "../services/asset.service";
-import { alertError, alertSuccess } from "../utils/alert.utils";
 import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
 
 const AssetForm = ({ onSaving, onSave, onDelete }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { user } = useSelector((state) => state.account);
   const { asset } = useSelector((state) => state.asset);
 
@@ -43,22 +44,28 @@ const AssetForm = ({ onSaving, onSave, onDelete }) => {
     if (asset?.id) {
       updateAsset(asset.id, { name, thumbnailFile })
         .then(() => {
-          alertSuccess("Changes saved.");
+          enqueueSnackbar("Changes saved.", { variant: "success" });
           onSave();
         })
         .catch(() => {
-          alertError("Unable to save changes, please try again or contact us.");
+          enqueueSnackbar(
+            "Unable to save changes, please try again or contact us.",
+            { variant: "error" }
+          );
         })
         .finally(() => setLoading(false));
     } else {
       createAsset({ companyId: user.companyId, name, thumbnailFile })
         .then((assetId) => {
           if (assetId) {
-            alertSuccess("New asset created.");
+            enqueueSnackbar("New asset created.", { variant: "success" });
             onSave();
           } else {
-            alertError(
-              "Unable to create asset, please try again or contact us."
+            enqueueSnackbar(
+              "Unable to create asset, please try again or contact us.",
+              {
+                variant: "error",
+              }
             );
           }
         })
