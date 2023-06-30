@@ -19,3 +19,10 @@ div.ProseMirror {
 .MuiDrawer-paperAnchorBottom {
   height: 100% !important;
 }
+
+.github-picker {
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  background-color: transparent !important;
+}

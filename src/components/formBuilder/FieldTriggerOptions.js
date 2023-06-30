@@ -10,8 +10,9 @@ import {
   Select,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
-import { TwitterPicker } from "react-color";
+import { GithubPicker } from "react-color";
 import WithFormField from "../../components/formUI/WithFormField";
 import {
   FIELD_CHECKBOXES,
@@ -69,6 +70,7 @@ const allOperators = {
 };
 
 const FieldTriggerOptions = ({ field, onChange }) => {
+  const theme = useTheme();
   const [conditions, setConditions] = useState([]);
   const [availableOperators, setAvailableOperators] = useState([]);
 
@@ -82,11 +84,11 @@ const FieldTriggerOptions = ({ field, onChange }) => {
     field?.triggers?.actions || {
       registerCellHighlight: {
         isActive: false,
-        color: "#f00",
+        color: theme.palette.mode == "light" ? "#000" : "#fff",
       },
       mapPinHighlight: {
         isActive: false,
-        color: "#ff0",
+        color: theme.palette.mode == "light" ? "#000" : "#fff",
       },
     }
   );
@@ -175,10 +177,15 @@ const FieldTriggerOptions = ({ field, onChange }) => {
             </Grid>
             <Grid item xs={9}>
               <Stack flexDirection={"row"} gap={2}>
-                <Stack flex={1} gap={2}>
+                <Stack flex={1} gap={1}>
                   <FormControlLabel
                     control={
                       <Checkbox
+                        sx={{
+                          "&.Mui-checked": {
+                            color: actions.registerCellHighlight.color,
+                          },
+                        }}
                         checked={actions.registerCellHighlight.isActive}
                         onChange={(e) =>
                           setActions({
@@ -193,7 +200,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
                     }
                     label="Register Cell Highlight"
                   />
-                  <TwitterPicker
+                  <GithubPicker
                     triangle="hide"
                     disabled={!actions.registerCellHighlight.isActive}
                     color={actions.registerCellHighlight.color}
@@ -208,10 +215,15 @@ const FieldTriggerOptions = ({ field, onChange }) => {
                     }
                   />
                 </Stack>
-                <Stack flex={1} gap={2}>
+                <Stack flex={1} gap={1}>
                   <FormControlLabel
                     control={
                       <Checkbox
+                        sx={{
+                          "&.Mui-checked": {
+                            color: actions.mapPinHighlight.color,
+                          },
+                        }}
                         checked={actions.mapPinHighlight.isActive}
                         onChange={(e) =>
                           setActions({
@@ -226,7 +238,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
                     }
                     label="Map Pin Highlight"
                   />
-                  <TwitterPicker
+                  <GithubPicker
                     triangle="hide"
                     disabled={!actions.mapPinHighlight.isActive}
                     color={actions.mapPinHighlight.color}
