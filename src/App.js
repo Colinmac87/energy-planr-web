@@ -74,7 +74,11 @@ function App() {
         palette: {
           mode: colorMode,
           background: {
-            paper: isLightTheme ? "#f8f8f8" : "#121212",
+            paper: isLightTheme ? "#f3f6f9" : "#0c1929",
+            default: isLightTheme ? "#fff" : "#051e3b",
+          },
+          primary: {
+            main: isLightTheme ? "#2e78f0" : "#66b2ff",
           },
         },
         typography: {

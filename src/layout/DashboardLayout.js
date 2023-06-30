@@ -10,6 +10,7 @@ import {
   Button,
   Stack,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import { AccountCircle, DarkMode, LightMode } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ import { setUser } from "../features/account.slice";
 import { toggleColorMode } from "../features/system.slice";
 
 const DashboardLayout = ({ children }) => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -56,8 +58,20 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <Box sx={{ display: "flex", flex: 1 }}>
-      <AppBar position="absolute" open={true} sx={{ height: 60 }}>
-        <Toolbar>
+      <AppBar
+        position="absolute"
+        open={true}
+        sx={{
+          height: 60,
+          bgcolor: theme.palette.background.paper,
+        }}
+      >
+        <Toolbar
+          sx={{
+            height: 60,
+            bgcolor: theme.palette.background.paper,
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -65,9 +79,11 @@ const DashboardLayout = ({ children }) => {
               flexDirection: "row",
               gap: 2,
               alignItems: "center",
+              colorScheme: "light",
+              bgcolor: theme.palette.background.paper,
             }}
           >
-            <Link href={`/`} underline="none" color="inherit">
+            <Link href={`/`} underline="none">
               <Typography
                 component="h1"
                 variant="h5"
@@ -78,10 +94,19 @@ const DashboardLayout = ({ children }) => {
             </Link>
             {asset && (
               <Stack flexDirection={"row"} alignItems={"center"} gap={2}>
-                <Typography variant="subtitle1" ml={2} mr={2}>
+                <Typography
+                  variant="subtitle1"
+                  ml={2}
+                  mr={2}
+                  color={theme.palette.text.primary}
+                >
                   |
                 </Typography>
-                <Typography variant="h6" mr={4}>
+                <Typography
+                  variant="h6"
+                  mr={4}
+                  color={theme.palette.text.primary}
+                >
                   {asset.name}
                 </Typography>
               </Stack>
@@ -101,7 +126,6 @@ const DashboardLayout = ({ children }) => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
-              color="inherit"
               sx={{ textTransform: "capitalize" }}
             >
               {user.fullName}
