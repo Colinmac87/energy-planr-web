@@ -24,7 +24,11 @@ const WithDataField = ({ field, value, withLabel = true }) => {
       case FIELD_MULTILINE:
       case FIELD_NUMERIC:
       case FIELD_YESNO:
-        return <Typography sx={{ whiteSpace: "pre-line" }}>{value}</Typography>;
+        return (
+          <Typography sx={{ whiteSpace: "pre-line" }}>
+            {field.meta?.startAdornment} {value} {field.meta?.endAdornment}
+          </Typography>
+        );
       case FIELD_RICHTEXT:
         return value;
       case FIELD_DATETIME:

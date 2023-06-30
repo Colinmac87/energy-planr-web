@@ -168,7 +168,10 @@ const Asset = () => {
         anchor={"bottom"}
         open={isDataFormOpen}
         onClose={onCloseDataForm}
-        sx={{ height: "100%" }}
+        sx={{
+          height: "100%",
+          backgroundColor: theme.palette.background.default,
+        }}
       >
         <Box
           sx={{
