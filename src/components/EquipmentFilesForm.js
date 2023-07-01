@@ -1,8 +1,4 @@
-import {
-  Grid,
-  List,
-  Paper,
-} from "@mui/material";
+import { Grid, List, Paper, Typography } from "@mui/material";
 import FormFileUploadField from "./formUI/FormFileUploadField";
 import { useEffect, useState } from "react";
 import { addFile, getFiles } from "../services/data.service";
@@ -13,13 +9,20 @@ const EquipmentFilesForm = ({ dataId, type }) => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
-    getFiles(dataId, type).then((_files) => setFiles(_files));
+    loadFiles();
   }, []);
 
+  const loadFiles = () => {
+    getFiles(dataId, type).then((_files) => setFiles(_files));
+  };
+
   const renderFiles = () => {
+    if (files.length == 0)
+      return <Typography variant="body1">No files</Typography>;
+
     if (type == FIELD_FILE)
       return (
-        <Grid item xs={12}>
+        <Grid item md={12}>
           <Paper>
             <List>
               {files.map((file) => (
@@ -29,33 +32,36 @@ const EquipmentFilesForm = ({ dataId, type }) => {
           </Paper>
         </Grid>
       );
-    return (
-      <Grid item xs={3}>
-        {files.map((file) => (
-          <DataFileField file={file} />
-        ))}
+    return files.map((file) => (
+      <Grid item md={3}>
+        <DataFileField file={file} />
       </Grid>
-    );
+    ));
   };
 
   return (
     <Grid container gap={2}>
-      <Grid item xs={12}>
-        <Paper>
-          <FormFileUploadField
-            type={type}
-            onUpload={({ name, url, caption }) => {
-              return addFile(dataId, {
+      <Grid item md={8}>
+        <Grid container gap={1}>
+          {renderFiles()}
+        </Grid>
+      </Grid>
+      <Grid item md={3}>
+        <FormFileUploadField
+          type={type}
+          onUpload={(files) => {
+            files.forEach(({ name, url, caption }) =>
+              addFile(dataId, {
                 fileName: name,
                 fileUrl: url,
                 fileCaption: caption,
                 fileType: type,
-              });
-            }}
-          />
-        </Paper>
+              })
+            );
+            loadFiles();
+          }}
+        />
       </Grid>
-      {renderFiles()}
     </Grid>
   );
 };

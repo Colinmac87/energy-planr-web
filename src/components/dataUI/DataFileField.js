@@ -65,7 +65,7 @@ const DataFileField = ({ file }) => {
                 onClick={() => setEditingCaption(true)}
                 variant="caption"
               >
-                {caption}
+                {caption || <i>Click to add caption</i>}
               </Typography>
             )
           }
@@ -109,7 +109,7 @@ const DataFileField = ({ file }) => {
               color="text.secondary"
               sx={{ whiteSpace: "pre-line" }}
             >
-              {caption}
+              {caption || <i>Click to add caption</i>}
             </Typography>
           )}
         </CardContent>
