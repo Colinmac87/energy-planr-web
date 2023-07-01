@@ -9,6 +9,9 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       onChange={(v) => {
         onChange(v.valueOf());
       }}
+      sx={{
+        border: field.required && "1px solid #f00 !important",
+      }}
     />
   );
 };

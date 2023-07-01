@@ -33,7 +33,9 @@ const FormCheckboxField = ({ field, value, onChange }) => {
     <Box
       sx={{
         position: "relative",
-        border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${
+          field.required ? theme.palette.error.main : theme.palette.divider
+        }`,
         p: 1.4,
         pt: 0.6,
         pb: 0.6,

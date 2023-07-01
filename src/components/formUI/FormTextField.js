@@ -7,6 +7,7 @@ const FormTextField = ({ field, value, onChange }) => {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={field.required}
+      error={field.required}
       InputProps={{
         startAdornment: field.meta?.startAdornment && (
           <InputAdornment position="start">

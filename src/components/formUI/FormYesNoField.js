@@ -9,6 +9,7 @@ const FormYesNoField = ({ field, value, onChange }) => {
         onChange(e.target.value);
       }}
       required={field.required}
+      error={field.required}
     >
       {!field.required && <MenuItem value={"-"}>-</MenuItem>}
       <MenuItem value={"yes"}>Yes</MenuItem>

@@ -381,7 +381,9 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     <Stack style={{ position: "relative" }}>
       <div
         style={{
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${
+            field.required ? theme.palette.error.main : theme.palette.divider
+          }`,
         }}
       >
         {!readOnly && (

@@ -8,6 +8,7 @@ const FormNumericField = ({ field, value, onChange }) => {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={field.required}
+      error={field.required}
     />
   );
 };

@@ -4,12 +4,12 @@ const FormDropdownField = ({ field, value, onChange }) => {
   return (
     <Select
       fullWidth
-      label={field.name}
       value={value}
       onChange={(e) => {
         onChange(e.target.value);
       }}
       required={field.required}
+      error={field.required}
     >
       {!field.required && <MenuItem value={"-"}>-</MenuItem>}
       {field.meta?.options
