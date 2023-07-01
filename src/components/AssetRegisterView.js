@@ -67,7 +67,19 @@ const AssetRegisterView = ({ onDataSelect }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 4 }}>
+    <Box
+      component="main"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        flexGrow: 1,
+        m: 0,
+        p: 2,
+        position: "relative",
+        overflow: "auto",
+      }}
+    >
       <Stack
         spacing={2}
         direction={"row"}

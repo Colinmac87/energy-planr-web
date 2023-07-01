@@ -61,15 +61,16 @@ const DashboardLayout = ({ children }) => {
       <AppBar
         position="absolute"
         open={true}
+        elevation={6}
         sx={{
           height: 60,
-          bgcolor: theme.palette.background.paper,
+          bgcolor: theme.palette.background.default,
         }}
       >
         <Toolbar
           sx={{
             height: 60,
-            bgcolor: theme.palette.background.paper,
+            bgcolor: theme.palette.background.default,
           }}
         >
           <Box
@@ -80,7 +81,7 @@ const DashboardLayout = ({ children }) => {
               gap: 2,
               alignItems: "center",
               colorScheme: "light",
-              bgcolor: theme.palette.background.paper,
+              bgcolor: theme.palette.background.default,
             }}
           >
             <Link href={`/`} underline="none">

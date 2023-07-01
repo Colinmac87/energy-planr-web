@@ -183,7 +183,7 @@ const AssetSettings = ({ onDeleteAsset }) => {
           display: "flex",
           flex: 1,
           m: 0,
-          p: 4,
+          p: 2,
           overflow: "auto",
           position: "relative",
         }}

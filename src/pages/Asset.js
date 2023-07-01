@@ -92,6 +92,7 @@ const Asset = () => {
         m: 0,
         p: 0,
         position: "relative",
+        overflow: "hidden",
       }}
     >
       <Paper
