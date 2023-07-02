@@ -56,7 +56,6 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     extensions: [
       TextStyle,
       Color,
-      ,
       StarterKit.configure({
         bulletList: {
           keepMarks: true,
@@ -71,7 +70,7 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
     content: value,
     onUpdate: ({ editor }) => {
       clearTimeout(writeTimeout);
-      setWriteTimeout(setTimeout(() => onChange(editor.getHTML()), 2000));
+      setWriteTimeout(setTimeout(() => onChange(editor.getHTML()), 1500));
     },
     editable: !readOnly,
   });

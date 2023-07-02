@@ -197,7 +197,10 @@ const AssetRegisterView = ({ onDataSelect }) => {
                 register={register}
                 data={selectedData}
                 onSaving={() => {}}
-                onSave={loadData}
+                onSave={() => {
+                  loadData();
+                  onCloseEquipmentDetailViewer();
+                }}
                 onClose={onCloseEquipmentDetailViewer}
               />
             </Box>

@@ -4,16 +4,14 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 
 const FormDateTimeField = ({ field, value, onChange }) => {
-  const [startDate, setStartDate] = useState(moment().valueOf());
-  const [endDate, setEndDate] = useState(moment().valueOf());
+  let firstPart = moment().valueOf().toString(),
+    secondPart = moment().valueOf().toString();
+  try {
+    [firstPart, secondPart] = value.split(",");
+  } catch (error) {}
 
-  useEffect(() => {
-    try {
-      const [first, second] = value.split(",");
-      setStartDate(first);
-      setEndDate(second);
-    } catch (error) {}
-  }, []);
+  const [startDate, setStartDate] = useState(parseInt(firstPart));
+  const [endDate, setEndDate] = useState(parseInt(secondPart));
 
   useEffect(() => {
     onChange(`${startDate},${endDate}`);

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Stack,
-  Drawer,
   Paper,
   IconButton,
   Tooltip,
@@ -16,7 +15,7 @@ import AssetMapView from "../components/AssetMapView";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getAsset } from "../services/asset.service";
-import EquipmentDataForm from "../components/EquipmentDataForm";
+
 import { setAsset, setRegisters } from "../features/asset.slice";
 
 import AssetSettings from "./AssetSettings";
@@ -33,8 +32,6 @@ const Asset = () => {
   );
 
   const { asset } = useSelector((state) => state.asset);
-
-  const [isDataFormOpen, setIsDataFormOpen] = useState(false);
 
   useEffect(() => {
     const id = params?.id;
@@ -60,10 +57,6 @@ const Asset = () => {
 
   const onDeleteAsset = () => {
     navigate("/");
-  };
-
-  const onCloseDataForm = () => {
-    setIsDataFormOpen(false);
   };
 
   const renderPage = () => {
@@ -96,6 +89,7 @@ const Asset = () => {
       }}
     >
       <Paper
+        elevation={0}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -104,6 +98,10 @@ const Asset = () => {
           justifyContent: "space-between",
           pt: 3,
           pb: 3,
+          bgcolor:
+            theme.palette.mode == "light"
+              ? theme.palette.background.paper
+              : theme.palette.background.default,
         }}
       >
         <Stack
@@ -165,32 +163,6 @@ const Asset = () => {
       >
         {renderPage()}
       </Box>
-      <Drawer
-        anchor={"bottom"}
-        open={isDataFormOpen}
-        onClose={onCloseDataForm}
-        sx={{
-          height: "100%",
-          backgroundColor: theme.palette.background.default,
-        }}
-      >
-        <Box
-          sx={{
-            p: 4,
-            height: "100%",
-            backgroundColor: theme.palette.background.default,
-          }}
-        >
-          <EquipmentDataForm
-            onClose={onCloseDataForm}
-            onSaving={() => {}}
-            onSave={() => {
-              onCloseDataForm();
-              // load data
-            }}
-          />
-        </Box>
-      </Drawer>
     </Box>
   );
 };

@@ -88,7 +88,12 @@ const DashboardLayout = ({ children }) => {
               <Typography
                 component="h1"
                 variant="h5"
-                sx={{ display: "inline-block", fontWeight: "bold" }}
+                sx={{
+                  display: "inline-block",
+                  fontWeight: "bold",
+                  position: "relative",
+                  left: -8,
+                }}
               >
                 Energy Planr
               </Typography>

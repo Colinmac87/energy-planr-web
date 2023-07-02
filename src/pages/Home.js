@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import { getKey, saveKey } from "../utils/storage.utils";
 import { useNavigate } from "react-router-dom";
+import { generateRandomInt } from "../utils/number.utils";
 
 const Home = () => {
   const { user } = useSelector((state) => state.account);
@@ -76,7 +77,7 @@ const Home = () => {
         <CardActionArea
           onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
         >
-          <CardContent>
+          <CardContent sx={{ padding: "5px" }}>
             <Typography variant="h5">{asset.name}</Typography>
           </CardContent>
           <CardMedia
@@ -104,6 +105,55 @@ const Home = () => {
       </Card>
     </Grid>
   );
+
+  const renderSkeletonLoading = (count) => {
+    const skeletons = [...Array(count).keys()].map((x) =>
+      generateRandomInt(35, 80)
+    );
+
+    return viewType == "list" ? (
+      <>
+        {skeletons.map((percentage) => (
+          <Grid item xs={12}>
+            <Paper>
+              <Stack>
+                <Box sx={{ padding: 2 }}>
+                  <Typography
+                    variant="h5"
+                    maxWidth={"100%"}
+                    width={`${percentage}%`}
+                  >
+                    <Skeleton />
+                  </Typography>
+                </Box>
+              </Stack>
+            </Paper>
+          </Grid>
+        ))}
+      </>
+    ) : (
+      <>
+        {skeletons.map((percentage) => (
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper>
+              <Stack>
+                <Box sx={{ padding: 1 }}>
+                  <Typography
+                    variant="h5"
+                    maxWidth={"100%"}
+                    width={`${percentage}%`}
+                  >
+                    <Skeleton />
+                  </Typography>
+                </Box>
+                <Skeleton variant="rounded" height={180} />
+              </Stack>
+            </Paper>
+          </Grid>
+        ))}
+      </>
+    );
+  };
 
   return (
     <Grid
@@ -191,38 +241,7 @@ const Home = () => {
           )
         )
       ) : (
-        <>
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper>
-              <Stack>
-                <Box sx={{ padding: 1 }}>
-                  <Skeleton variant="text" />
-                </Box>
-                <Skeleton variant="rounded" height={128} />
-              </Stack>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper>
-              <Stack>
-                <Box sx={{ padding: 1 }}>
-                  <Skeleton variant="text" />
-                </Box>
-                <Skeleton variant="rounded" height={128} />
-              </Stack>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper>
-              <Stack>
-                <Box sx={{ padding: 1 }}>
-                  <Skeleton variant="text" />
-                </Box>
-                <Skeleton variant="rounded" height={128} />
-              </Stack>
-            </Paper>
-          </Grid>
-        </>
+        renderSkeletonLoading(8)
       )}
 
       <Drawer
