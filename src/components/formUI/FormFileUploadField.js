@@ -55,7 +55,14 @@ const FormFileUploadField = ({ type, onUpload }) => {
   };
 
   return (
-    <Paper sx={{ p: 2, backgroundColor: theme.palette.background.paper }}>
+    <Paper
+      sx={{
+        p: 2,
+        height: "100%",
+        backgroundColor: theme.palette.background.paper,
+        justifyContent: "space-between",
+      }}
+    >
       <FileUpload
         getBase64={false}
         multiFile={true}

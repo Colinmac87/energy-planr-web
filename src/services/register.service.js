@@ -27,11 +27,12 @@ export const getRegisters = async (assetId) => {
   }
 };
 
-export const createRegister = async ({ assetId, name }) => {
+export const createRegister = async ({ assetId, name, isDefault }) => {
   try {
     const register = {
       assetId: assetId,
       name: name,
+      isDefault: isDefault,
       formFields: [],
       formGroups: [],
       isDeleted: false,
@@ -62,10 +63,11 @@ export const getRegister = async (id) => {
   }
 };
 
-export const updateRegister = async (id, { name }) => {
+export const updateRegister = async (id, { name, isDefault }) => {
   try {
     const register = {
       name: name,
+      isDefault: isDefault,
     };
 
     const docRef = doc(db, "registers", id);

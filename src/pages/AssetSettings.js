@@ -35,7 +35,9 @@ const AssetSettings = ({ onDeleteAsset }) => {
 
   useEffect(() => {
     setSelectedRegister(
-      registers?.find((r) => r.id == selectedRegister?.id) || null
+      registers?.find((r) => r.id == selectedRegister?.id) ||
+        registers.find((r) => r.isDefault) ||
+        registers[0]
     );
   }, [registers]);
 

@@ -19,3 +19,11 @@ export function generateKey(str) {
 export function removeSpecialCharacters(str) {
   return str.replace(/[^a-zA-Z ]/g, "").trim();
 }
+
+export function isUrl(str) {
+  const regex = new RegExp(
+    /(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+  );
+
+  return str.match(regex);
+}

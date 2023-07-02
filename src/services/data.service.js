@@ -139,26 +139,24 @@ export const getFiles = async (dataId, type) => {
 
 export const saveFileCaption = async (id, caption) => {
   try {
-    try {
-      const docRef = doc(db, "files", id);
-      return await updateDoc(docRef, {
-        caption: caption,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  } catch (error) {}
+    const docRef = doc(db, "files", id);
+    return await updateDoc(docRef, {
+      caption: caption,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const deleteFile = async (id) => {
   try {
-    try {
-      const docRef = doc(db, "files", id);
-      return await updateDoc(docRef, {
-        isDeleted: true,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  } catch (error) {}
+    const docRef = doc(db, "files", id);
+    return await updateDoc(docRef, {
+      isDeleted: true,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

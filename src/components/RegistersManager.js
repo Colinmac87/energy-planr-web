@@ -5,10 +5,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Grid,
   IconButton,
   Paper,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -37,9 +39,9 @@ const RegistersManager = ({ onSave }) => {
     setRegisters(_registers);
   }, [_registers]);
 
-  const onChangeRegisterName = (index, value) => {
+  const onChangeRegisterProperty = (index, prop, value) => {
     const registersCopy = JSON.parse(JSON.stringify(registers));
-    registersCopy[index].name = value;
+    registersCopy[index][prop] = value;
     setRegisters(registersCopy);
   };
 
@@ -48,6 +50,7 @@ const RegistersManager = ({ onSave }) => {
       ...registers,
       {
         name: "",
+        isDefault: false,
       },
     ]);
   };
@@ -81,7 +84,10 @@ const RegistersManager = ({ onSave }) => {
         return;
       }
       if (register.id) {
-        updateRegister(register.id, { name: register.name })
+        updateRegister(register.id, {
+          name: register.name,
+          isDefault: register.isDefault,
+        })
           .then(() => {
             enqueueSnackbar("Changes saved.", { variant: "success" });
             onSave();
@@ -91,6 +97,7 @@ const RegistersManager = ({ onSave }) => {
         createRegister({
           assetId: asset.id,
           name: register.name,
+          isDefault: register.isDefault,
         })
           .then(() => {
             enqueueSnackbar("Changes saved.", { variant: "success" });
@@ -160,21 +167,43 @@ const RegistersManager = ({ onSave }) => {
                 justifyContent: "space-between",
               }}
             >
-              <TextField
-                error={!isValid}
-                fullWidth
-                autoFocus
-                label="Register Name"
-                sx={{ flex: 1 }}
-                value={register.name}
-                onChange={(e) => {
-                  onChangeRegisterName(i, e.target.value);
+              <Stack
+                sx={{
+                  flex: 2,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
-                helperText={
-                  !isValid &&
-                  "Register name should only contain alphabets or numbers"
-                }
-              />
+              >
+                <TextField
+                  error={!isValid}
+                  autoFocus
+                  label="Register Name"
+                  sx={{ width: "50%" }}
+                  value={register.name}
+                  onChange={(e) => {
+                    onChangeRegisterProperty(i, "name", e.target.value);
+                  }}
+                  helperText={
+                    !isValid &&
+                    "Register name should only contain alphabets or numbers"
+                  }
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={register.isDefault}
+                      onChange={(e) =>
+                        onChangeRegisterProperty(
+                          i,
+                          "isDefault",
+                          e.target.checked
+                        )
+                      }
+                    />
+                  }
+                  label="Default"
+                />
+              </Stack>
               <Stack
                 direction="row"
                 gap={4}

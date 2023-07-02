@@ -42,7 +42,11 @@ export const createAsset = async ({ companyId, name, thumbnailFile }) => {
 
     const docRef = await addDoc(collection(db, "assets"), asset);
 
-    await createRegister({ assetId: docRef.id, name: "Default" });
+    await createRegister({
+      assetId: docRef.id,
+      name: "Default",
+      isDefault: true,
+    });
 
     return docRef.id;
   } catch (error) {

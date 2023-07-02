@@ -23,7 +23,7 @@ const FormDateTimeField = ({ field, value, onChange }) => {
     <Stack flexDirection={"row"} gap={2} alignItems={"center"}>
       <Stack sx={{ flex: 1 }}>
         <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-          Start
+          {field.meta?.startLabel}
         </Typography>
         <DatePicker
           sx={{
@@ -40,7 +40,7 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       <p>-</p>
       <Stack sx={{ flex: 1 }}>
         <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-          End
+          {field.meta?.endLabel}
         </Typography>
         <DatePicker
           sx={{

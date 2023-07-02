@@ -45,7 +45,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
   useEffect(() => {
     if (registers && registers.length > 0) {
       try {
-        setRegister(registers[0]);
+        setRegister(registers.find((r) => r.isDefault) || registers[0]);
       } catch (error) {}
     }
   }, [registers]);
@@ -87,21 +87,22 @@ const AssetRegisterView = ({ onDataSelect }) => {
         mb={2}
       >
         <Stack sx={{ flex: 1 }}>
-          <FormControl fullWidth>
-            <InputLabel>Register</InputLabel>
-            <Select
-              autoFocus
-              value={register?.id}
-              label="Register"
-              onChange={(e) => {
-                setRegister(registers.find((r) => r.id == e.target.value));
-              }}
-            >
-              {registers?.map((r) => (
-                <MenuItem value={r.id}>{r.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          {register?.id && (
+            <FormControl fullWidth>
+              <InputLabel>Register</InputLabel>
+              <Select
+                label="Register"
+                value={register.id}
+                onChange={(e) => {
+                  setRegister(registers.find((r) => r.id == e.target.value));
+                }}
+              >
+                {registers?.map((r) => (
+                  <MenuItem value={r.id}>{r.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Stack>
         <Stack
           spacing={2}

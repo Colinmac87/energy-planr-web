@@ -20,15 +20,17 @@ import FormDateTimeField from "./FormDateTimeField";
 import FormDateRangeField from "./FormDateRangeField";
 import FormDropdownField from "./FormDropdownField";
 import FormCheckboxField from "./FormCheckboxField";
+import FormURLField from "./FormURLField";
 
 const WithFormField = ({ field, value, onChange, showLabel = true }) => {
   const renderFormField = () => {
     switch (field.type) {
       case FIELD_TEXT:
-      case FIELD_URL:
         return (
           <FormTextField field={field} value={value} onChange={onChange} />
         );
+      case FIELD_URL:
+        return <FormURLField field={field} value={value} onChange={onChange} />;
       case FIELD_MULTILINE:
         return (
           <FormMultilineField field={field} value={value} onChange={onChange} />
@@ -70,7 +72,8 @@ const WithFormField = ({ field, value, onChange, showLabel = true }) => {
     <Grid item sm={field.span}>
       {showLabel && (
         <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-          {field.name}{field.required && "*"}
+          {field.name}
+          {field.required && "*"}
         </Typography>
       )}
       {renderFormField()}

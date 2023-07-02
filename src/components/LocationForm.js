@@ -90,7 +90,10 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
               variant: "outlined",
               sx: { background: "black" },
             }}
-            imageSrc={location?.backgroundMapUrl}
+            imageSrc={
+              location?.backgroundMapUrl ||
+              "https://www.pngplay.com/wp-content/uploads/8/Upload-Icon-Logo-Transparent-File.png"
+            }
             showPlaceholderImage={true}
             onContextReady={(context) => {}}
             PlaceholderGridProps={{ md: 6 }}
@@ -101,10 +104,10 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
               sx: { p: 1 },
             }}
             placeholderImageDimension={{
-              xs: { height: 128 },
-              sm: { height: 128 },
-              md: { height: 164 },
-              lg: { height: 256 },
+              xs: { width: 128, height: 128 },
+              sm: { width: 128, height: 128 },
+              md: { width: 164, height: 164 },
+              lg: { width: 256, height: 256 },
             }}
           />
         </Grid>

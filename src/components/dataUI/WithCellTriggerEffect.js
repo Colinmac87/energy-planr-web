@@ -47,9 +47,11 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
               setStyles({ backgroundColor: cellHighlightColor });
             break;
           case FIELD_TRIGGER_OPERATOR_BETWEEN:
-            const [start, end] = value.split(",");
-            if (value >= start && value <= end)
-              setStyles({ backgroundColor: cellHighlightColor });
+            try {
+              const [start, end] = value.split(",");
+              if (value >= start && value <= end)
+                setStyles({ backgroundColor: cellHighlightColor });
+            } catch (error) {}
             break;
           case FIELD_TRIGGER_OPERATOR_OUTSIDE:
             const [start1, end1] = value.split(",");

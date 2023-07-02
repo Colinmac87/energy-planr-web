@@ -3,7 +3,6 @@ import {
   Typography,
   Grid,
   Paper,
-  Link,
   Button,
   Drawer,
   Box,
@@ -12,23 +11,25 @@ import {
   ToggleButton,
   Skeleton,
   Tooltip,
-  IconButton,
-  Menu,
-  MenuItem,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
 import { getAssets } from "../services/asset.service";
 import { useSelector } from "react-redux";
 import {
   FolderOpenOutlined,
-  Tune,
   ViewListOutlined,
   ViewModuleOutlined,
 } from "@mui/icons-material";
 import { getKey, saveKey } from "../utils/storage.utils";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { user } = useSelector((state) => state.account);
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [assets, setAssets] = useState(null);
@@ -71,74 +72,36 @@ const Home = () => {
 
   const renderGridItem = (asset) => (
     <Grid item md={4} lg={3} gap={2} spacing={2}>
-      <Link href={`/asset/${asset.id}`} underline="none">
-        <Paper elevation={2}>
-          <Typography
-            gutterBottom
-            variant="h6"
-            component="div"
-            sx={{
-              p: 2,
-              m: 0,
-            }}
-          >
-            {asset.name}
-          </Typography>
-          {thumbnailsVisible && (
-            <Paper
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                background: asset.thumbnailUrl
-                  ? `url(${asset.thumbnailUrl})`
-                  : "#aaa",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                height: "165px",
-              }}
-            >
-              <div style={{ width: 128, height: 128 }}></div>
-            </Paper>
-          )}
-        </Paper>
-      </Link>
+      <Card>
+        <CardActionArea
+          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
+        >
+          <CardContent>
+            <Typography variant="h5">{asset.name}</Typography>
+          </CardContent>
+          <CardMedia
+            component="img"
+            height="180"
+            sx={{ height: 180, minHeight: 180, maxHeight: 180 }}
+            image={asset.thumbnailUrl}
+            alt={asset.name}
+          />
+        </CardActionArea>
+      </Card>
     </Grid>
   );
 
   const renderListItem = (asset) => (
     <Grid item xs={12}>
-      <Link href={`/asset/${asset.id}`} underline="none">
-        <Paper elevation={2} sx={{}}>
-          <Stack sx={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-            {thumbnailsVisible && (
-              <Box
-                sx={{
-                  borderTopLeftRadius: 6,
-                  borderBottomLeftRadius: 6,
-                  display: "inline-block",
-                  width: 128,
-                  height: 128,
-                  background: asset.thumbnailUrl
-                    ? `url(${asset.thumbnailUrl})`
-                    : "#aaa",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
-              ></Box>
-            )}
-            <Typography
-              variant="h6"
-              sx={{
-                display: "inline-block",
-                p: 2,
-                m: 0,
-              }}
-            >
-              {asset.name}
-            </Typography>
-          </Stack>
-        </Paper>
-      </Link>
+      <Card>
+        <CardActionArea
+          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
+        >
+          <CardContent>
+            <Typography variant="h5">{asset.name}</Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
     </Grid>
   );
 
@@ -184,7 +147,7 @@ const Home = () => {
             </ToggleButton>
           </ToggleButtonGroup>
 
-          <Box>
+          {/* <Box>
             <IconButton
               aria-controls="assets-preferences"
               aria-haspopup="true"
@@ -204,7 +167,7 @@ const Home = () => {
                 {thumbnailsVisible ? "Hide thumbnails" : "Show thumbnails"}
               </MenuItem>
             </Menu>
-          </Box>
+          </Box> */}
         </Stack>
       </Grid>
 
