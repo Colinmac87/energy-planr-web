@@ -182,7 +182,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         <Toolbar>
           <Stack
             sx={{
-              flexGrow: 2,
+              flexGrow: 1,
               flexDirection: "row",
               alignItems: "center",
             }}
@@ -271,19 +271,31 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                       flexDirection: "row",
                       alignItems: "center",
                       gap: 1,
-                      p: 0,
-                      pl: 2,
-                      pr: 2,
-                      border: "1px solid",
                     }}
                   >
                     {field.key ? (
-                      <CloudDone fontSize="small" sx={{ color: "green" }} />
+                      <CloudDone
+                        fontSize="small"
+                        sx={{
+                          color:
+                            theme.palette.mode == "dark"
+                              ? theme.palette.primary.main
+                              : "green",
+                        }}
+                      />
                     ) : (
                       <CloudOff fontSize="small" />
                     )}
                     {field.key && (
-                      <Typography variant="caption" sx={{ color: "green" }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color:
+                            theme.palette.mode == "dark"
+                              ? theme.palette.primary.main
+                              : "green",
+                        }}
+                      >
                         saved
                       </Typography>
                     )}

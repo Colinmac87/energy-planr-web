@@ -15,6 +15,7 @@ import {
   CardActionArea,
   CardMedia,
   CardContent,
+  useTheme,
 } from "@mui/material";
 import AssetForm from "../components/AssetForm";
 import { getAssets } from "../services/asset.service";
@@ -29,8 +30,9 @@ import { useNavigate } from "react-router-dom";
 import { generateRandomInt } from "../utils/number.utils";
 
 const Home = () => {
-  const { user } = useSelector((state) => state.account);
+  const theme = useTheme();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.account);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [assets, setAssets] = useState(null);
@@ -78,7 +80,7 @@ const Home = () => {
           onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
         >
           <CardContent sx={{ padding: "5px" }}>
-            <Typography variant="h5">{asset.name}</Typography>
+            <Typography variant="h6">{asset.name}</Typography>
           </CardContent>
           <CardMedia
             component="img"
@@ -99,7 +101,7 @@ const Home = () => {
           onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
         >
           <CardContent>
-            <Typography variant="h5">{asset.name}</Typography>
+            <Typography variant="h6">{asset.name}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>
@@ -158,7 +160,7 @@ const Home = () => {
   return (
     <Grid
       container
-      p={4}
+      p={2}
       spacing={2}
       sx={{
         alignContent: "flex-start",
@@ -176,6 +178,7 @@ const Home = () => {
           <Button
             variant="contained"
             onClick={() => setIsNewAssetFormOpen(true)}
+            sx={{ alignSelf: "stretch" }}
           >
             New Asset
           </Button>
@@ -249,7 +252,15 @@ const Home = () => {
         open={isNewAssetFormOpen}
         onClose={onCloseNewAssetForm}
       >
-        <Box sx={{ p: 4 }}>
+        <Box
+          sx={{
+            width: 440,
+            flex: 1,
+            height: "100%",
+            backgroundColor: theme.palette.background.paper,
+            p: 2,
+          }}
+        >
           <Typography variant="h4" mb={4}>
             New Asset
           </Typography>

@@ -77,6 +77,27 @@ export const updateRegister = async (id, { name, isDefault }) => {
   }
 };
 
+export const setDefaultRegister = async (
+  defaultRegisterId,
+  unsetDefaultRegisterIds
+) => {
+  try {
+    try {
+      await updateDoc(doc(db, "registers", defaultRegisterId), {
+        isDefault: true,
+      });
+    } catch (error) {}
+
+    unsetDefaultRegisterIds.forEach((registerId) =>
+      updateDoc(doc(db, "registers", registerId), {
+        isDefault: false,
+      })
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deleteRegister = async (id) => {
   try {
     const register = {

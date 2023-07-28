@@ -129,7 +129,13 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
   };
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box
+      sx={{
+        p: 3,
+        height: "100%",
+        overflow: "auto",
+      }}
+    >
       <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Typography variant="h5" sx={{ mb: 2 }}>
           {asset.name} - {register.name}

@@ -78,7 +78,7 @@ function App() {
             default: isLightTheme ? "#fff" : "#111111",
           },
           primary: {
-            main: isLightTheme ? "#2e78f0" : "#66b2ff",
+            main: isLightTheme ? "#2e78f0" : "#2e78f0",
           },
         },
         typography: {
@@ -151,7 +151,7 @@ function App() {
                 <br />
                 <Typography variant="subtitle1">
                   For optimal viewing experience we recommend you use this
-                  website on a bigger screen
+                  application on a larger screen
                 </Typography>
               </Box>
             </Stack>

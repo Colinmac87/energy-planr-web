@@ -70,12 +70,17 @@ const WithFormField = ({ field, value, onChange, showLabel = true }) => {
 
   return (
     <Grid item sm={field.span}>
-      {showLabel && (
-        <Typography variant="overline" sx={{ display: "block", lineHeight: 2 }}>
-          {field.name}
-          {field.required && "*"}
-        </Typography>
-      )}
+      {showLabel &&
+        field.type != FIELD_DATERANGE &&
+        !field.meta?.startLabel && (
+          <Typography
+            variant="overline"
+            sx={{ display: "block", lineHeight: 2 }}
+          >
+            {field.name}
+            {field.required && "*"}
+          </Typography>
+        )}
       {renderFormField()}
     </Grid>
   );

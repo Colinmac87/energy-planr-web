@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import {
   createRegister,
   deleteRegister,
+  setDefaultRegister,
   updateRegister,
 } from "../services/register.service";
 import { removeSpecialCharacters } from "../utils/string.utils";
@@ -40,7 +41,15 @@ const RegistersManager = ({ onSave }) => {
   }, [_registers]);
 
   const onChangeRegisterProperty = (index, prop, value) => {
-    const registersCopy = JSON.parse(JSON.stringify(registers));
+    let registersCopy = JSON.parse(JSON.stringify(registers));
+
+    if (prop == "isDefault") {
+      registersCopy = registersCopy.map((r) => ({
+        ...r,
+        isDefault: false,
+      }));
+    }
+
     registersCopy[index][prop] = value;
     setRegisters(registersCopy);
   };
@@ -58,6 +67,13 @@ const RegistersManager = ({ onSave }) => {
   const onCloseRegisterDeleteDialogOpen = () => {
     setContextRegister(null);
     setIsRegisterDeleteDialogOpen(false);
+  };
+
+  const onToggleDefaultRegister = (defaultRegisterId) => {
+    setDefaultRegister(
+      defaultRegisterId,
+      registers.map((r) => r.id).filter((rId) => rId != defaultRegisterId)
+    ).then(() => onSave());
   };
 
   const onSaveRegister = (index) => {
@@ -86,7 +102,6 @@ const RegistersManager = ({ onSave }) => {
       if (register.id) {
         updateRegister(register.id, {
           name: register.name,
-          isDefault: register.isDefault,
         })
           .then(() => {
             enqueueSnackbar("Changes saved.", { variant: "success" });
@@ -171,7 +186,7 @@ const RegistersManager = ({ onSave }) => {
                 sx={{
                   flex: 2,
                   flexDirection: "row",
-                  justifyContent: "space-between",
+                  gap: 2,
                 }}
               >
                 <TextField
@@ -192,13 +207,14 @@ const RegistersManager = ({ onSave }) => {
                   control={
                     <Switch
                       checked={register.isDefault}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         onChangeRegisterProperty(
                           i,
                           "isDefault",
                           e.target.checked
-                        )
-                      }
+                        );
+                        onToggleDefaultRegister(register.id);
+                      }}
                     />
                   }
                   label="Default"

@@ -108,7 +108,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
           spacing={2}
           direction={"row"}
           mb={2}
-          sx={{ flex: 1 }}
+          sx={{ flex: 3 }}
           justifyContent={"flex-end"}
         >
           <Button
@@ -188,7 +188,6 @@ const AssetRegisterView = ({ onDataSelect }) => {
           >
             <Box
               sx={{
-                p: 4,
                 height: "100%",
                 backgroundColor: theme.palette.background.default,
               }}

@@ -2,8 +2,10 @@ import { Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const TextBuilderOptions = ({ meta, onChangeMeta }) => {
-  const [startAdornment, setStartAdornment] = useState(meta?.startAdornment);
-  const [endAdornment, setEndAdornment] = useState(meta?.endAdornment);
+  const [startAdornment, setStartAdornment] = useState(
+    meta?.startAdornment || null
+  );
+  const [endAdornment, setEndAdornment] = useState(meta?.endAdornment || null);
 
   useEffect(() => {
     onChangeMeta({ startAdornment, endAdornment });

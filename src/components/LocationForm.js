@@ -1,4 +1,12 @@
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useState } from "react";
 import FileUpload from "react-mui-fileuploader";
 import { createLocation, updateLocation } from "../services/location.service";
@@ -6,6 +14,7 @@ import { LoadingButton } from "@mui/lab";
 import { useSnackbar } from "notistack";
 
 const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
+  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
   const [loading, setLoading] = useState(false);
@@ -85,29 +94,33 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
             acceptedType={"image/*"}
             onFilesChange={onFileUploadChanges}
             onError={onFileUploadError}
-            BannerProps={{
-              elevation: 0,
-              variant: "outlined",
-              sx: { background: "black" },
-            }}
             imageSrc={
               location?.backgroundMapUrl ||
               "https://www.pngplay.com/wp-content/uploads/8/Upload-Icon-Logo-Transparent-File.png"
             }
             showPlaceholderImage={true}
             onContextReady={(context) => {}}
-            PlaceholderGridProps={{ md: 6 }}
-            LabelsGridProps={{ md: 6 }}
+            PlaceholderGridProps={{ md: 12 }}
+            LabelsGridProps={{ md: 12 }}
             ContainerProps={{
-              elevation: 0,
-              variant: "outlined",
-              sx: { p: 1 },
+              sx: {
+                p: 0,
+                backgroundColor: "transparent",
+                border: "none",
+                "& .MuiTypography-root": {
+                  color: theme.palette.text.primary,
+                },
+                "& .MuiButton-root": {
+                  borderColor: theme.palette.primary.main,
+                  color: theme.palette.primary.main,
+                },
+              },
             }}
-            placeholderImageDimension={{
-              xs: { width: 128, height: 128 },
-              sm: { width: 128, height: 128 },
-              md: { width: 164, height: 164 },
-              lg: { width: 256, height: 256 },
+            BannerProps={{
+              elevation: 0,
+              sx: {
+                backgroundColor: "transparent",
+              },
             }}
           />
         </Grid>

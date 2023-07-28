@@ -14,6 +14,7 @@ import {
   ListItemText,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import LocationForm from "./LocationForm";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 
 const LocationsManager = () => {
+  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
 
@@ -131,7 +133,15 @@ const LocationsManager = () => {
         open={isLocationFormOpen}
         onClose={onCloseLocationForm}
       >
-        <Box sx={{ p: 4 }}>
+        <Box
+          sx={{
+            width: 440,
+            flex: 1,
+            height: "100%",
+            backgroundColor: theme.palette.background.paper,
+            p: 2,
+          }}
+        >
           <LocationForm
             assetId={asset.id}
             location={contextLocation}

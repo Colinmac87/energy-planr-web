@@ -123,7 +123,7 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
         <Toolbar>
           <Stack
             sx={{
-              flexGrow: 2,
+              flexGrow: 1,
               flexDirection: "row",
               alignItems: "center",
             }}
@@ -207,7 +207,41 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
                   mb={4}
                   justifyContent={"space-between"}
                 >
-                  {group.key ? <CloudDone /> : <CloudOff />}
+                  <Stack
+                    sx={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    {group.key ? (
+                      <CloudDone
+                        fontSize="small"
+                        sx={{
+                          color:
+                            theme.palette.mode == "dark"
+                              ? theme.palette.primary.main
+                              : "green",
+                        }}
+                      />
+                    ) : (
+                      <CloudOff fontSize="small" />
+                    )}
+                    {group.key && (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color:
+                            theme.palette.mode == "dark"
+                              ? theme.palette.primary.main
+                              : "green",
+                        }}
+                      >
+                        saved
+                      </Typography>
+                    )}
+                  </Stack>
+
                   <Stack
                     flexDirection={"row"}
                     gap={4}

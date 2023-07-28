@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 
 const FormNumericField = ({ field, value, onChange }) => {
   return (
@@ -9,6 +9,18 @@ const FormNumericField = ({ field, value, onChange }) => {
       onChange={(e) => onChange(e.target.value)}
       required={field.required}
       error={field.required}
+      InputProps={{
+        startAdornment: field.meta?.startAdornment && (
+          <InputAdornment position="start">
+            {field.meta?.startAdornment}
+          </InputAdornment>
+        ),
+        endAdornment: field.meta?.endAdornment && (
+          <InputAdornment position="end">
+            {field.meta?.endAdornment}
+          </InputAdornment>
+        ),
+      }}
     />
   );
 };
