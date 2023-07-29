@@ -1,15 +1,16 @@
-import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
-import { dummyBackground } from "../constants";
 import {
-  Download,
-  Fullscreen,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+  AppBar,
+  Box,
+  IconButton,
+  Stack,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { Fullscreen, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import MapView from "./MapView";
 
-const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
+const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
   const [arePinsVisible, setArePinsVisibile] = useState(true);
 
   const onTogglePinsVisibility = () => {
@@ -38,38 +39,28 @@ const WithMapHeader = ({ data, level, asset, onToggleFullscreen }) => {
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Headquarter Site / Mezz Floor
+            {location?.name}
           </Typography>
-          <Button
-            key="btnTooglePinsVisibilitiy"
-            onClick={onTogglePinsVisibility}
-            size="small"
-            variant="contained"
-            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
-          >
-            {arePinsVisible ? <Visibility /> : <VisibilityOff />}
-          </Button>
-          <Button
-            key="btnMapDownload"
-            size="small"
-            variant="contained"
-            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
-          >
-            <Download />
-          </Button>
-          <Button
-            key="btnMapFullScreenToggle"
-            onClick={onToggleFullscreen}
-            size="small"
-            variant="contained"
-            sx={{ ml: 2, backgroundColor: "black", color: "white" }}
-          >
-            <Fullscreen />
-          </Button>
+          <Stack sx={{ flexDirection: "row", gap: 3 }}>
+            <IconButton
+              key="btnTooglePinsVisibilitiy"
+              onClick={onTogglePinsVisibility}
+              size="small"
+            >
+              {arePinsVisible ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+            <IconButton
+              key="btnMapFullScreenToggle"
+              onClick={onToggleFullscreen}
+              size="small"
+            >
+              <Fullscreen />
+            </IconButton>
+          </Stack>
         </Toolbar>
       </AppBar>
       <MapView
-        image={dummyBackground}
+        image={location?.backgroundMapUrl}
         data={data}
         arePinsVisible={arePinsVisible}
       />

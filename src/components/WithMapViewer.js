@@ -2,7 +2,7 @@ import { useState } from "react";
 import WithMapHeader from "./WithMapHeader";
 import FullScreenViewer from "./FullScreenViewer";
 
-const WithMapViewer = ({ data, level, asset }) => {
+const WithMapViewer = ({ location, data }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const onToggleFullscreen = () => {
@@ -16,7 +16,13 @@ const WithMapViewer = ({ data, level, asset }) => {
       </FullScreenViewer>
     );
 
-  return <WithMapHeader data={data} onToggleFullscreen={onToggleFullscreen} />;
+  return (
+    <WithMapHeader
+      location={location}
+      data={data}
+      onToggleFullscreen={onToggleFullscreen}
+    />
+  );
 };
 
 export default WithMapViewer;

@@ -1,18 +1,12 @@
 import {
   Box,
-  Button,
-  Grid,
   Paper,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   List,
-  ListItem,
   ListItemText,
   ListItemButton,
   MenuList,
@@ -20,21 +14,25 @@ import {
 import { ExpandMore } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
-import mezzMap from "../assets/Mezz-Floor.png";
-import roofMap from "../assets/Roof-Deck.png";
-import lowerMap from "../assets/Lower-Deck.png";
 import WithMapViewer from "./WithMapViewer";
+import { getLocations } from "../services/location.service";
+import { useSelector } from "react-redux";
 
 const AssetMapView = ({ preSelected, data }) => {
+  const { asset } = useSelector((state) => state.asset);
+
   const [expanded, setExpanded] = useState([]);
   const [selected, setSelected] = useState(preSelected);
 
-  const [selectedMap, setSelectedMap] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const [treeViewData, setTreeViewData] = useState([]);
 
   useEffect(() => {
     try {
+      getLocations(asset.id).then((_locations) => setLocations(_locations));
+
       let temp = [];
       const schema = data[0];
 
@@ -56,22 +54,6 @@ const AssetMapView = ({ preSelected, data }) => {
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
-  };
-
-  const handleSelect = (event, nodeId) => {
-    if (selected == nodeId) {
-      setSelected(null);
-      return;
-    }
-
-    if (nodeId.includes("location")) {
-    } else if (nodeId.includes("level")) {
-      if (nodeId.includes("roofDeck")) setSelectedMap(roofMap);
-      if (nodeId.includes("lowerDeck")) setSelectedMap(lowerMap);
-      if (nodeId.includes("mezzFloor")) setSelectedMap(mezzMap);
-    } else {
-      setSelected(nodeId);
-    }
   };
 
   const handleExpandClick = () => {
@@ -110,15 +92,18 @@ const AssetMapView = ({ preSelected, data }) => {
         }}
       >
         <MenuList>
-          <MenuItem>
-            <ListItemText>Mezz Floor</ListItemText>
-          </MenuItem>
-          <MenuItem>
-            <ListItemText>Ground Floor</ListItemText>
-          </MenuItem>
-          <MenuItem>
-            <ListItemText>Top Floor</ListItemText>
-          </MenuItem>
+          {locations.map((l) => (
+            <MenuItem
+              disabled={!l.backgroundMapUrl}
+              onClick={() => {
+                if (selectedLocation?.id == l.id) return;
+                setSelectedLocation(null);
+                setTimeout(() => setSelectedLocation(l), 50);
+              }}
+            >
+              <ListItemText>{l.name}</ListItemText>
+            </MenuItem>
+          ))}
         </MenuList>
 
         <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>
@@ -159,7 +144,9 @@ const AssetMapView = ({ preSelected, data }) => {
           overflow: "hidden",
         }}
       >
-        <WithMapViewer data={data} />
+        {selectedLocation && (
+          <WithMapViewer location={selectedLocation} data={data} />
+        )}
       </Box>
     </Box>
   );
