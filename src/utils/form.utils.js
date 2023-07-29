@@ -10,6 +10,7 @@ import {
   FIELD_TEXT,
   FIELD_URL,
   FIELD_YESNO,
+  INTERNAL_FIELDS,
 } from "../constants/form.constants";
 
 export const getDefaultField = () => {
@@ -43,7 +44,7 @@ export const muiDataGridCellEditProps = (fieldType) => {
   }
 };
 
-export const isFieldUploadParsable = (fieldType) => {
+export const isFieldUploadParsable = (field) => {
   return [
     FIELD_TEXT,
     FIELD_MULTILINE,
@@ -51,7 +52,11 @@ export const isFieldUploadParsable = (fieldType) => {
     FIELD_URL,
     FIELD_DATETIME,
     FIELD_YESNO,
-  ].includes(fieldType);
+  ].includes(field.type);
+};
+
+export const isInternalField = (field) => {
+  return INTERNAL_FIELDS.includes(field);
 };
 
 export const validateFormBuilder = (formFields) => {
@@ -60,6 +65,7 @@ export const validateFormBuilder = (formFields) => {
     let formHasDefaultField = false;
     formFields.forEach((field, index) => {
       const i = index + 1;
+      
       if (!field.name || field.name.trim() == "")
         result.errors.push(`${i}: Field name is required`);
 

@@ -24,6 +24,7 @@ import { LoadingButton } from "@mui/lab";
 import EquipmentFilesForm from "./EquipmentFilesForm";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { fromSecs } from "../utils/date.utils";
 
 const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -186,7 +187,21 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
                     </Stack>
                   </Paper>
                 ))}
-              <Divider sx={{ mb: 3 }} />
+              <Stack
+                sx={{ flexDirection: "row", justifyContent: "space-between" }}
+              >
+                {formData.xUpdatedBy && (
+                  <Typography variant="caption">
+                    Modified by {formData.xUpdatedBy?.fullName}, on{" "}
+                    {fromSecs(formData.xUpdatedAt?.seconds).toDateString()}
+                  </Typography>
+                )}
+                <Typography variant="caption">
+                  Created by {formData.xCreatedBy?.fullName}, on{" "}
+                  {fromSecs(formData.xCreatedAt?.seconds).toDateString()}
+                </Typography>
+              </Stack>
+              <Divider sx={{ mt: 2, mb: 3 }} />
               <Stack flexDirection={"row"} justifyContent={"space-between"}>
                 <Stack flexDirection={"row"} gap={6}>
                   <Button

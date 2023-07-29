@@ -54,7 +54,7 @@ const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
   const onClickDownloadTemplate = () => {
     const csv = Papa.unparse({
       fields: register?.formFields
-        .filter((field) => isFieldUploadParsable(field.type))
+        .filter((field) => isFieldUploadParsable(field))
         .map((field) => field.name),
     });
 
@@ -191,7 +191,7 @@ const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
                         ?.filter(
                           (field) =>
                             field.showInRegister &&
-                            isFieldUploadParsable(field.type)
+                            isFieldUploadParsable(field)
                         )
                         .map((field) => ({
                           field: field.key,

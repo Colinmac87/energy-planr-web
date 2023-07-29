@@ -54,6 +54,22 @@ export const FIELD_DICT = {
   },
 };
 
+export const INTERNAL_FIELDS = [
+  "id",
+  "xAssetId",
+  "xRegisterId",
+  "xIsDeleted",
+  "xIsArchived",
+  "xCreatedBy",
+  "xCreatedAt",
+  "xUpdatedBy",
+  "xUpdatedAt",
+  "xArchivedBy",
+  "xArchivedAt",
+  "xDeletedBy",
+  "xDeletedAt",
+];
+
 export const FIELD_TRIGGER_OPERATOR_LESSTHAN = "LESS";
 export const FIELD_TRIGGER_OPERATOR_LESSEQUAL = "LESSEQUAL";
 export const FIELD_TRIGGER_OPERATOR_EQUALTO = "EQUAL";
@@ -62,3 +78,4 @@ export const FIELD_TRIGGER_OPERATOR_GREATERTHAN = "GREATER";
 export const FIELD_TRIGGER_OPERATOR_NOTEQUALTO = "NOTEQUAL";
 export const FIELD_TRIGGER_OPERATOR_BETWEEN = "BETWEENRANGE";
 export const FIELD_TRIGGER_OPERATOR_OUTSIDE = "OUTSIDERANGE";
+export const FIELD_TRIGGER_OPERATOR_CONTAINS = "CONTAINS";

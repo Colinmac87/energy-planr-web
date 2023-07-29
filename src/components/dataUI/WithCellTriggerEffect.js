@@ -24,39 +24,71 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
         switch (field.triggers.operator) {
           case FIELD_TRIGGER_OPERATOR_LESSTHAN:
             if (value < compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_LESSEQUAL:
             if (value <= compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_EQUALTO:
             if (value == compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_NOTEQUALTO:
             if (value != compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_GREATEREQUAL:
             if (value >= compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_GREATERTHAN:
             if (value > compareValue)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           case FIELD_TRIGGER_OPERATOR_BETWEEN:
             try {
               const [start, end] = value.split(",");
               if (value >= start && value <= end)
-                setStyles({ backgroundColor: cellHighlightColor });
+                setStyles({
+                  backgroundColor: cellHighlightColor,
+                  paddingLeft: 1,
+                  paddingRight: 1,
+                });
             } catch (error) {}
             break;
           case FIELD_TRIGGER_OPERATOR_OUTSIDE:
             const [start1, end1] = value.split(",");
             if (value < start1 || value > end1)
-              setStyles({ backgroundColor: cellHighlightColor });
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
             break;
           default:
         }
@@ -64,11 +96,7 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
     }
   }, [value]);
 
-  return (
-    <Box flex={1} p={2} sx={styles}>
-      {children}
-    </Box>
-  );
+  return <Box sx={{ ...styles, wordWrap: "break-word" }}>{children}</Box>;
 };
 
 export default WithCellTriggerEffect;

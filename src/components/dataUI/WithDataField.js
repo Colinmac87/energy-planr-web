@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Link, Typography } from "@mui/material";
 import {
   FIELD_CHECKBOXES,
   FIELD_DATERANGE,
@@ -20,7 +20,6 @@ const WithDataField = ({ field, value, withLabel = true }) => {
   const renderDataField = () => {
     switch (field.type) {
       case FIELD_TEXT:
-      case FIELD_URL:
       case FIELD_MULTILINE:
       case FIELD_NUMERIC:
       case FIELD_YESNO:
@@ -28,6 +27,12 @@ const WithDataField = ({ field, value, withLabel = true }) => {
           <Typography sx={{ whiteSpace: "pre-line" }}>
             {field.meta?.startAdornment} {value} {field.meta?.endAdornment}
           </Typography>
+        );
+      case FIELD_URL:
+        return (
+          <Link href={value} target="_blank">
+            {value}
+          </Link>
         );
       case FIELD_RICHTEXT:
         return value;
