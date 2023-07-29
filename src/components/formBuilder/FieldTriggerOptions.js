@@ -23,6 +23,7 @@ import {
   FIELD_NUMERIC,
   FIELD_TEXT,
   FIELD_TRIGGER_OPERATOR_BETWEEN,
+  FIELD_TRIGGER_OPERATOR_CONTAINS,
   FIELD_TRIGGER_OPERATOR_EQUALTO,
   FIELD_TRIGGER_OPERATOR_GREATEREQUAL,
   FIELD_TRIGGER_OPERATOR_GREATERTHAN,
@@ -67,6 +68,10 @@ const allOperators = {
     text: "Out of range",
     value: FIELD_TRIGGER_OPERATOR_OUTSIDE,
   },
+  contains: {
+    text: "Contains",
+    value: FIELD_TRIGGER_OPERATOR_CONTAINS,
+  },
 };
 
 const FieldTriggerOptions = ({ field, onChange }) => {
@@ -97,6 +102,13 @@ const FieldTriggerOptions = ({ field, onChange }) => {
     switch (field.type) {
       case FIELD_TEXT:
       case FIELD_MULTILINE:
+        setAvailableOperators([
+          allOperators.equal,
+          allOperators.notEqual,
+          allOperators.contains,
+        ]);
+        break;
+
       case FIELD_DROPDOWN:
       case FIELD_CHECKBOXES:
       case FIELD_YESNO:
@@ -169,6 +181,7 @@ const FieldTriggerOptions = ({ field, onChange }) => {
                 value={compareValue}
                 onChange={(v) => setCompareValue(v)}
                 showLabel={false}
+                showHelpText={false}
               />
             </Grid>
 

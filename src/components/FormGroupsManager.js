@@ -85,12 +85,12 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
 
     saveFormGroups(register.id, { formGroups: groups })
       .then(() => {
-        enqueueSnackbar("Changes saved.", { variant: "success" });
+        enqueueSnackbar("Changes saved", { variant: "success" });
         onSave();
       })
       .catch(() => {
         enqueueSnackbar(
-          "Unable to save changes, please try again or contact us.",
+          "Unable to save changes, please try again or contact us",
           { variant: "error" }
         );
       })

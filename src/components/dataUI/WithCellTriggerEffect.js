@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
   FIELD_TRIGGER_OPERATOR_BETWEEN,
+  FIELD_TRIGGER_OPERATOR_CONTAINS,
   FIELD_TRIGGER_OPERATOR_EQUALTO,
   FIELD_TRIGGER_OPERATOR_GREATEREQUAL,
   FIELD_TRIGGER_OPERATOR_GREATERTHAN,
@@ -48,6 +49,14 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
             break;
           case FIELD_TRIGGER_OPERATOR_NOTEQUALTO:
             if (value != compareValue)
+              setStyles({
+                backgroundColor: cellHighlightColor,
+                paddingLeft: 1,
+                paddingRight: 1,
+              });
+            break;
+          case FIELD_TRIGGER_OPERATOR_CONTAINS:
+            if (value.includes(compareValue))
               setStyles({
                 backgroundColor: cellHighlightColor,
                 paddingLeft: 1,

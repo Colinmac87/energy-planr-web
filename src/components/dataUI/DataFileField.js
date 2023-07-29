@@ -24,6 +24,7 @@ import { useState } from "react";
 import { deleteFile, saveFileCaption } from "../../services/data.service";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import { downloadImage } from "../../utils/http.utils";
 
 const DataFileField = ({ file, onDelete }) => {
   const theme = useTheme();
@@ -159,15 +160,20 @@ const DataFileField = ({ file, onDelete }) => {
               >
                 <Link href={file.url} target="_blank">
                   <IconButton size="small">
-                    <OpenInNew />
+                    <OpenInNew fontSize="small" />
                   </IconButton>
                 </Link>
+
+                <IconButton onClick={() => downloadImage(file.url, file.name)}>
+                  <Download fontSize="small" />
+                </IconButton>
+
                 <Divider />
                 <IconButton
                   size="small"
                   onClick={() => setIsDeleteDialogOpen(true)}
                 >
-                  <Delete />
+                  <Delete fontSize="small" />
                 </IconButton>
               </Stack>
             </Stack>

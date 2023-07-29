@@ -104,7 +104,7 @@ const RegistersManager = ({ onSave }) => {
           name: register.name,
         })
           .then(() => {
-            enqueueSnackbar("Changes saved.", { variant: "success" });
+            enqueueSnackbar("Changes saved", { variant: "success" });
             onSave();
           })
           .finally(() => setLoading(false));
@@ -115,14 +115,14 @@ const RegistersManager = ({ onSave }) => {
           isDefault: register.isDefault,
         })
           .then(() => {
-            enqueueSnackbar("Changes saved.", { variant: "success" });
+            enqueueSnackbar("Changes saved", { variant: "success" });
             onSave();
           })
           .finally(() => setLoading(false));
       }
     } catch (error) {
       enqueueSnackbar(
-        "Unable to save changes, please try again or contact us.",
+        "Unable to save changes, please try again or contact us",
         { variant: "error" }
       );
     } finally {
@@ -136,7 +136,7 @@ const RegistersManager = ({ onSave }) => {
       deleteRegister(contextRegister.id)
         .then(() => {
           onSave();
-          enqueueSnackbar("Register deleted.", { variant: "success" });
+          enqueueSnackbar("Register deleted", { variant: "success" });
         })
         .catch((error) => {
           enqueueSnackbar(

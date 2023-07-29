@@ -43,7 +43,7 @@ const SignUp = () => {
             navigate("/");
           } else
             enqueueSnackbar(
-              "Unable to create account, please try again or contact us.",
+              "Unable to create account, please try again or contact us",
               { variant: "error" }
             );
         })

@@ -46,12 +46,12 @@ const AssetForm = ({ onSaving, onSave, onDelete }) => {
     if (asset?.id) {
       updateAsset(asset.id, { name, thumbnailFile })
         .then(() => {
-          enqueueSnackbar("Changes saved.", { variant: "success" });
+          enqueueSnackbar("Changes saved", { variant: "success" });
           onSave();
         })
         .catch(() => {
           enqueueSnackbar(
-            "Unable to save changes, please try again or contact us.",
+            "Unable to save changes, please try again or contact us",
             { variant: "error" }
           );
         })
@@ -60,11 +60,11 @@ const AssetForm = ({ onSaving, onSave, onDelete }) => {
       createAsset({ companyId: user.companyId, name, thumbnailFile })
         .then((assetId) => {
           if (assetId) {
-            enqueueSnackbar("New asset created.", { variant: "success" });
+            enqueueSnackbar("New asset created", { variant: "success" });
             onSave();
           } else {
             enqueueSnackbar(
-              "Unable to create asset, please try again or contact us.",
+              "Unable to create asset, please try again or contact us",
               {
                 variant: "error",
               }

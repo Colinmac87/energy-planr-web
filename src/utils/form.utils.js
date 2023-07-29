@@ -72,12 +72,12 @@ export const validateFormBuilder = (formFields) => {
       if (canBeDefaultField(field.type) && field.isDefault == true)
         if (formHasDefaultField)
           result.errors.push(
-            `${i}: Form can not have more than one default field.`
+            `${i}: Form can not have more than one default field`
           );
         else formHasDefaultField = true;
 
       if (!field.span || field.span < 1 || field.span > 12)
-        result.errors.push(`${i}: Display must be between 1 and 12.`);
+        result.errors.push(`${i}: Display must be between 1 and 12`);
 
       switch (field.type) {
         case FIELD_DROPDOWN:
@@ -86,7 +86,7 @@ export const validateFormBuilder = (formFields) => {
             field.meta.options.filter((o) => o.isDeleted == false).length == 0
           )
             result.errors.push(
-              `${i}: Dropdown field must have at least one option.`
+              `${i}: Dropdown field must have at least one option`
             );
           break;
         case FIELD_CHECKBOXES:
@@ -95,7 +95,7 @@ export const validateFormBuilder = (formFields) => {
             field.meta.options.filter((o) => o.isDeleted == false).length == 0
           )
             result.errors.push(
-              `${i}: Checkbox list field must have at least one option.`
+              `${i}: Checkbox list field must have at least one option`
             );
           break;
         default:
@@ -103,7 +103,7 @@ export const validateFormBuilder = (formFields) => {
     });
 
     if (!formHasDefaultField) {
-      result.errors.push("Form must have at least one default field.");
+      result.errors.push("Form must have at least one default field");
     }
 
     if (result.errors.length == 0) result.isValid = true;

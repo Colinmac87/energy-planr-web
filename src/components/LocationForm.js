@@ -34,12 +34,12 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
     if (location?.id) {
       updateLocation(location.id, { name, backgroundMapFile })
         .then(() => {
-          enqueueSnackbar("Changes saved.", { variant: "success" });
+          enqueueSnackbar("Changes saved", { variant: "success" });
           onSave();
         })
         .catch(() => {
           enqueueSnackbar(
-            "Unable to save changes, please try again or contact us.",
+            "Unable to save changes, please try again or contact us",
             { variant: "error" }
           );
         })
@@ -48,11 +48,11 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
       createLocation(assetId, { name, backgroundMapFile })
         .then((locationId) => {
           if (locationId) {
-            enqueueSnackbar("New location created.", { variant: "success" });
+            enqueueSnackbar("New location created", { variant: "success" });
             onSave();
           } else {
             enqueueSnackbar(
-              "Unable to create location, please try again or contact us.",
+              "Unable to create location, please try again or contact us",
               { variant: "error" }
             );
           }

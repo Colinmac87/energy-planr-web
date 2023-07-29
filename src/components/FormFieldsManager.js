@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Divider,
+  Drawer,
   FormControl,
   FormControlLabel,
   Grid,
@@ -15,6 +16,7 @@ import {
   Switch,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -27,6 +29,7 @@ import {
   CloudDone,
   CloudOff,
   Delete,
+  Preview,
   Save,
 } from "@mui/icons-material";
 import { saveFormFields } from "../services/register.service";
@@ -41,13 +44,16 @@ import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 import FieldTriggerOptions from "./formBuilder/FieldTriggerOptions";
 import { useSnackbar } from "notistack";
+import FormPreview from "./formUI/FormPreview";
 
 const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
 
+  const [formPreviewOpen, setFormPreviewOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [filterGroupKey, setFilterGroupKey] = useState(null);
   const [fields, setFields] = useState([]);
 
   useEffect(() => {
@@ -122,7 +128,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         type: getDefaultField(),
         required: false,
         span: 12,
-        group: "none",
+        group: filterGroupKey || "none",
         isDefault: fields.length == 0,
         showInRegister: true,
         meta: {},
@@ -144,12 +150,12 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
 
     saveFormFields(register.id, { formFields: fields })
       .then(() => {
-        enqueueSnackbar("Changes saved.", { variant: "success" });
+        enqueueSnackbar("Changes saved", { variant: "success" });
         onSave();
       })
       .catch(() => {
         enqueueSnackbar(
-          "Unable to save changes, please try again or contact us.",
+          "Unable to save changes, please try again or contact us",
           { variant: "error" }
         );
       })
@@ -210,6 +216,19 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                 ))}
               </Select>
             </FormControl>
+            <FormControl fullWidth sx={{ m: 2 }}>
+              <InputLabel>Group</InputLabel>
+              <Select
+                value={filterGroupKey}
+                label="Group"
+                onChange={(e) => setFilterGroupKey(e.target.value)}
+              >
+                <MenuItem value={null}>-</MenuItem>
+                {register?.formGroups.map((g) => (
+                  <MenuItem value={g.key}>{g.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Stack>
 
           <Stack
@@ -218,6 +237,15 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
             flexGrow={1}
             justifyContent={"flex-end"}
           >
+            <Tooltip title="Preview Form">
+              <IconButton
+                aria-label="preview"
+                onClick={() => setFormPreviewOpen(true)}
+              >
+                <Preview />
+              </IconButton>
+            </Tooltip>
+
             <Button variant="outlined" startIcon={<Add />} onClick={addField}>
               New Field
             </Button>
@@ -257,222 +285,246 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
             alignContent: "flex-start",
           }}
         >
-          {fields.map((field, i) => (
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2, pt: 3, mb: 2 }}>
-                <Stack
-                  flexDirection={"row"}
-                  gap={4}
-                  mb={4}
-                  justifyContent={"space-between"}
-                >
-                  <Stack
-                    sx={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    {field.key ? (
-                      <CloudDone
-                        fontSize="small"
-                        sx={{
-                          color:
-                            theme.palette.mode == "dark"
-                              ? theme.palette.primary.main
-                              : "green",
-                        }}
-                      />
-                    ) : (
-                      <CloudOff fontSize="small" />
-                    )}
-                    {field.key && (
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color:
-                            theme.palette.mode == "dark"
-                              ? theme.palette.primary.main
-                              : "green",
-                        }}
-                      >
-                        saved
-                      </Typography>
-                    )}
-                  </Stack>
+          {fields
+            .filter((f) => filterGroupKey == null || f.group == filterGroupKey)
+            .map((field, i) => (
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2, pt: 3, mb: 2 }}>
                   <Stack
                     flexDirection={"row"}
                     gap={4}
-                    justifyContent={"flex-end"}
+                    mb={4}
+                    justifyContent={"space-between"}
                   >
-                    {i > 0 && (
-                      <IconButton
-                        aria-label="move up"
-                        onClick={() => moveUp(i)}
-                      >
-                        <ArrowUpward />
-                      </IconButton>
-                    )}
-                    {i < fields.length - 1 && (
-                      <IconButton
-                        aria-label="move down"
-                        onClick={() => moveDown(i)}
-                      >
-                        <ArrowDownward />
-                      </IconButton>
-                    )}
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => removeField(i)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Stack>
-                </Stack>
-                <Stack gap={2}>
-                  <Stack flexDirection={"row"} gap={2}>
-                    <TextField
-                      sx={{ flex: 1 }}
-                      label={"Name"}
-                      fullWidth
-                      value={field.name}
-                      onChange={(e) => {
-                        onChangeFieldProperty(i, "name", e.target.value);
-                      }}
-                    />
-                    <FormControl sx={{ flex: 1 }}>
-                      <InputLabel>Type</InputLabel>
-                      <Select
-                        fullWidth
-                        label="Type"
-                        value={field.type}
-                        onChange={(e) => {
-                          onChangeFieldProperty(i, "type", e.target.value);
-                        }}
-                        readOnly={field.key != undefined && field.key != null}
-                      >
-                        {getFieldTypesArray().map((fieldType) => (
-                          <MenuItem value={fieldType.value}>
-                            {fieldType.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Stack>
-                  <Stack flexDirection={"row"} gap={2}>
-                    <FormControl fullWidth>
-                      <InputLabel>Display Span</InputLabel>
-                      <Select
-                        fullWidth
-                        label="Display Span"
-                        value={field.span}
-                        onChange={(e) => {
-                          onChangeFieldProperty(i, "span", e.target.value);
-                        }}
-                      >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={6}>6</MenuItem>
-                        <MenuItem value={7}>7</MenuItem>
-                        <MenuItem value={8}>8</MenuItem>
-                        <MenuItem value={9}>9</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={11}>11</MenuItem>
-                        <MenuItem value={12}>12</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Stack>
-                  <Stack sx={{ flexDirection: "row", gap: 8 }}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          disabled={!canBeDefaultField(field.type)}
-                          checked={field.isDefault}
-                          onChange={(e) =>
-                            onChangeFieldProperty(
-                              i,
-                              "isDefault",
-                              e.target.checked
-                            )
-                          }
-                        />
-                      }
-                      label="Default Field"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={field.required}
-                          onChange={(e) =>
-                            onChangeFieldProperty(
-                              i,
-                              "required",
-                              e.target.checked
-                            )
-                          }
-                        />
-                      }
-                      label="Required"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          disabled={!canShowInRegister(field.type)}
-                          checked={field.showInRegister}
-                          onChange={(e) =>
-                            onChangeFieldProperty(
-                              i,
-                              "showInRegister",
-                              e.target.checked
-                            )
-                          }
-                        />
-                      }
-                      label="Show in Register"
-                    />
-                  </Stack>
-                  <FormControl>
-                    <InputLabel>Group</InputLabel>
-                    <Select
-                      fullWidth
-                      label="Group"
-                      value={field.group}
-                      onChange={(e) => {
-                        onChangeFieldProperty(i, "group", e.target.value);
+                    <Stack
+                      sx={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
                       }}
                     >
-                      <MenuItem value={"none"}>-</MenuItem>
-                      {register?.formGroups?.length > 0 &&
-                        register.formGroups.map((group) => (
-                          <MenuItem value={group.key}>{group.name}</MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
-                  <WithFormBuilderFieldOptions
-                    type={field.type}
-                    meta={field.meta}
-                    onChange={(v) => {
-                      onChangeFieldProperty(i, "meta", v);
-                    }}
-                  >
-                    <Divider>More Options</Divider>
-                    <br />
-                  </WithFormBuilderFieldOptions>
-                  <FieldTriggerOptions
-                    field={field}
-                    onChange={(v) => {
-                      onChangeFieldProperty(i, "triggers", v);
-                    }}
-                  />
-                </Stack>
-              </Paper>
-            </Grid>
-          ))}
+                      {field.key ? (
+                        <CloudDone
+                          fontSize="small"
+                          sx={{
+                            color:
+                              theme.palette.mode == "dark"
+                                ? theme.palette.primary.main
+                                : "green",
+                          }}
+                        />
+                      ) : (
+                        <CloudOff fontSize="small" />
+                      )}
+                      {field.key && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color:
+                              theme.palette.mode == "dark"
+                                ? theme.palette.primary.main
+                                : "green",
+                          }}
+                        >
+                          saved
+                        </Typography>
+                      )}
+                    </Stack>
+                    <Stack
+                      flexDirection={"row"}
+                      gap={4}
+                      justifyContent={"flex-end"}
+                    >
+                      {i > 0 && (
+                        <IconButton
+                          aria-label="move up"
+                          onClick={() => moveUp(i)}
+                        >
+                          <ArrowUpward />
+                        </IconButton>
+                      )}
+                      {i < fields.length - 1 && (
+                        <IconButton
+                          aria-label="move down"
+                          onClick={() => moveDown(i)}
+                        >
+                          <ArrowDownward />
+                        </IconButton>
+                      )}
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => removeField(i)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                  <Stack gap={2}>
+                    <Stack flexDirection={"row"} gap={2}>
+                      <TextField
+                        sx={{ flex: 1 }}
+                        label={"Name"}
+                        fullWidth
+                        value={field.name}
+                        onChange={(e) => {
+                          onChangeFieldProperty(i, "name", e.target.value);
+                        }}
+                      />
+                      <FormControl sx={{ flex: 1 }}>
+                        <InputLabel>Type</InputLabel>
+                        <Select
+                          fullWidth
+                          label="Type"
+                          value={field.type}
+                          onChange={(e) => {
+                            onChangeFieldProperty(i, "type", e.target.value);
+                          }}
+                          readOnly={field.key != undefined && field.key != null}
+                        >
+                          {getFieldTypesArray().map((fieldType) => (
+                            <MenuItem value={fieldType.value}>
+                              {fieldType.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Stack>
+                    <Stack flexDirection={"row"} gap={2}>
+                      <FormControl fullWidth>
+                        <InputLabel>Display Span</InputLabel>
+                        <Select
+                          fullWidth
+                          label="Display Span"
+                          value={field.span}
+                          onChange={(e) => {
+                            onChangeFieldProperty(i, "span", e.target.value);
+                          }}
+                        >
+                          <MenuItem value={1}>1</MenuItem>
+                          <MenuItem value={2}>2</MenuItem>
+                          <MenuItem value={3}>3</MenuItem>
+                          <MenuItem value={4}>4</MenuItem>
+                          <MenuItem value={5}>5</MenuItem>
+                          <MenuItem value={6}>6</MenuItem>
+                          <MenuItem value={7}>7</MenuItem>
+                          <MenuItem value={8}>8</MenuItem>
+                          <MenuItem value={9}>9</MenuItem>
+                          <MenuItem value={10}>10</MenuItem>
+                          <MenuItem value={11}>11</MenuItem>
+                          <MenuItem value={12}>12</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Stack>
+                    <Stack sx={{ flexDirection: "row", gap: 8 }}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            disabled={!canBeDefaultField(field.type)}
+                            checked={field.isDefault}
+                            onChange={(e) =>
+                              onChangeFieldProperty(
+                                i,
+                                "isDefault",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        }
+                        label="Default Field"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={field.required}
+                            onChange={(e) =>
+                              onChangeFieldProperty(
+                                i,
+                                "required",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        }
+                        label="Required"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            disabled={!canShowInRegister(field.type)}
+                            checked={field.showInRegister}
+                            onChange={(e) =>
+                              onChangeFieldProperty(
+                                i,
+                                "showInRegister",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        }
+                        label="Show in Register"
+                      />
+                    </Stack>
+                    <FormControl>
+                      <InputLabel>Group</InputLabel>
+                      <Select
+                        fullWidth
+                        label="Group"
+                        value={field.group}
+                        onChange={(e) => {
+                          onChangeFieldProperty(i, "group", e.target.value);
+                        }}
+                      >
+                        <MenuItem value={"none"}>-</MenuItem>
+                        {register?.formGroups?.length > 0 &&
+                          register.formGroups.map((group) => (
+                            <MenuItem value={group.key}>{group.name}</MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                    <WithFormBuilderFieldOptions
+                      type={field.type}
+                      meta={field.meta}
+                      onChange={(v) => {
+                        onChangeFieldProperty(i, "meta", v);
+                      }}
+                    >
+                      <Divider>More Options</Divider>
+                      <br />
+                    </WithFormBuilderFieldOptions>
+                    <FieldTriggerOptions
+                      field={field}
+                      onChange={(v) => {
+                        onChangeFieldProperty(i, "triggers", v);
+                      }}
+                    />
+                  </Stack>
+                </Paper>
+              </Grid>
+            ))}
         </Grid>
       </Box>
+
+      {formPreviewOpen && (
+        <Drawer
+          anchor={"bottom"}
+          open={formPreviewOpen}
+          onClose={setFormPreviewOpen}
+          sx={{ maxHeight: window.outerHeight - 100 }}
+        >
+          <Box
+            sx={{
+              height: "100%",
+              backgroundColor: theme.palette.background.default,
+            }}
+          >
+            <FormPreview
+              register={register}
+              fields={fields}
+              onClose={() => setFormPreviewOpen(false)}
+            />
+          </Box>
+        </Drawer>
+      )}
     </Paper>
   );
 };

@@ -45,7 +45,7 @@ const LocationsManager = () => {
     deleteLocation(contextLocation.id)
       .then(() => {
         loadLocations();
-        enqueueSnackbar("Location deleted.", { variant: "success" });
+        enqueueSnackbar("Location deleted", { variant: "success" });
         onCloseLocationDeleteDialogOpen();
       })
       .catch(() => {

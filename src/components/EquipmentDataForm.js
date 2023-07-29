@@ -69,12 +69,12 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     if (formData?.id) {
       updateData(formData.id, formData)
         .then(() => {
-          enqueueSnackbar("Changes saved.", { variant: "success" });
+          enqueueSnackbar("Changes saved", { variant: "success" });
           onSave();
         })
         .catch(() => {
           enqueueSnackbar(
-            "Unable to save changes, please try again or contact us.",
+            "Unable to save changes, please try again or contact us",
             { variant: "error" }
           );
         })
@@ -83,11 +83,11 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
       createData(register.assetId, register.id, formData)
         .then((dataId) => {
           if (dataId) {
-            enqueueSnackbar("New data created.", { variant: "success" });
+            enqueueSnackbar("New data created", { variant: "success" });
             onSave();
           } else {
             enqueueSnackbar(
-              "Unable to create data, please try again or contact us.",
+              "Unable to create data, please try again or contact us",
               { variant: "error" }
             );
           }
@@ -101,12 +101,12 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
 
     deleteData(formData.id)
       .then(() => {
-        enqueueSnackbar("Data deleted.", { variant: "success" });
+        enqueueSnackbar("Data deleted", { variant: "success" });
         onSave();
         onClose();
       })
       .catch(() => {
-        enqueueSnackbar("Unable to delete, please try again or contact us.", {
+        enqueueSnackbar("Unable to delete, please try again or contact us", {
           variant: "error",
         });
       })

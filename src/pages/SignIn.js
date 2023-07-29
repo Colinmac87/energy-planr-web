@@ -58,7 +58,7 @@ const SignIn = () => {
             dispatch(setUser(user));
             navigate("/");
           } else
-            enqueueSnackbar("Email or password is not correct.", {
+            enqueueSnackbar("Email or password is not correct", {
               variant: "error",
             });
         })

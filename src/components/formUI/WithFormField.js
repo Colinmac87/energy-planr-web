@@ -22,7 +22,13 @@ import FormDropdownField from "./FormDropdownField";
 import FormCheckboxField from "./FormCheckboxField";
 import FormURLField from "./FormURLField";
 
-const WithFormField = ({ field, value, onChange, showLabel = true }) => {
+const WithFormField = ({
+  field,
+  value,
+  onChange,
+  showLabel = true,
+  showHelpText = true,
+}) => {
   const renderFormField = () => {
     switch (field.type) {
       case FIELD_TEXT:
@@ -82,6 +88,11 @@ const WithFormField = ({ field, value, onChange, showLabel = true }) => {
           </Typography>
         )}
       {renderFormField()}
+      {showHelpText && (
+        <Typography variant="caption" sx={{ position: "relative", top: -4 }}>
+          {field.meta.helpText}
+        </Typography>
+      )}
     </Grid>
   );
 };

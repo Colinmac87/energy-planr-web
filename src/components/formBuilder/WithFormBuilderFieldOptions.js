@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import {
   FIELD_CHECKBOXES,
   FIELD_DATERANGE,
@@ -37,7 +37,16 @@ const WithFormBuilderFieldOptions = ({ children, type, meta, onChange }) => {
   return (
     <Stack>
       {children}
-      {builder}
+      <Stack sx={{ gap: 2 }}>
+        <TextField
+          label="Helper Text"
+          value={meta?.helpText}
+          onChange={(e) => {
+            onChange({ ...meta, helpText: e.target.value });
+          }}
+        />
+        {builder}
+      </Stack>
     </Stack>
   );
 };
