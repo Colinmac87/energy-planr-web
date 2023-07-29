@@ -9,10 +9,12 @@ import {
   Paper,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 
 const CompanyRedirect = () => {
+  const theme = useTheme();
   const [code, setCode] = useState("");
 
   const handleSubmit = (e) => {
@@ -34,7 +36,25 @@ const CompanyRedirect = () => {
           }}
         >
           <Paper component="form" elevation={6} sx={{ p: 6 }}>
-            <Typography variant="h4">Energy Planr</Typography>
+            <div style={{ textAlign: "center" }}>
+              {theme.palette.mode == "dark" ? (
+                <img
+                  src={require("../assets/images/logo-white.png")}
+                  alt="Energy Planr"
+                  style={{
+                    width: 256,
+                  }}
+                />
+              ) : (
+                <img
+                  src={require("../assets/images/logo-black.png")}
+                  alt="Energy Planr"
+                  style={{
+                    width: 256,
+                  }}
+                />
+              )}
+            </div>
             <br />
             <FormControl fullWidth variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">

@@ -85,7 +85,20 @@ const DashboardLayout = ({ children }) => {
             }}
           >
             <Link href={`/`} underline="none">
-              <Typography
+              {theme.palette.mode == "dark" ? (
+                <img
+                  src={require("../assets/images/logo-white.png")}
+                  alt="Energy Planr"
+                  style={{ width: 160, position: "relative", left: -8 }}
+                />
+              ) : (
+                <img
+                  src={require("../assets/images/logo-black.png")}
+                  alt="Energy Planr"
+                  style={{ width: 160, position: "relative", left: -8 }}
+                />
+              )}
+              {/* <Typography
                 component="h1"
                 variant="h5"
                 sx={{
@@ -96,7 +109,7 @@ const DashboardLayout = ({ children }) => {
                 }}
               >
                 Energy Planr
-              </Typography>
+              </Typography> */}
             </Link>
             {asset && (
               <Stack flexDirection={"row"} alignItems={"center"} gap={2}>

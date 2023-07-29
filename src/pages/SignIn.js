@@ -98,11 +98,11 @@ const SignIn = () => {
         }}
       >
         <img
+          src={require("../assets/images/logo-gray.png")}
           alt="Energy Planr"
-          src={logo}
           style={{
             margin: 32,
-            maxWidth: 256,
+            width: 256,
           }}
         />
       </Grid>
