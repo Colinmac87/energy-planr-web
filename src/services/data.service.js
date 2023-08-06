@@ -83,6 +83,17 @@ export const updateDataValue = async (id, field, value) => {
   }
 };
 
+export const updateDataPin = async (id, pin) => {
+  try {
+    const docRef = doc(db, "data", id);
+    return await updateDoc(docRef, {
+      xPin: pin,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deleteData = async (id) => {
   try {
     const docRef = doc(db, "data", id);

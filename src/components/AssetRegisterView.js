@@ -307,7 +307,14 @@ const AssetRegisterView = ({ onDataSelect }) => {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Pin Placement">
-                    <IconButton edge="end" aria-label="pin" onClick={() => {}}>
+                    <IconButton
+                      edge="end"
+                      aria-label="pin"
+                      onClick={() => {
+                        setSelectedData(row.original);
+                        setIsEquipmentDetailViewerOpen(true);
+                      }}
+                    >
                       <Place />
                     </IconButton>
                   </Tooltip>
@@ -394,6 +401,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
           }}
         >
           <EquipmentDataForm
+            tab="pin"
             register={register}
             data={selectedData}
             onSaving={() => {}}

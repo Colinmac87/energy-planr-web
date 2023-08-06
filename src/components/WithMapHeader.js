@@ -28,6 +28,7 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
         minHeight: "100%",
         minWidth: "100%",
         overflow: "hidden",
+        pt: 8,
       }}
     >
       <AppBar

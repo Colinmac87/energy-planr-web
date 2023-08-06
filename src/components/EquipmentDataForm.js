@@ -25,8 +25,16 @@ import EquipmentFilesForm from "./EquipmentFilesForm";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { fromSecs } from "../utils/date.utils";
+import EquipmentPinForm from "./EquipmentPinForm";
 
-const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
+const EquipmentDataForm = ({
+  tab = "data",
+  register,
+  data,
+  onSaving,
+  onSave,
+  onClose,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
 
@@ -34,7 +42,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
   const [formData, setFormData] = useState(
     JSON.parse(JSON.stringify(data || {}))
   );
-  const [selectedTab, setSelectedTab] = useState("data");
+  const [selectedTab, setSelectedTab] = useState(tab);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const canEdit = true;
@@ -120,6 +128,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
           <Tab label="Data" value="data" />
           <Tab label="Files" value="files" />
           <Tab label="Images" value="images" />
+          <Tab label="Pin" value="pin" />
         </TabList>
       );
     return (
@@ -133,6 +142,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     <Box
       sx={{
         p: 3,
+        flex: 1,
         height: "100%",
         overflow: "auto",
       }}
@@ -150,7 +160,7 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
           {renderTabs()}
         </Box>
 
-        <TabPanel value="data">
+        <TabPanel value="data" sx={{ p: 0, pt: 2 }}>
           <Box component={"form"} onSubmit={handleSubmit} noValidate>
             <Stack spacing={0}>
               {formGroups
@@ -237,11 +247,14 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
             </Stack>
           </Box>
         </TabPanel>
-        <TabPanel value="files">
+        <TabPanel value="files" sx={{ p: 0, pt: 2 }}>
           <EquipmentFilesForm dataId={formData.id} type={FIELD_FILE} />
         </TabPanel>
-        <TabPanel value="images">
+        <TabPanel value="images" sx={{ p: 0, pt: 2 }}>
           <EquipmentFilesForm dataId={formData.id} type={FIELD_IMAGE} />
+        </TabPanel>
+        <TabPanel value="pin" sx={{ p: 0, pt: 2 }}>
+          <EquipmentPinForm data={formData} />
         </TabPanel>
       </TabContext>
 
