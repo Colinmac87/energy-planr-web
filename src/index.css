@@ -26,3 +26,7 @@ div.ProseMirror {
   border: none !important;
   background-color: transparent !important;
 }
+
+.leaflet-container {
+  overflow: unset !important;
+}
