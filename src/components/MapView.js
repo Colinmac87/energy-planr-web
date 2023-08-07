@@ -32,6 +32,7 @@ import Draw from "ol/interaction/Draw";
 import "../../node_modules/ol/ol.css";
 import { Overlay } from "ol";
 import { stringify } from "../utils/string.utils";
+import { createPortal } from "react-dom";
 
 const MapView = ({
   image,
@@ -40,14 +41,16 @@ const MapView = ({
   mode = "view", // view || pin
   onPinPlacement,
 }) => {
-  const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+  // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
   const [drawType, setDrawType] = useState("Point");
   // const [map, setMap] = useState(null);
 
   const popupContainer = document.getElementById("olPopup");
 
-  const map = useRef();
-  const draw = useRef();
+  const mapContainerRef = createRef();
+  const mapRef = useRef(null);
+  // const map = useRef();
+  const draw = useRef(null);
 
   const extent = [0, 0, 1024, 968];
   const projection = new Projection({
@@ -78,7 +81,7 @@ const MapView = ({
   );
 
   useEffect(() => {
-    map.current = new Map({
+    const map = new Map({
       layers: [
         new ImageLayer({
           source: new Static({
@@ -99,6 +102,8 @@ const MapView = ({
       }),
     });
 
+    mapRef.current = map;
+
     if (mode == "pin") {
       // draw.current = new Draw({
       //   source: source,
@@ -113,7 +118,7 @@ const MapView = ({
       // // draw.current = _draw;
 
       // map.current.addInteraction(draw.current);
-      addDraw();
+      addDraw(map);
     }
 
     // map.current = newMap;
@@ -129,38 +134,45 @@ const MapView = ({
   useEffect(() => {
     console.log("mode", mode);
     if (mode == "view") {
-      draw.current.removeLastPoint();
+      // draw.current.removeLastPoint();
 
-      setTimeout(() => {
-        removeDraw();
-        forceUpdate();
-      }, 4000);
+      removeDraw();
+      // setTimeout(() => {
+      //   // forceUpdate();
+      // }, 4000);
     } else {
       console.log("data", data);
     }
   }, [mode]);
 
-  const addDraw = () => {
-    draw.current = new Draw({
+  const addDraw = (map) => {
+    const _draw = new Draw({
       source: source,
       type: drawType,
     });
-    draw.current.on("drawend", (e) => {
+    _draw.on("drawend", (e) => {
       console.log("draw end");
       const [x, y] = e.target.sketchCoords_;
       overlay.current.setPosition([x, y]);
 
       onPinPlacement(x, y);
     });
-    // draw.current = _draw;
+    draw.current = _draw;
 
-    map.current.addInteraction(draw.current);
+    mapRef.current.addInteraction(draw.current);
   };
 
   const removeDraw = () => {
-    console.log("removing", draw.current);
-    console.log("removed ", map.current.removeInteraction(draw.current));
-    draw.current.dispose();
+    console.log("map ref", mapRef.current);
+    const map = document.getElementById("olMap");
+    console.log("dom map", map);
+    try {
+      console.log("removing", draw.current);
+      console.log("removed ", mapRef.current.removeInteraction(draw.current));
+    } catch (error) {
+      console.log("cant remove draw", error);
+    }
+    // draw.current.dispose();
     // draw.current = null;
     // console.log("map", map);
     // const mapCopy = JSON.parse(stringify(map));
@@ -168,6 +180,8 @@ const MapView = ({
 
     // setMap(mapCopy);
   };
+
+  if (!image) return null;
 
   return (
     <Box
@@ -181,15 +195,22 @@ const MapView = ({
         backgroundColor: "#eee2",
       }}
     >
-      {ignored}
       <div
-        id="olMap"
-        class="olMap"
-        className="olMap"
-        style={{ width: "100%", height: "100%" }}
+        ref={mapContainerRef}
+        id="olMapContainer"
+        class="olMapContainer"
       ></div>
+      {createPortal(
+        <div
+          id="olMap"
+          class="olMap"
+          className="olMap"
+          style={{ width: "100%", height: "100%" }}
+        ></div>,
+        document.getElementById("olMapContainer")
+      )}
 
-      <div
+      {/* <div
         id="olPopup"
         class="olPopup"
         className="olPopup"
@@ -204,7 +225,7 @@ const MapView = ({
           X
         </Button>
         HAHAHAH
-      </div>
+      </div> */}
     </Box>
   );
 };
