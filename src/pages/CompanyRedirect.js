@@ -76,10 +76,11 @@ const CompanyRedirect = () => {
                   </InputAdornment>
                 }
                 label="Company Code"
+                sx={{ textAlign: "center" }}
               />
             </FormControl>
-            <Typography variant="caption">
-              You'll be taken to your company signin page
+            <Typography variant="caption" sx={{ textAlign: "center" }}>
+              You will be taken to your company login page
             </Typography>
           </Paper>
         </Stack>

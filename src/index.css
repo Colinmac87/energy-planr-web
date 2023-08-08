@@ -26,3 +26,8 @@ div.ProseMirror {
   border: none !important;
   background-color: transparent !important;
 }
+
+.notistack-MuiContent > div {
+  margin: auto;
+  text-align: center;
+}
