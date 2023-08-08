@@ -65,7 +65,9 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
     <Box component={"form"} onSubmit={handleSubmit} noValidate>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4">Add new Location</Typography>
+          <Typography variant="h4">
+            {location?.id ? "Update" : "New"} Location
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -126,9 +128,9 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
         </Grid>
         <Grid item xs={12}>
           <Stack flexDirection={"row"} justifyContent={"space-between"}>
-            <Button variant="outlined" disabled={loading} onClick={onCancel}>
+            {/* <Button variant="outlined" disabled={loading} onClick={onCancel}>
               Cancel
-            </Button>
+            </Button> */}
             <LoadingButton type="submit" variant="contained" loading={loading}>
               Save
             </LoadingButton>

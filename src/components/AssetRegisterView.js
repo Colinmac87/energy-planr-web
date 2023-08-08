@@ -8,6 +8,7 @@ import {
   FormControl,
   IconButton,
   InputLabel,
+  Menu,
   MenuItem,
   Select,
   Stack,
@@ -26,6 +27,7 @@ import {
   Archive,
   Delete,
   Edit,
+  MoreHoriz,
   Place,
   Unarchive,
   UploadFile,
@@ -151,6 +153,15 @@ const AssetRegisterView = ({ onDataSelect }) => {
     });
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Box
       component="main"
@@ -162,7 +173,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
         m: 0,
         p: 2,
         position: "relative",
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <Stack
@@ -219,7 +230,13 @@ const AssetRegisterView = ({ onDataSelect }) => {
           </Button>
         </Stack>
       </Stack>
-      <Box sx={{ flex: 1 }}>
+      <Box
+        sx={{
+          m: 0,
+          p: 0,
+          overflowY: "hidden",
+        }}
+      >
         <MaterialReactTable
           enableRowNumbers
           displayColumnDefOptions={{ "mrt-row-actions": { size: 180 } }}
@@ -332,7 +349,10 @@ const AssetRegisterView = ({ onDataSelect }) => {
                     row.original.xArchivedAt?.seconds ||
                       row.original.xUpdatedAt?.seconds ||
                       row.original.xCreatedAt?.seconds
-                  ).toDateString()}
+                  )
+                    .toLocaleString()
+                    .replace(",", "")
+                    .slice(0, 16)}
                 </Typography>
               </Tooltip>
             </Stack>
@@ -376,8 +396,6 @@ const AssetRegisterView = ({ onDataSelect }) => {
           enableRowVirtualization
           state={{ isLoading: loading }}
           enableColumnResizing={true}
-          enableColumnOrdering={true}
-          enableColumnDragging={true}
         />
       </Box>
 
