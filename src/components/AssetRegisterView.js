@@ -62,6 +62,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
 
   const [loading, setLoading] = useState(true);
   const [register, setRegister] = useState(null);
+  const [formTab, setFormTab] = useState("data");
   const [selectedData, setSelectedData] = useState(null);
   const [data, setData] = useState([]);
 
@@ -211,6 +212,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
             component="label"
             startIcon={<Add />}
             onClick={() => {
+              setFormTab("data");
               setSelectedData(null);
               setIsEquipmentDetailViewerOpen(true);
             }}
@@ -276,6 +278,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
                       edge="end"
                       aria-label="edit"
                       onClick={() => {
+                        setFormTab("data");
                         setSelectedData(row.original);
                         setIsEquipmentDetailViewerOpen(true);
                       }}
@@ -311,11 +314,18 @@ const AssetRegisterView = ({ onDataSelect }) => {
                       edge="end"
                       aria-label="pin"
                       onClick={() => {
+                        setFormTab("pin");
                         setSelectedData(row.original);
                         setIsEquipmentDetailViewerOpen(true);
                       }}
                     >
-                      <Place />
+                      <Place
+                        sx={
+                          row.original.xPin?.coords && {
+                            color: row.original.xPin?.color,
+                          }
+                        }
+                      />
                     </IconButton>
                   </Tooltip>
                 </Stack>
@@ -401,7 +411,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
           }}
         >
           <EquipmentDataForm
-            tab="pin"
+            tab={formTab}
             register={register}
             data={selectedData}
             onSaving={() => {}}

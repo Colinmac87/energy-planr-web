@@ -17,10 +17,12 @@ import { useEffect, useState } from "react";
 import WithMapViewer from "./WithMapViewer";
 import { getLocations } from "../services/location.service";
 import { useSelector } from "react-redux";
+import { getDataByAsset } from "../services/data.service";
 
-const AssetMapView = ({ preSelected, data }) => {
+const AssetMapView = ({ preSelected }) => {
   const { asset } = useSelector((state) => state.asset);
 
+  const [data, setData] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [selected, setSelected] = useState(preSelected);
 
@@ -33,22 +35,24 @@ const AssetMapView = ({ preSelected, data }) => {
     try {
       getLocations(asset.id).then((_locations) => setLocations(_locations));
 
-      let temp = [];
-      const schema = data[0];
+      getDataByAsset(asset.id).then((_data) => setData(_data));
 
-      for (const property in schema) {
-        // remove internal properties
-        if (["id", "x", "y", "level"].includes(property)) continue;
+      // let temp = [];
+      // const schema = data[0];
 
-        const allPropertyValues = data.map((i) => i[property]);
+      // for (const property in schema) {
+      //   // remove internal properties
+      //   if (["id", "x", "y", "level"].includes(property)) continue;
 
-        temp.push({
-          group: property,
-          entries: [...new Set(allPropertyValues)],
-        });
-      }
+      //   const allPropertyValues = data.map((i) => i[property]);
 
-      setTreeViewData(temp);
+      //   temp.push({
+      //     group: property,
+      //     entries: [...new Set(allPropertyValues)],
+      //   });
+      // }
+
+      // setTreeViewData(temp);
     } catch (error) {}
   }, []);
 
@@ -145,7 +149,13 @@ const AssetMapView = ({ preSelected, data }) => {
         }}
       >
         {selectedLocation && (
-          <WithMapViewer location={selectedLocation} data={data} />
+          <WithMapViewer
+            location={selectedLocation}
+            data={data.filter(
+              (d) =>
+                d.xPin?.coords && d.xPin?.locationId == selectedLocation?.id
+            )}
+          />
         )}
       </Box>
     </Box>
