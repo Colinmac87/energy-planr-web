@@ -17,22 +17,24 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { OSM } from "ol/source";
-import Map from "ol/Map";
-import { getCenter } from "ol/extent";
-import Static from "ol/source/ImageStatic";
-import View from "ol/View";
-import Projection from "ol/proj/Projection";
-import ImageLayer from "ol/layer/Image";
-import TileLayer from "ol/layer/Tile";
-import VectorSource from "ol/source/Vector";
-import VectorLayer from "ol/layer/Vector";
-import Draw from "ol/interaction/Draw";
+// import { OSM } from "ol/source";
+// import Map from "ol/Map";
+// import { getCenter } from "ol/extent";
+// import Static from "ol/source/ImageStatic";
+// import View from "ol/View";
+// import Projection from "ol/proj/Projection";
+// import ImageLayer from "ol/layer/Image";
+// import TileLayer from "ol/layer/Tile";
+// import VectorSource from "ol/source/Vector";
+// import VectorLayer from "ol/layer/Vector";
+// import Draw from "ol/interaction/Draw";
 
 import "../../node_modules/ol/ol.css";
 import { Overlay } from "ol";
 import { stringify } from "../utils/string.utils";
 import { createPortal } from "react-dom";
+import { MapComponent } from "react-ol-fiber";
+import "ol/ol.css";
 
 const MapView = ({
   image,
@@ -42,144 +44,144 @@ const MapView = ({
   onPinPlacement,
 }) => {
   // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-  const [drawType, setDrawType] = useState("Point");
-  // const [map, setMap] = useState(null);
+  // const [drawType, setDrawType] = useState("Point");
+  // // const [map, setMap] = useState(null);
 
-  const popupContainer = document.getElementById("olPopup");
+  // const popupContainer = document.getElementById("olPopup");
 
-  const mapContainerRef = createRef();
-  const mapRef = useRef(null);
-  // const map = useRef();
-  const draw = useRef(null);
+  // const mapContainerRef = createRef();
+  // const mapRef = useRef(null);
+  // // const map = useRef();
+  // const draw = useRef(null);
 
-  const extent = [0, 0, 1024, 968];
-  const projection = new Projection({
-    code: "xkcd-image",
-    units: "pixels",
-    extent: extent,
-  });
+  // const extent = [0, 0, 1024, 968];
+  // const projection = new Projection({
+  //   code: "xkcd-image",
+  //   units: "pixels",
+  //   extent: extent,
+  // });
 
-  const raster = new TileLayer({
-    source: new OSM(),
-  });
+  // const raster = new TileLayer({
+  //   source: new OSM(),
+  // });
 
-  const source = new VectorSource({ wrapX: false });
+  // const source = new VectorSource({ wrapX: false });
 
-  const vector = new VectorLayer({
-    source: source,
-  });
+  // const vector = new VectorLayer({
+  //   source: source,
+  // });
 
-  const overlay = useRef(
-    new Overlay({
-      element: popupContainer,
-      autoPan: {
-        animation: {
-          duration: 250,
-        },
-      },
-    })
-  );
+  // const overlay = useRef(
+  //   new Overlay({
+  //     element: popupContainer,
+  //     autoPan: {
+  //       animation: {
+  //         duration: 250,
+  //       },
+  //     },
+  //   })
+  // );
 
-  useEffect(() => {
-    const map = new Map({
-      layers: [
-        new ImageLayer({
-          source: new Static({
-            url: image,
-            projection: projection,
-            imageExtent: extent,
-          }),
-        }),
-        raster,
-        vector,
-      ],
-      target: "olMap",
-      view: new View({
-        projection: projection,
-        center: getCenter(extent),
-        zoom: 2,
-        maxZoom: 8,
-      }),
-    });
+  // useEffect(() => {
+  //   const map = new Map({
+  //     layers: [
+  //       new ImageLayer({
+  //         source: new Static({
+  //           url: image,
+  //           projection: projection,
+  //           imageExtent: extent,
+  //         }),
+  //       }),
+  //       raster,
+  //       vector,
+  //     ],
+  //     target: "olMap",
+  //     view: new View({
+  //       projection: projection,
+  //       center: getCenter(extent),
+  //       zoom: 2,
+  //       maxZoom: 8,
+  //     }),
+  //   });
 
-    mapRef.current = map;
+  //   mapRef.current = map;
 
-    if (mode == "pin") {
-      // draw.current = new Draw({
-      //   source: source,
-      //   type: drawType,
-      // });
-      // draw.current.on("drawend", (e) => {
-      //   const [x, y] = e.target.sketchCoords_;
-      //   overlay.current.setPosition([x, y]);
+  //   if (mode == "pin") {
+  //     // draw.current = new Draw({
+  //     //   source: source,
+  //     //   type: drawType,
+  //     // });
+  //     // draw.current.on("drawend", (e) => {
+  //     //   const [x, y] = e.target.sketchCoords_;
+  //     //   overlay.current.setPosition([x, y]);
 
-      //   onPinPlacement(x, y);
-      // });
-      // // draw.current = _draw;
+  //     //   onPinPlacement(x, y);
+  //     // });
+  //     // // draw.current = _draw;
 
-      // map.current.addInteraction(draw.current);
-      addDraw(map);
-    }
+  //     // map.current.addInteraction(draw.current);
+  //     addDraw(map);
+  //   }
 
-    // map.current = newMap;
+  //   // map.current = newMap;
 
-    // setMap(newMap);
-    // setMap(JSON.parse(stringify(newMap)));
+  //   // setMap(newMap);
+  //   // setMap(JSON.parse(stringify(newMap)));
 
-    // return () => {
-    //   map?.dispose();
-    // };
-  }, [image]);
+  //   // return () => {
+  //   //   map?.dispose();
+  //   // };
+  // }, [image]);
 
-  useEffect(() => {
-    console.log("mode", mode);
-    if (mode == "view") {
-      // draw.current.removeLastPoint();
+  // useEffect(() => {
+  //   console.log("mode", mode);
+  //   if (mode == "view") {
+  //     // draw.current.removeLastPoint();
 
-      removeDraw();
-      // setTimeout(() => {
-      //   // forceUpdate();
-      // }, 4000);
-    } else {
-      console.log("data", data);
-    }
-  }, [mode]);
+  //     removeDraw();
+  //     // setTimeout(() => {
+  //     //   // forceUpdate();
+  //     // }, 4000);
+  //   } else {
+  //     console.log("data", data);
+  //   }
+  // }, [mode]);
 
-  const addDraw = (map) => {
-    const _draw = new Draw({
-      source: source,
-      type: drawType,
-    });
-    _draw.on("drawend", (e) => {
-      console.log("draw end");
-      const [x, y] = e.target.sketchCoords_;
-      overlay.current.setPosition([x, y]);
+  // const addDraw = (map) => {
+  //   const _draw = new Draw({
+  //     source: source,
+  //     type: drawType,
+  //   });
+  //   _draw.on("drawend", (e) => {
+  //     console.log("draw end");
+  //     const [x, y] = e.target.sketchCoords_;
+  //     overlay.current.setPosition([x, y]);
 
-      onPinPlacement(x, y);
-    });
-    draw.current = _draw;
+  //     onPinPlacement(x, y);
+  //   });
+  //   draw.current = _draw;
 
-    mapRef.current.addInteraction(draw.current);
-  };
+  //   mapRef.current.addInteraction(draw.current);
+  // };
 
-  const removeDraw = () => {
-    console.log("map ref", mapRef.current);
-    const map = document.getElementById("olMap");
-    console.log("dom map", map);
-    try {
-      console.log("removing", draw.current);
-      console.log("removed ", mapRef.current.removeInteraction(draw.current));
-    } catch (error) {
-      console.log("cant remove draw", error);
-    }
-    // draw.current.dispose();
-    // draw.current = null;
-    // console.log("map", map);
-    // const mapCopy = JSON.parse(stringify(map));
-    // mapCopy
+  // const removeDraw = () => {
+  //   console.log("map ref", mapRef.current);
+  //   const map = document.getElementById("olMap");
+  //   console.log("dom map", map);
+  //   try {
+  //     console.log("removing", draw.current);
+  //     console.log("removed ", mapRef.current.removeInteraction(draw.current));
+  //   } catch (error) {
+  //     console.log("cant remove draw", error);
+  //   }
+  //   // draw.current.dispose();
+  //   // draw.current = null;
+  //   // console.log("map", map);
+  //   // const mapCopy = JSON.parse(stringify(map));
+  //   // mapCopy
 
-    // setMap(mapCopy);
-  };
+  //   // setMap(mapCopy);
+  // };
 
   if (!image) return null;
 
@@ -195,7 +197,18 @@ const MapView = ({
         backgroundColor: "#eee2",
       }}
     >
-      <div
+      <MapComponent>
+        <imageLayer
+          source={<imageStaticSource url={image}></imageStaticSource>}
+        >
+          {/* <imageStaticSource url={image}></imageStaticSource> */}
+        </imageLayer>
+
+        <dragPanInteraction />
+        <mouseWheelZoomInteraction />
+      </MapComponent>
+
+      {/* <div
         ref={mapContainerRef}
         id="olMapContainer"
         class="olMapContainer"
@@ -208,7 +221,7 @@ const MapView = ({
           style={{ width: "100%", height: "100%" }}
         ></div>,
         document.getElementById("olMapContainer")
-      )}
+      )} */}
 
       {/* <div
         id="olPopup"
