@@ -116,11 +116,11 @@ const EquipmentPinForm = ({ data }) => {
                   setPinSize(e.target.value);
                 }}
               >
-                <MenuItem value={PIN_SIZE_TINY}>Tiny</MenuItem>
-                <MenuItem value={PIN_SIZE_SMALL}>Small</MenuItem>
-                <MenuItem value={PIN_SIZE_MEDIUM}>Medium</MenuItem>
-                <MenuItem value={PIN_SIZE_LARGE}>Large</MenuItem>
-                <MenuItem value={PIN_SIZE_HUGE}>Huge</MenuItem>
+                <MenuItem value={PIN_SIZE_TINY}>{PIN_SIZE_TINY}</MenuItem>
+                <MenuItem value={PIN_SIZE_SMALL}>{PIN_SIZE_SMALL}</MenuItem>
+                <MenuItem value={PIN_SIZE_MEDIUM}>{PIN_SIZE_MEDIUM}</MenuItem>
+                <MenuItem value={PIN_SIZE_LARGE}>{PIN_SIZE_LARGE}</MenuItem>
+                <MenuItem value={PIN_SIZE_HUGE}>{PIN_SIZE_HUGE}</MenuItem>
               </Select>
             </FormControl>
             <TwitterPicker
