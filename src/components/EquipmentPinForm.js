@@ -164,7 +164,7 @@ const EquipmentPinForm = ({ data }) => {
           {location && (
             <MapView
               image={location.backgroundMapUrl}
-              arePinsVisible={false}
+              arePinsVisible={true}
               data={[
                 {
                   ...data,

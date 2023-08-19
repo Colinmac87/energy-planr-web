@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { Map, Marker } from "react-canvas-map";
 
 const MapView = ({
@@ -9,6 +9,7 @@ const MapView = ({
   mode = "view", // view || pin
   onPinPlacement,
 }) => {
+  const mapRef = createRef();
   const [markerImage] = useState(() => {
     const _image = new Image();
     _image.src =
@@ -45,21 +46,19 @@ const MapView = ({
         className="olMap"
         style={{ width: "100%", height: "100%" }}
       >
-        <Map image={image} onClick={handleMapClick}>
+        <Map image={image} onClick={handleMapClick} ref={mapRef}>
           {arePinsVisible &&
             data
               .filter((dataMarker) => dataMarker.xPin?.coords != null)
               .map((dataMarker, i) => (
-                <>
-                  <Marker
-                    circleColour={dataMarker.xPin?.color}
-                    inCircle={true}
-                    size={dataMarker.xPin?.size * 16}
-                    markerKey={i}
-                    coords={dataMarker.xPin?.coords}
-                    image={markerImage}
-                  />
-                </>
+                <Marker
+                  circleColour={dataMarker.xPin?.color}
+                  inCircle={true}
+                  size={dataMarker.xPin?.size * 16}
+                  markerKey={i}
+                  coords={dataMarker.xPin?.coords}
+                  image={markerImage}
+                />
               ))}
         </Map>
       </div>

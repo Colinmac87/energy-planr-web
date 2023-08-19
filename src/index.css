@@ -27,6 +27,17 @@ div.ProseMirror {
   background-color: transparent !important;
 }
 
+.twitter-picker {
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.MuiPopover-root {
+  z-index: 1405 !important;
+}
+
 .notistack-MuiContent > div {
   margin: auto;
   text-align: center;
