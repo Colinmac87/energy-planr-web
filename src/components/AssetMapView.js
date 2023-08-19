@@ -98,6 +98,7 @@ const AssetMapView = ({ preSelected }) => {
         <MenuList>
           {locations.map((l) => (
             <MenuItem
+              divider
               disabled={!l.backgroundMapUrl}
               onClick={() => {
                 if (selectedLocation?.id == l.id) return;
@@ -145,6 +146,9 @@ const AssetMapView = ({ preSelected }) => {
           flexGrow: 1,
           m: 0,
           p: 1,
+          pt: 0,
+          pb: 0,
+          pr: 0,
           overflow: "hidden",
         }}
       >

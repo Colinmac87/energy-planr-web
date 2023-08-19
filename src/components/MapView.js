@@ -36,7 +36,7 @@ const MapView = ({
         minHeight: "100%",
         maxHeight: "100%",
         height: "100%",
-        backgroundColor: "#eee2",
+        backgroundColor: "#DFDEDD",
       }}
     >
       <div

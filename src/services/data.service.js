@@ -10,8 +10,20 @@ import {
 import { db } from "../firebase";
 import store from "../store";
 
-export const createData = async (assetId, registerId, data) => {
+export const createData = async (
+  assetId,
+  registerId,
+  data,
+  { defaultField }
+) => {
   try {
+    const isUnique = await isUniqueData(defaultField, data[defaultField], {
+      lookupRegisterId: registerId,
+    });
+    if (!isUnique) {
+      throw "Unable to save: Record must be unique on the default field";
+    }
+
     const docRef = await addDoc(collection(db, "data"), {
       xAssetId: assetId,
       xRegisterId: registerId,
@@ -25,11 +37,16 @@ export const createData = async (assetId, registerId, data) => {
     return docRef.id;
   } catch (error) {
     console.log(error);
-    return null;
+    throw error;
   }
 };
 
-export const createDataBulk = async (assetId, registerId, data) => {
+export const createDataBulk = async (
+  assetId,
+  registerId,
+  data,
+  { defaultField }
+) => {
   try {
     let errors = [];
 
@@ -55,12 +72,19 @@ export const createDataBulk = async (assetId, registerId, data) => {
     return errors;
   } catch (error) {
     console.log(error);
-    return null;
+    throw error;
   }
 };
 
-export const updateData = async (id, data) => {
+export const updateData = async (id, data, { defaultField }) => {
   try {
+    const isUnique = await isUniqueData(defaultField, data[defaultField], {
+      excludeDataId: id,
+    });
+    if (!isUnique) {
+      throw "Unable to save: Record is not unique";
+    }
+
     const docRef = doc(db, "data", id);
     return await updateDoc(docRef, {
       ...data,
@@ -69,6 +93,7 @@ export const updateData = async (id, data) => {
     });
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -159,6 +184,36 @@ export const getDataByAsset = async (assetId) => {
 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }));
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const isUniqueData = async (
+  fieldName,
+  value,
+  { lookupRegisterId, excludeDataId }
+) => {
+  try {
+    const conditions = [
+      where(fieldName, "==", value),
+      where("xIsDeleted", "==", false),
+    ];
+
+    if (lookupRegisterId) {
+      conditions.push(where("xRegisterId", "==", lookupRegisterId));
+    }
+
+    const q = query(collection(db, "data"), ...conditions);
+
+    const querySnapshot = await getDocs(q);
+
+    if (excludeDataId)
+      return (
+        querySnapshot.docs.filter((d) => d.id != excludeDataId).length == 0
+      );
+    return querySnapshot.size == 0;
   } catch (error) {
     console.log(error);
     return null;
