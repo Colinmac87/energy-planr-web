@@ -52,7 +52,7 @@ const MapView = ({ image, data, arePinsVisible }) => {
         position: "relative",
         maxWidth: "100%",
         height: "100%",
-        backgroundColor: "#eee2",
+        backgroundColor: "#DFDEDD",
       }}
     >
       <div

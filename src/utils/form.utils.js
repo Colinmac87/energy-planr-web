@@ -31,16 +31,18 @@ export const muiDataGridCellEditProps = (fieldType) => {
     case FIELD_MULTILINE:
     case FIELD_URL:
       return {
-        editable: true,
-        type: "string",
+        enableEditing: true,
+        editVariant: "text",
       };
     case FIELD_NUMERIC:
       return {
-        editable: true,
-        type: "number",
+        enableEditing: true,
+        editVariant: "text",
       };
     default:
-      return {};
+      return {
+        enableEditing: false
+      };
   }
 };
 

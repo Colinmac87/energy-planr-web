@@ -79,7 +79,10 @@ const CompanyRedirect = () => {
                 sx={{ textAlign: "center" }}
               />
             </FormControl>
-            <Typography variant="caption" sx={{ textAlign: "center" }}>
+            <Typography
+              variant="caption"
+              sx={{ display: "block", flex: 1, mt: 0.4 }}
+            >
               You will be taken to your company login page
             </Typography>
           </Paper>

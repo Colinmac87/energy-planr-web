@@ -67,20 +67,23 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
     setLoading(true);
 
     if (formData?.id) {
-      updateData(formData.id, formData)
+      updateData(formData.id, formData, {
+        defaultField: register.formFields.find((r) => r.isDefault == true)?.key,
+      })
         .then(() => {
           enqueueSnackbar("Changes saved", { variant: "success" });
           onSave();
         })
-        .catch(() => {
-          enqueueSnackbar(
-            "Unable to save changes, please try again or contact us",
-            { variant: "error" }
-          );
+        .catch((error) => {
+          enqueueSnackbar("Unable to save changes: " + error, {
+            variant: "error",
+          });
         })
         .finally(() => setLoading(false));
     } else {
-      createData(register.assetId, register.id, formData)
+      createData(register.assetId, register.id, formData, {
+        defaultField: register.formFields.find((r) => r.isDefault == true)?.key,
+      })
         .then((dataId) => {
           if (dataId) {
             enqueueSnackbar("New data created", { variant: "success" });
@@ -91,6 +94,9 @@ const EquipmentDataForm = ({ register, data, onSaving, onSave, onClose }) => {
               { variant: "error" }
             );
           }
+        })
+        .catch((error) => {
+          enqueueSnackbar(error, { variant: "error" });
         })
         .finally(() => setLoading(false));
     }
