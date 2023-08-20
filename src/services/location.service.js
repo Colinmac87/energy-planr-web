@@ -93,3 +93,14 @@ export const deleteLocation = async (id) => {
     console.log(error);
   }
 };
+
+export const updateLocationsOrder = async (locationIds) => {
+  try {
+    locationIds.forEach((locationId, i) => {
+      const docRef = doc(db, "locations", locationId);
+      updateDoc(docRef, { order: i + 1 });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -2,8 +2,6 @@ import {
   Box,
   Typography,
   TextField,
-  FormControlLabel,
-  Checkbox,
   CssBaseline,
   Grid,
   Paper,
@@ -11,10 +9,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { signIn } from "../services/auth.service";
-import { setUser } from "../features/account.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
-import logo from "../assets/images/logo.png";
 import { getCompany } from "../services/company.service";
 import CompanyRedirect from "./CompanyRedirect";
 import CompanyNotFound from "./CompanyNotFound";
@@ -37,8 +33,8 @@ const SignIn = () => {
 
   useEffect(() => {
     getCompany(companyCode)
-      .then((_company) => {
-        setCompany(_company.data());
+      .then((data) => {
+        setCompany(data);
       })
       .finally(() => setCompanyLookupCompleted(true));
   }, []);
@@ -52,11 +48,10 @@ const SignIn = () => {
     setLoading(true);
 
     setTimeout(() => {
-      signIn({ email, password })
+      signIn({ companyId: company.id, email, password })
         .then((user) => {
           if (user) {
-            dispatch(setUser(user));
-            navigate("/");
+            setTimeout(() => navigate("/"), 100);
           } else
             enqueueSnackbar("Email or password is not correct", {
               variant: "error",
@@ -151,10 +146,6 @@ const SignIn = () => {
               type="password"
               autoComplete="no"
               onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <LoadingButton
               type="submit"

@@ -381,7 +381,9 @@ const FormRichTextField = ({ field, value, onChange, readOnly = false }) => {
       <div
         style={{
           border: `1px solid ${
-            field.required ? theme.palette.error.main : theme.palette.divider
+            field.required && !value
+              ? theme.palette.error.main
+              : theme.palette.divider
           }`,
         }}
       >
