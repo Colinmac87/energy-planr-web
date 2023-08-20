@@ -13,6 +13,7 @@ export function generateId() {
 }
 
 export function generateKey(str) {
+  if (!str) return "";
   return removeSpecialCharacters(str).toLowerCase().replace(" ", "-");
 }
 
@@ -43,4 +44,26 @@ export function stringify(obj) {
   });
   cache = null; // reset the cache
   return str;
+}
+
+export function getNameInitials(name) {
+  let rgx = new RegExp(/(\p{L}{1})\p{L}+/, "gu");
+
+  let initials = [...name.matchAll(rgx)] || [];
+
+  initials = (
+    (initials.shift()?.[1] || "") + (initials.pop()?.[1] || "")
+  ).toUpperCase();
+
+  return initials;
+}
+
+export function generateRandomPassword(length = 8) {
+  let charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#!$%&",
+    retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
 }

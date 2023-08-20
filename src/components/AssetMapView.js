@@ -96,19 +96,21 @@ const AssetMapView = ({ preSelected }) => {
         }}
       >
         <MenuList>
-          {locations.map((l) => (
-            <MenuItem
-              divider
-              disabled={!l.backgroundMapUrl}
-              onClick={() => {
-                if (selectedLocation?.id == l.id) return;
-                setSelectedLocation(null);
-                setTimeout(() => setSelectedLocation(l), 50);
-              }}
-            >
-              <ListItemText>{l.name}</ListItemText>
-            </MenuItem>
-          ))}
+          {locations
+            .sort((l1, l2) => l1.order - l2.order)
+            .map((l) => (
+              <MenuItem
+                divider
+                disabled={!l.backgroundMapUrl}
+                onClick={() => {
+                  if (selectedLocation?.id == l.id) return;
+                  setSelectedLocation(null);
+                  setTimeout(() => setSelectedLocation(l), 50);
+                }}
+              >
+                <ListItemText>{l.name}</ListItemText>
+              </MenuItem>
+            ))}
         </MenuList>
 
         <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>

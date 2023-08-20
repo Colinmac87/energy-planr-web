@@ -1,4 +1,4 @@
-import { Delete, Edit } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, Delete, Edit } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -18,7 +18,11 @@ import {
 } from "@mui/material";
 import LocationForm from "./LocationForm";
 import { useEffect, useState } from "react";
-import { deleteLocation, getLocations } from "../services/location.service";
+import {
+  deleteLocation,
+  getLocations,
+  updateLocationsOrder,
+} from "../services/location.service";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 
@@ -32,13 +36,23 @@ const LocationsManager = () => {
     useState(false);
   const [locations, setLocations] = useState([]);
   const [contextLocation, setContextLocation] = useState(null);
+  const [locationsOrderDirty, setLocationsOrderDirty] = useState(false);
 
   useEffect(() => {
     loadLocations();
   }, []);
 
+  useEffect(() => {
+    if (locationsOrderDirty) {
+      updateLocationsOrder(locations.map((location) => location.id));
+      setLocationsOrderDirty(false);
+    }
+  }, [locationsOrderDirty]);
+
   const loadLocations = () => {
-    getLocations(asset.id).then((data) => setLocations(data));
+    getLocations(asset.id).then((data) =>
+      setLocations(data?.sort((l1, l2) => l1.order - l2.order))
+    );
   };
 
   const handleDeleteLocation = () => {
@@ -67,6 +81,28 @@ const LocationsManager = () => {
     setIsLocationDeleteDialogOpen(false);
   };
 
+  const moveUp = (index) => {
+    const locationsCopy = JSON.parse(JSON.stringify(locations));
+    const locationObject = locationsCopy[index];
+
+    locationsCopy[index] = locationsCopy[index - 1];
+    locationsCopy[index - 1] = locationObject;
+
+    setLocations(locationsCopy);
+    setLocationsOrderDirty(true);
+  };
+
+  const moveDown = (index) => {
+    const locationsCopy = JSON.parse(JSON.stringify(locations));
+    const locationObject = locationsCopy[index];
+
+    locationsCopy[index] = locationsCopy[index + 1];
+    locationsCopy[index + 1] = locationObject;
+
+    setLocations(locationsCopy);
+    setLocationsOrderDirty(true);
+  };
+
   return (
     <Grid
       container
@@ -79,7 +115,12 @@ const LocationsManager = () => {
         <Typography variant="h4">Locations</Typography>
       </Grid>
       <Grid item md={4} textAlign={"right"}>
-        <Button variant="contained" onClick={() => setIsLocationFormOpen(true)}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setIsLocationFormOpen(true);
+          }}
+        >
           New Location
         </Button>
       </Grid>
@@ -95,8 +136,27 @@ const LocationsManager = () => {
               <>
                 {i > 0 && <Divider />}
                 <ListItem
+                  className="locationListItem"
                   secondaryAction={
                     <Stack direction="row" gap={4}>
+                      <Stack direction="row" gap={2}>
+                        {i > 0 && (
+                          <IconButton
+                            className="locationListItem-sortButton"
+                            onClick={() => moveUp(i)}
+                          >
+                            <ArrowUpward fontSize="small" />
+                          </IconButton>
+                        )}
+                        {i < locations.length - 1 && (
+                          <IconButton
+                            className="locationListItem-sortButton"
+                            onClick={() => moveDown(i)}
+                          >
+                            <ArrowDownward fontSize="small" />
+                          </IconButton>
+                        )}
+                      </Stack>
                       <IconButton
                         edge="end"
                         aria-label="edit"

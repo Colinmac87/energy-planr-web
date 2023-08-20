@@ -12,7 +12,7 @@ const FormDateTimeField = ({ field, value, onChange }) => {
       sx={{
         flex: 1,
         width: "100%",
-        border: field.required && "1px solid #f00 !important",
+        border: field.required && !value && "1px solid #f00 !important",
       }}
     />
   );
