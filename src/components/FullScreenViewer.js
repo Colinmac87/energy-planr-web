@@ -1,21 +1,6 @@
-import { Box, Grid, Modal } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 
 const FullScreenViewer = ({ isOpen, onClose, children }) => {
-  const style = {
-    position: "absolute",
-    top: 16,
-    left: 16,
-    right: 16,
-    bottom: 16,
-    // transform: "translate(-50%, -50%)",
-    // width: "100%",
-    height: "100%",
-    bgcolor: "background.paper",
-    border: "2px solid #888",
-    boxShadow: 24,
-    p: 0,
-  };
-
   return (
     <Modal
       open={isOpen}
@@ -23,12 +8,19 @@ const FullScreenViewer = ({ isOpen, onClose, children }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {children}
-          </Grid>
-        </Grid>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: "100%",
+          backgroundColor: "#DFDEDD",
+          p: 0,
+        }}
+      >
+        {children}
       </Box>
     </Modal>
   );
