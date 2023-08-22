@@ -17,50 +17,42 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { OSM } from "ol/source";
-import Map from "ol/Map";
-import { getCenter } from "ol/extent";
-import Static from "ol/source/ImageStatic";
-import View from "ol/View";
-import Projection from "ol/proj/Projection";
-// import ImageLayer from "ol/layer/Image";
-// import TileLayer from "ol/layer/Tile";
-import VectorSource from "ol/source/Vector";
-import VectorLayer from "ol/layer/Vector";
-import Draw from "ol/interaction/Draw";
+// import { OSM } from "ol/source";
+// import Map from "ol/Map";
+// import { getCenter } from "ol/extent";
+// import Static from "ol/source/ImageStatic";
+// import View from "ol/View";
+// import Projection from "ol/proj/Projection";
+// // import ImageLayer from "ol/layer/Image";
+// // import TileLayer from "ol/layer/Tile";
+// import VectorSource from "ol/source/Vector";
+// import VectorLayer from "ol/layer/Vector";
+// import Draw from "ol/interaction/Draw";
 
-import "../../node_modules/ol/ol.css";
-import { Overlay } from "ol";
+// import "../../node_modules/ol/ol.css";
+// import { Overlay } from "ol";
 import { stringify } from "../utils/string.utils";
-import {
-  ImageOverlay,
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  WMSTileLayer,
-} from "react-leaflet";
-import { useLeafletContext } from "@react-leaflet/core";
+import { MapContainer, TileLayer, ImageOverlay, useMap } from "react-leaflet";
 import L from "leaflet";
+// import L from "leaflet";
 
-const ImageLayer = (props) => {
-  const context = useLeafletContext();
+// const ImageLayer = (props) => {
+//   const context = useLeafletContext();
 
-  useEffect(() => {
-    const bounds = L.latLng(props.center).toBounds(props.size);
-    const image = new L.TileLayer(props);
+//   useEffect(() => {
+//     const bounds = L.latLng(props.center).toBounds(props.size);
+//     const image = new L.TileLayer(props);
 
+//     const container = context.layerContainer || context.map;
+//     container.addLayer(image);
 
-    const container = context.layerContainer || context.map;
-    container.addLayer(image);
+//     return () => {
+//       container.removeLayer(image);
+//     };
+//   });
 
-    return () => {
-      container.removeLayer(image);
-    };
-  });
-
-  return null;
-};
+//   return null;
+// };
 
 const MapView = ({
   image,
@@ -69,6 +61,10 @@ const MapView = ({
   mode = "view", // view || pin
   onPinPlacement,
 }) => {
+  // const map = useMap();
+
+  // useEffect(() => {}, []);
+
   // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
   // const [drawType, setDrawType] = useState("Point");
   // // const [map, setMap] = useState(null);
@@ -249,14 +245,19 @@ const MapView = ({
         backgroundColor: "#DFDEDD",
       }}
     >
-      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>
-        <TileLayer
-          // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      <MapContainer
+        crs={L.CRS.Simple}
+        center={[0, 0]}
+        zoom={13}
+        scrollWheelZoom={true}
+      >
+        <ImageOverlay
           url={image}
-        />
-        {/* <ImageOverlay url={image} bounds={[[51.49, -0.08]]}>
-          {" "}
-        </ImageOverlay> */}
+          bounds={[
+            [0, 0],
+            [1000, 1000],
+          ]}
+        ></ImageOverlay>
       </MapContainer>
     </Box>
   );
