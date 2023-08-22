@@ -246,7 +246,7 @@ const MapView = ({
         minHeight: "100%",
         maxHeight: "100%",
         height: "100%",
-        backgroundColor: "#eee2",
+        backgroundColor: "#DFDEDD",
       }}
     >
       <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true}>

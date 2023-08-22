@@ -8,6 +8,8 @@ import {
   FormControl,
   IconButton,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Select,
   Stack,
@@ -62,6 +64,8 @@ const AssetRegisterView = ({ onDataSelect }) => {
 
   const [loading, setLoading] = useState(true);
   const [register, setRegister] = useState(null);
+  const [showingArchivedData, setShowingArchivedData] = useState(false);
+  const [editingTable, setEditingTable] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [data, setData] = useState([]);
 
@@ -151,6 +155,92 @@ const AssetRegisterView = ({ onDataSelect }) => {
     });
   };
 
+  const renderRowActions = () => {
+    if (showingArchivedData)
+      return {
+        renderRowActionMenuItems: null,
+        renderRowActions: ({ cell, row }) => (
+          <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
+            <Tooltip title="Restore">
+              <IconButton
+                edge="end"
+                aria-label="unarchive"
+                onClick={() => {
+                  handleUnarchive(row.original.id);
+                }}
+              >
+                <Unarchive />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ),
+        muiTableBodyRowProps: null,
+      };
+
+    return {
+      renderRowActions: null,
+      renderRowActionMenuItems: ({ row }) => {
+        if (row.original.xIsArchived)
+          return [
+            <MenuItem
+              key="restore"
+              onClick={() => {
+                handleUnarchive(row.original.id);
+              }}
+            >
+              <ListItemIcon>
+                <Unarchive fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Restore</ListItemText>
+            </MenuItem>,
+          ];
+
+        return [
+          <MenuItem key="pin" onClick={() => {}}>
+            <ListItemIcon>
+              <Place />
+            </ListItemIcon>
+            <ListItemText>Pin</ListItemText>
+          </MenuItem>,
+          <MenuItem
+            key="archive"
+            onClick={() => {
+              handleArchive(row.original.id);
+            }}
+          >
+            <ListItemIcon>
+              <Archive />
+            </ListItemIcon>
+            <ListItemText>Archive</ListItemText>
+          </MenuItem>,
+          <MenuItem
+            key="delete"
+            onClick={() => {
+              setSelectedData(row.original);
+              setIsDeleteDialogOpen(true);
+            }}
+          >
+            <ListItemIcon>
+              <Delete />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>,
+        ];
+      },
+      muiTableBodyRowProps: ({ row }) => ({
+        onClick: (event) => {
+          if (!row.original.xIsArchived) {
+            setSelectedData(row.original);
+            setIsEquipmentDetailViewerOpen(true);
+          }
+        },
+        sx: {
+          cursor: "pointer",
+        },
+      }),
+    };
+  };
+
   return (
     <Box
       component="main"
@@ -162,7 +252,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
         m: 0,
         p: 2,
         position: "relative",
-        overflow: "auto",
+        overflow: "hidden",
       }}
     >
       <Stack
@@ -219,172 +309,165 @@ const AssetRegisterView = ({ onDataSelect }) => {
           </Button>
         </Stack>
       </Stack>
-      <Box sx={{ flex: 1 }}>
+      <Box
+        sx={{
+          m: 0,
+          p: 0,
+          width: "100%",
+          height: "100%",
+          maxWidth: "100%",
+          maxHeight: "100%",
+          overflow: "hidden",
+          // overflowY: "hidden",
+        }}
+      >
         <MaterialReactTable
-          enableRowNumbers
-          displayColumnDefOptions={{ "mrt-row-actions": { size: 180 } }}
-          enableRowSelection
+          enableEditing={!showingArchivedData && editingTable}
+          editingMode="table"
+          enableRowNumbers={!editingTable}
+          displayColumnDefOptions={{ "mrt-row-actions": { size: 110 } }}
+          enableRowSelection={!editingTable}
           enableMultiRowSelection
           renderTopToolbarCustomActions={({ table }) => (
-            <Stack sx={{ flexDirection: "row", gap: 2 }}>
-              <Button
-                variant="outlined"
-                disabled={table.getPrePaginationRowModel().rows.length === 0}
-                onClick={() =>
-                  handleExportRows(table.getPrePaginationRowModel().rows)
-                }
-              >
-                Export All Rows
-              </Button>
-              <Button
-                variant="outlined"
-                disabled={
-                  !table.getIsSomeRowsSelected() &&
-                  !table.getIsAllRowsSelected()
-                }
-                onClick={() =>
-                  handleExportRows(table.getSelectedRowModel().rows)
-                }
-              >
-                Export Selected Rows
-              </Button>
-            </Stack>
-          )}
-          enableRowActions
-          renderRowActions={({ cell, row }) => (
-            <Stack sx={{ flex: 1, alignItems: "center" }}>
-              {row.original.xIsArchived ? (
-                <Stack
-                  sx={{ flexDirection: "row", gap: 2, alignItems: "center" }}
+            <Stack
+              sx={{
+                flexDirection: "row",
+                gap: 2,
+                justifyContent: "space-between",
+                flex: 1,
+              }}
+            >
+              <Stack sx={{ flexDirection: "row", gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  disabled={table.getPrePaginationRowModel().rows.length === 0}
+                  onClick={() =>
+                    handleExportRows(table.getPrePaginationRowModel().rows)
+                  }
                 >
-                  <Tooltip title="Restore">
-                    <IconButton
-                      edge="end"
-                      aria-label="unarchive"
-                      onClick={() => {
-                        handleUnarchive(row.original.id);
-                      }}
-                    >
-                      <Unarchive />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-              ) : (
-                <Stack sx={{ flexDirection: "row", gap: 2 }}>
-                  <Tooltip title="Edit">
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => {
-                        setSelectedData(row.original);
-                        setIsEquipmentDetailViewerOpen(true);
-                      }}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => {
-                        setSelectedData(row.original);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Archive">
-                    <IconButton
-                      edge="end"
-                      aria-label="archive"
-                      onClick={() => {
-                        handleArchive(row.original.id);
-                      }}
-                    >
-                      <Archive />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Pin Placement">
-                    <IconButton
-                      edge="end"
-                      aria-label="pin"
-                      onClick={() => {
-                        setSelectedData(row.original);
-                        setIsEquipmentDetailViewerOpen(true);
-                      }}
-                    >
-                      <Place />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-              )}
-              <Tooltip
-                title={
-                  row.original.xIsArchived
-                    ? "Archived"
-                    : row.original.xUpdatedBy
-                    ? "Last Modified"
-                    : "Created"
-                }
-                placement="top"
-              >
-                <Typography variant="caption" sx={{ textAlign: "center" }}>
-                  {row.original.xArchivedBy?.fullName ||
-                    row.original.xUpdatedBy?.fullName ||
-                    row.original.xCreatedBy?.fullName}
-                  ,{" "}
-                  {fromSecs(
-                    row.original.xArchivedAt?.seconds ||
-                      row.original.xUpdatedAt?.seconds ||
-                      row.original.xCreatedAt?.seconds
-                  ).toDateString()}
-                </Typography>
-              </Tooltip>
+                  Export All Rows
+                </Button>
+                <Button
+                  variant="outlined"
+                  disabled={
+                    !table.getIsSomeRowsSelected() &&
+                    !table.getIsAllRowsSelected()
+                  }
+                  onClick={() =>
+                    handleExportRows(table.getSelectedRowModel().rows)
+                  }
+                >
+                  Export Selected Rows
+                </Button>
+              </Stack>
+              <Stack sx={{ flexDirection: "row", gap: 1 }}>
+                <Tooltip
+                  title={
+                    showingArchivedData ? "Hide archived" : "Show archived"
+                  }
+                  arrow
+                >
+                  <IconButton
+                    disabled={editingTable}
+                    onClick={() => setShowingArchivedData(!showingArchivedData)}
+                  >
+                    <Archive />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  title={editingTable ? "Stop editing" : "Edit table"}
+                  arrow
+                >
+                  <IconButton
+                    disabled={showingArchivedData}
+                    onClick={() => setEditingTable(!editingTable)}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
             </Stack>
           )}
-          data={data}
+          enableRowActions={!editingTable}
+          {...renderRowActions()}
+          data={data.filter((d) => d.xIsArchived == showingArchivedData)}
           columns={
             register?.formFields
-              ? register?.formFields
-                  ?.filter((field) => field.showInRegister)
-                  .map((field) => ({
-                    accessorKey: field.key,
-                    header: field.name,
-                    size: 200,
-                    ...muiDataGridCellEditProps(field.type),
+              ? [
+                  {
+                    accessorKey: "xInfox",
+                    header: "Info",
+                    enableSorting: false,
+                    enableColumnFilter: false,
+                    enableColumnActions: false,
                     Cell: ({ renderedCellValue, row }) => (
-                      <WithCellTriggerEffect
-                        field={field}
-                        value={renderedCellValue}
+                      <Tooltip
+                        title={
+                          row.original.xIsArchived
+                            ? "Archived"
+                            : row.original.xUpdatedBy
+                            ? "Last Modified"
+                            : "Created"
+                        }
+                        placement="top"
                       >
-                        <WithDataField
+                        <Typography variant="caption">
+                          {row.original.xArchivedBy?.fullName ||
+                            row.original.xUpdatedBy?.fullName ||
+                            row.original.xCreatedBy?.fullName}
+                          <br />
+                          {fromSecs(
+                            row.original.xArchivedAt?.seconds ||
+                              row.original.xUpdatedAt?.seconds ||
+                              row.original.xCreatedAt?.seconds
+                          )
+                            .toLocaleString()
+                            .replace(",", "")
+                            .slice(0, 16)}
+                        </Typography>
+                      </Tooltip>
+                    ),
+                  },
+                  ...register?.formFields
+                    ?.filter((field) => field.showInRegister)
+                    .sort((first, second) => first.order - second.order)
+                    .map((field) => ({
+                      accessorKey: field.key,
+                      header: field.name,
+                      size: 200,
+                      ...muiDataGridCellEditProps(field.type),
+                      Cell: ({ renderedCellValue, row }) => (
+                        <WithCellTriggerEffect
                           field={field}
                           value={renderedCellValue}
-                          withLabel={false}
-                        />
-                      </WithCellTriggerEffect>
-                    ),
-                  }))
+                        >
+                          <WithDataField
+                            field={field}
+                            value={renderedCellValue}
+                            withLabel={false}
+                          />
+                        </WithCellTriggerEffect>
+                      ),
+                    })),
+                ]
               : []
           }
-          onCellEditStop={(params, event, details) => {
-            if (event.key == "Enter")
-              onCellEdit(params.id, params.field, event.target.value);
-          }}
-          disableRowSelectionOnClick
+          muiTableBodyCellEditTextFieldProps={({ cell }) => ({
+            onBlur: (event) => {
+              onCellEdit(
+                cell.row.original.id,
+                cell.column.id,
+                event.target.value
+              );
+            },
+          })}
           slots={{ toolbar: GridToolbar }}
-          onRowDoubleClick={(params) => {
-            setSelectedData(params.row);
-            setIsEquipmentDetailViewerOpen(true);
-          }}
           enablePagination={false}
           enableRowVirtualization
           state={{ isLoading: loading }}
-          enableColumnResizing={true}
-          enableColumnOrdering={true}
-          enableColumnDragging={true}
+          enableColumnResizing
+          enableColumnActions
+          enableBottomToolbar={false}
         />
       </Box>
 
@@ -392,12 +475,13 @@ const AssetRegisterView = ({ onDataSelect }) => {
         anchor={"bottom"}
         open={isEquipmentDetailViewerOpen}
         onClose={onCloseEquipmentDetailViewer}
-        sx={{ maxHeight: window.outerHeight - 100 }}
+        sx={{ maxHeight: window.outerHeight - 100, zIndex: 1400 }}
       >
         <Box
           sx={{
             height: "100%",
             backgroundColor: theme.palette.background.default,
+            zIndex: 1400,
           }}
         >
           <EquipmentDataForm

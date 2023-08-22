@@ -58,6 +58,7 @@ export const INTERNAL_FIELDS = [
   "id",
   "xAssetId",
   "xRegisterId",
+  "xPin",
   "xIsDeleted",
   "xIsArchived",
   "xCreatedBy",

@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../services/auth.service";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../features/account.slice";
 import { LoadingButton } from "@mui/lab";
 import { useSnackbar } from "notistack";
 
@@ -39,7 +38,6 @@ const SignUp = () => {
       signUp({ businessName, fullName, email, password })
         .then((user) => {
           if (user) {
-            dispatch(setUser(user));
             navigate("/");
           } else
             enqueueSnackbar(

@@ -56,12 +56,14 @@ const WithCellTriggerEffect = ({ field, value, children }) => {
               });
             break;
           case FIELD_TRIGGER_OPERATOR_CONTAINS:
-            if (value.includes(compareValue))
-              setStyles({
-                backgroundColor: cellHighlightColor,
-                paddingLeft: 1,
-                paddingRight: 1,
-              });
+            try {
+              if (value.includes(compareValue))
+                setStyles({
+                  backgroundColor: cellHighlightColor,
+                  paddingLeft: 1,
+                  paddingRight: 1,
+                });
+            } catch (error) {}
             break;
           case FIELD_TRIGGER_OPERATOR_GREATEREQUAL:
             if (value >= compareValue)

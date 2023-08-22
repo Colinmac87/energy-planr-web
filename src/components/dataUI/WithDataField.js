@@ -29,8 +29,14 @@ const WithDataField = ({ field, value, withLabel = true }) => {
           </Typography>
         );
       case FIELD_URL:
+        if (value.startsWith("http"))
+          return (
+            <Link href={value} target="_blank">
+              {value}
+            </Link>
+          );
         return (
-          <Link href={value} target="_blank">
+          <Link href={`https://${value}`} target="_blank">
             {value}
           </Link>
         );

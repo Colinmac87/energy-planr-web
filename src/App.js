@@ -26,15 +26,17 @@ import {
 } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 
+import AdminSignIn from "./admin/pages/SignIn";
+import AdminHome from "./admin/pages/Home";
+import AdminDashboardLayout from "./layout/AdminDashboardLayout";
+
 const router = createBrowserRouter([
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
+  // Public routes
   {
     path: "/signin/:companyCode?",
     element: <SignIn />,
   },
+  // Protected routes
   {
     path: "/",
     element: (
@@ -57,6 +59,19 @@ const router = createBrowserRouter([
       <DashboardLayout>
         <Settings />
       </DashboardLayout>
+    ),
+  },
+  // Admin Routes
+  {
+    path: "/admin/signin",
+    element: <AdminSignIn />,
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminDashboardLayout>
+        <AdminHome />
+      </AdminDashboardLayout>
     ),
   },
 ]);
@@ -96,9 +111,9 @@ function App() {
 
     onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        getUser({ uid: firebaseUser.uid }).then((user) =>
-          dispatch(setUser(user))
-        );
+        getUser({ uid: firebaseUser.uid }).then((user) => {
+          dispatch(setUser(user));
+        });
       } else {
         dispatch(setUser(null));
       }

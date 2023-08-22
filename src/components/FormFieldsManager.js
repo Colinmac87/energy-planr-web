@@ -194,7 +194,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
             }}
           >
             <Typography
-              variant="h5"
+              variant="h6"
               sx={{
                 color:
                   theme.palette.mode == "light"
@@ -274,8 +274,8 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
           borderBottomRightRadius: 2,
           overflow: "auto",
           mt: 11,
-          p: 2,
-          pb: 3,
+          pt: 2,
+          pb: 1,
         }}
       >
         <Grid
