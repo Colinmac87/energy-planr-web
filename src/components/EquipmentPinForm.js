@@ -20,7 +20,17 @@ import MapView from "./MapView";
 import { LoadingButton } from "@mui/lab";
 import { updateDataPin } from "../services/data.service";
 import { useSnackbar } from "notistack";
-import { WrongLocation } from "@mui/icons-material";
+import { WhereToVote, WrongLocation } from "@mui/icons-material";
+import { TwitterPicker } from "react-color";
+import {
+  PIN_DEFAULT_COLOR,
+  PIN_DEFAULT_SIZE,
+  PIN_SIZE_HUGE,
+  PIN_SIZE_LARGE,
+  PIN_SIZE_MEDIUM,
+  PIN_SIZE_SMALL,
+  PIN_SIZE_TINY,
+} from "../constants/map.constants";
 
 const EquipmentPinForm = ({ data }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -30,20 +40,30 @@ const EquipmentPinForm = ({ data }) => {
   const [isConfirmPinDialogOpen, setIsConfirmPinDialogOpen] = useState(false);
 
   const [locations, setLocations] = useState([]);
-  const [location, setLocation] = useState(data?.xPin?.location || null);
+  const [location, setLocation] = useState(null);
 
-  const [pin, setPin] = useState(data?.xPin || null);
+  const [pinCoords, setPinCoords] = useState(data?.xPin?.coords);
+  const [pinColor, setPinColor] = useState(
+    data?.xPin?.color || PIN_DEFAULT_COLOR
+  );
+  const [pinSize, setPinSize] = useState(data?.xPin?.size || PIN_DEFAULT_SIZE);
 
   useEffect(() => {
     getLocations(asset.id).then((_locations) => {
       setLocations(_locations);
+
+      if (data?.xPin?.locationId) {
+        setLocation(_locations.find((l) => l.id == data?.xPin?.locationId));
+      }
     });
   }, []);
 
   const handleSavePin = () => {
-    updateDataPin(FormData.dataId, {
-      ...pin,
-      location: location,
+    updateDataPin(data.id, {
+      coords: pinCoords,
+      color: pinColor,
+      size: pinSize,
+      locationId: location.id,
     }).then(() => {
       enqueueSnackbar("Changes saved", { variant: "success" });
       setIsConfirmPinDialogOpen(false);
@@ -68,7 +88,7 @@ const EquipmentPinForm = ({ data }) => {
         <Stack
           sx={{
             flexDirection: "row",
-            gap: 128,
+            gap: 64,
           }}
         >
           <FormControl fullWidth sx={{ flex: 1 }}>
@@ -86,16 +106,50 @@ const EquipmentPinForm = ({ data }) => {
               ))}
             </Select>
           </FormControl>
-          <Button
-            disabled={pin == null}
-            variant="outlined"
-            startIcon={<WrongLocation />}
-            onClick={() => {
-              setPin(null);
-            }}
-          >
-            Clear Pin
-          </Button>
+          <Stack sx={{ flexDirection: "row", gap: 4 }}>
+            <FormControl sx={{ width: 150 }}>
+              <InputLabel>Size</InputLabel>
+              <Select
+                value={pinSize}
+                label="Size"
+                onChange={(e) => {
+                  setPinSize(e.target.value);
+                }}
+              >
+                <MenuItem value={PIN_SIZE_TINY}>{PIN_SIZE_TINY}</MenuItem>
+                <MenuItem value={PIN_SIZE_SMALL}>{PIN_SIZE_SMALL}</MenuItem>
+                <MenuItem value={PIN_SIZE_MEDIUM}>{PIN_SIZE_MEDIUM}</MenuItem>
+                <MenuItem value={PIN_SIZE_LARGE}>{PIN_SIZE_LARGE}</MenuItem>
+                <MenuItem value={PIN_SIZE_HUGE}>{PIN_SIZE_HUGE}</MenuItem>
+              </Select>
+            </FormControl>
+            <TwitterPicker
+              triangle="hide"
+              color={pinColor}
+              onChangeComplete={(color) => setPinColor(color.hex)}
+              colors={["#FCB900", "#00D084", PIN_DEFAULT_COLOR]}
+            />
+            <Button
+              disabled={pinCoords == null}
+              variant="outlined"
+              startIcon={<WrongLocation />}
+              onClick={() => {
+                setPinCoords(null);
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              disabled={pinCoords == null}
+              variant="contained"
+              startIcon={<WhereToVote />}
+              onClick={() => {
+                setIsConfirmPinDialogOpen(true);
+              }}
+            >
+              Save
+            </Button>
+          </Stack>
         </Stack>
         <Paper
           sx={{
@@ -110,14 +164,20 @@ const EquipmentPinForm = ({ data }) => {
           {location && (
             <MapView
               image={location.backgroundMapUrl}
-              arePinsVisible={false}
-              data={[data]}
-              mode={pin == null ? "pin" : "view"}
-              onPinPlacement={(x, y) => {
-                setPin({
-                  x: x,
-                  y: y,
-                });
+              arePinsVisible={true}
+              data={[
+                {
+                  ...data,
+                  xPin: {
+                    coords: pinCoords,
+                    color: pinColor,
+                    size: pinSize,
+                  },
+                },
+              ]}
+              mode={pinCoords == null ? "pin" : "view"}
+              onPinPlacement={(coords) => {
+                setPinCoords(coords);
               }}
             />
           )}

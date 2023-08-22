@@ -12,7 +12,11 @@ const WithMapViewer = ({ location, data }) => {
   if (isFullscreen)
     return (
       <FullScreenViewer isOpen={isFullscreen} onClose={onToggleFullscreen}>
-        <WithMapHeader data={data} onToggleFullscreen={onToggleFullscreen} />
+        <WithMapHeader
+          location={location}
+          data={data}
+          onToggleFullscreen={onToggleFullscreen}
+        />
       </FullScreenViewer>
     );
 

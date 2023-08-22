@@ -174,6 +174,22 @@ export const getDataByRegister = async (registerId) => {
   }
 };
 
+export const getDataByAsset = async (assetId) => {
+  try {
+    const q = query(
+      collection(db, "data"),
+      where("xAssetId", "==", assetId),
+      where("xIsDeleted", "==", false)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }));
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const isUniqueData = async (
   fieldName,
   value,

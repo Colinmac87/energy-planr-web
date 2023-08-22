@@ -62,6 +62,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
     useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const [formTab, setFormTab] = useState("data");
   const [loading, setLoading] = useState(true);
   const [register, setRegister] = useState(null);
   const [showingArchivedData, setShowingArchivedData] = useState(false);
@@ -196,7 +197,14 @@ const AssetRegisterView = ({ onDataSelect }) => {
           ];
 
         return [
-          <MenuItem key="pin" onClick={() => {}}>
+          <MenuItem
+            key="pin"
+            onClick={() => {
+              setFormTab("pin");
+              setSelectedData(row.original);
+              setIsEquipmentDetailViewerOpen(true);
+            }}
+          >
             <ListItemIcon>
               <Place />
             </ListItemIcon>
@@ -230,6 +238,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
       muiTableBodyRowProps: ({ row }) => ({
         onClick: (event) => {
           if (!row.original.xIsArchived) {
+            setFormTab("data");
             setSelectedData(row.original);
             setIsEquipmentDetailViewerOpen(true);
           }
@@ -301,6 +310,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
             component="label"
             startIcon={<Add />}
             onClick={() => {
+              setFormTab("data");
               setSelectedData(null);
               setIsEquipmentDetailViewerOpen(true);
             }}
@@ -485,7 +495,7 @@ const AssetRegisterView = ({ onDataSelect }) => {
           }}
         >
           <EquipmentDataForm
-            tab="pin"
+            tab={formTab}
             register={register}
             data={selectedData}
             onSaving={() => {}}

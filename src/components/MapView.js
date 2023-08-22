@@ -1,58 +1,6 @@
-import { Add, Remove } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Stack,
-} from "@mui/material";
-import React, {
-  createRef,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
-// import { OSM } from "ol/source";
-// import Map from "ol/Map";
-// import { getCenter } from "ol/extent";
-// import Static from "ol/source/ImageStatic";
-// import View from "ol/View";
-// import Projection from "ol/proj/Projection";
-// // import ImageLayer from "ol/layer/Image";
-// // import TileLayer from "ol/layer/Tile";
-// import VectorSource from "ol/source/Vector";
-// import VectorLayer from "ol/layer/Vector";
-// import Draw from "ol/interaction/Draw";
-
-// import "../../node_modules/ol/ol.css";
-// import { Overlay } from "ol";
-import { stringify } from "../utils/string.utils";
-import { MapContainer, TileLayer, ImageOverlay, useMap } from "react-leaflet";
-import L from "leaflet";
-// import L from "leaflet";
-
-// const ImageLayer = (props) => {
-//   const context = useLeafletContext();
-
-//   useEffect(() => {
-//     const bounds = L.latLng(props.center).toBounds(props.size);
-//     const image = new L.TileLayer(props);
-
-//     const container = context.layerContainer || context.map;
-//     container.addLayer(image);
-
-//     return () => {
-//       container.removeLayer(image);
-//     };
-//   });
-
-//   return null;
-// };
+import { Box } from "@mui/material";
+import React, { createRef, useEffect, useState } from "react";
+import { Map, Marker } from "react-canvas-map";
 
 const MapView = ({
   image,
@@ -61,177 +9,24 @@ const MapView = ({
   mode = "view", // view || pin
   onPinPlacement,
 }) => {
-  // const map = useMap();
+  const mapRef = createRef();
+  const [markerImage] = useState(() => {
+    const _image = new Image();
+    _image.src =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC";
+    return _image;
+  });
 
-  // useEffect(() => {}, []);
+  const handleMapClick = (coords) => {
+    if (mode == "pin") {
+      onPinPlacement({
+        x: coords.x,
+        y: coords.y,
+      });
+    }
+  };
 
-  // const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-  // const [drawType, setDrawType] = useState("Point");
-  // // const [map, setMap] = useState(null);
-
-  // const popupContainer = document.getElementById("olPopup");
-
-  // const map = useRef();
-  // const draw = useRef();
-
-  // const extent = [0, 0, 1024, 968];
-  // const projection = new Projection({
-  //   code: "xkcd-image",
-  //   units: "pixels",
-  //   extent: extent,
-  // });
-
-  // const raster = new TileLayer({
-  //   source: new OSM(),
-  // });
-
-  // const source = new VectorSource({ wrapX: false });
-
-  // const vector = new VectorLayer({
-  //   source: source,
-  // });
-
-  // const overlay = useRef(
-  //   new Overlay({
-  //     element: popupContainer,
-  //     autoPan: {
-  //       animation: {
-  //         duration: 250,
-  //       },
-  //     },
-  //   })
-  // );
-
-  // useEffect(() => {
-  //   map.current = new Map({
-  //     layers: [
-  //       new ImageLayer({
-  //         source: new Static({
-  //           url: image,
-  //           projection: projection,
-  //           imageExtent: extent,
-  //         }),
-  //       }),
-  //       raster,
-  //       vector,
-  //     ],
-  //     target: "olMap",
-  //     view: new View({
-  //       projection: projection,
-  //       center: getCenter(extent),
-  //       zoom: 2,
-  //       maxZoom: 8,
-  //     }),
-  //   });
-
-  //   if (mode == "pin") {
-  //     // draw.current = new Draw({
-  //     //   source: source,
-  //     //   type: drawType,
-  //     // });
-  //     // draw.current.on("drawend", (e) => {
-  //     //   const [x, y] = e.target.sketchCoords_;
-  //     //   overlay.current.setPosition([x, y]);
-
-  //     //   onPinPlacement(x, y);
-  //     // });
-  //     // // draw.current = _draw;
-
-  //     // map.current.addInteraction(draw.current);
-  //     addDraw();
-  //   }
-
-  //   // map.current = newMap;
-
-  //   // setMap(newMap);
-  //   // setMap(JSON.parse(stringify(newMap)));
-
-  //   // return () => {
-  //   //   map?.dispose();
-  //   // };
-  // }, [image]);
-
-  // useEffect(() => {
-  //   console.log("mode", mode);
-  //   if (mode == "view") {
-  //     draw.current.removeLastPoint();
-
-  //     setTimeout(() => {
-  //       removeDraw();
-  //       forceUpdate();
-  //     }, 4000);
-  //   } else {
-  //     console.log("data", data);
-  //   }
-  // }, [mode]);
-
-  // const addDraw = () => {
-  //   draw.current = new Draw({
-  //     source: source,
-  //     type: drawType,
-  //   });
-  //   draw.current.on("drawend", (e) => {
-  //     console.log("draw end");
-  //     const [x, y] = e.target.sketchCoords_;
-  //     overlay.current.setPosition([x, y]);
-
-  //     onPinPlacement(x, y);
-  //   });
-  //   // draw.current = _draw;
-
-  //   map.current.addInteraction(draw.current);
-  // };
-
-  // const removeDraw = () => {
-  //   console.log("removing", draw.current);
-  //   console.log("removed ", map.current.removeInteraction(draw.current));
-  //   draw.current.dispose();
-  //   // draw.current = null;
-  //   // console.log("map", map);
-  //   // const mapCopy = JSON.parse(stringify(map));
-  //   // mapCopy
-
-  //   // setMap(mapCopy);
-  // };
-
-  // return (
-  //   <Box
-  //     sx={{
-  //       position: "relative",
-  //       minWidth: "100%",
-  //       maxWidth: "100%",
-  //       minHeight: "100%",
-  //       maxHeight: "100%",
-  //       height: "100%",
-  //       backgroundColor: "#eee2",
-  //     }}
-  //   >
-  //     {ignored}
-  //     <div
-  //       id="olMap"
-  //       class="olMap"
-  //       className="olMap"
-  //       style={{ width: "100%", height: "100%" }}
-  //     ></div>
-
-  //     <div
-  //       id="olPopup"
-  //       class="olPopup"
-  //       className="olPopup"
-  //       style={{ position: "absolute", bottom: 12, left: -50, minWidth: 200 }}
-  //     >
-  //       <Button
-  //         onClick={() => {
-  //           overlay.current.setPosition(undefined);
-  //           return false;
-  //         }}
-  //       >
-  //         X
-  //       </Button>
-  //       HAHAHAH
-  //     </div>
-  //   </Box>
-  // );
+  if (!image) return null;
 
   return (
     <Box
@@ -245,20 +40,28 @@ const MapView = ({
         backgroundColor: "#DFDEDD",
       }}
     >
-      <MapContainer
-        crs={L.CRS.Simple}
-        center={[0, 0]}
-        zoom={13}
-        scrollWheelZoom={true}
+      <div
+        id="olMap"
+        class="olMap"
+        className="olMap"
+        style={{ width: "100%", height: "100%" }}
       >
-        <ImageOverlay
-          url={image}
-          bounds={[
-            [0, 0],
-            [1000, 1000],
-          ]}
-        ></ImageOverlay>
-      </MapContainer>
+        <Map image={image} onClick={handleMapClick} ref={mapRef}>
+          {arePinsVisible &&
+            data
+              .filter((dataMarker) => dataMarker.xPin?.coords != null)
+              .map((dataMarker, i) => (
+                <Marker
+                  circleColour={dataMarker.xPin?.color}
+                  inCircle={true}
+                  size={dataMarker.xPin?.size * 16}
+                  markerKey={i}
+                  coords={dataMarker.xPin?.coords}
+                  image={markerImage}
+                />
+              ))}
+        </Map>
+      </div>
     </Box>
   );
 };
