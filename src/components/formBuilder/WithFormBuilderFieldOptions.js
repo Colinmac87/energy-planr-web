@@ -31,7 +31,7 @@ const WithFormBuilderFieldOptions = ({ children, type, meta, onChange }) => {
       builder = <DateRangeBuilderOptions meta={meta} onChangeMeta={onChange} />;
       break;
     default:
-      return null;
+      break;
   }
 
   return (

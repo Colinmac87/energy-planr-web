@@ -8,7 +8,6 @@ import {
   MenuItem,
   Menu,
   Button,
-  Stack,
   IconButton,
   useTheme,
 } from "@mui/material";
@@ -18,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../services/auth.service";
 import { toggleColorMode } from "../features/system.slice";
 
-const DashboardLayout = ({ children }) => {
+const AdminDashboardLayout = ({ children }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,10 +25,9 @@ const DashboardLayout = ({ children }) => {
 
   const { colorMode } = useSelector((state) => state.system);
   const { loginAttempted, user } = useSelector((state) => state.account);
-  const { asset } = useSelector((state) => state.asset);
 
   useEffect(() => {
-    if (loginAttempted && !user) navigate("/signin");
+    if (loginAttempted && !user) navigate("/admin/signin");
   }, [loginAttempted]);
 
   const handleMenu = (event) => {
@@ -40,15 +38,10 @@ const DashboardLayout = ({ children }) => {
     setAnchorEl(null);
   };
 
-  const onClickSettings = () => {
-    handleClose();
-    navigate("/settings");
-  };
-
   const onClickSignout = () => {
     handleClose();
     signOut().then(() => {
-      navigate("/signin");
+      navigate("/admin/signin");
     });
   };
 
@@ -82,7 +75,7 @@ const DashboardLayout = ({ children }) => {
               bgcolor: theme.palette.background.default,
             }}
           >
-            <Link href={`/`} underline="none">
+            <Link href={`/admin`} underline="none">
               <Typography
                 component="h1"
                 variant="h5"
@@ -96,25 +89,6 @@ const DashboardLayout = ({ children }) => {
                 Energy Planr
               </Typography>
             </Link>
-            {asset && (
-              <Stack flexDirection={"row"} alignItems={"center"} gap={2}>
-                <Typography
-                  variant="subtitle1"
-                  ml={2}
-                  mr={2}
-                  color={theme.palette.text.primary}
-                >
-                  |
-                </Typography>
-                <Typography
-                  variant="h6"
-                  mr={4}
-                  color={theme.palette.text.primary}
-                >
-                  {asset.name}
-                </Typography>
-              </Stack>
-            )}
           </Box>
           <Box>
             <IconButton
@@ -132,7 +106,7 @@ const DashboardLayout = ({ children }) => {
               onClick={handleMenu}
               sx={{ textTransform: "capitalize" }}
             >
-              {user.fullName}
+              Admin
             </Button>
 
             <Menu
@@ -142,8 +116,6 @@ const DashboardLayout = ({ children }) => {
               onClose={handleClose}
               keepMounted
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={onClickSettings}>Settings</MenuItem>
               <MenuItem onClick={onClickSignout}>Logout</MenuItem>
             </Menu>
           </Box>
@@ -181,4 +153,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default AdminDashboardLayout;

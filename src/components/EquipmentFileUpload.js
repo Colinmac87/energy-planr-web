@@ -8,6 +8,7 @@ import {
   Button,
   Stack,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import Papa from "papaparse";
 import { camelize, generateId } from "../utils/string.utils";
@@ -25,6 +26,7 @@ import { createDataBulk } from "../services/data.service";
 import { useSnackbar } from "notistack";
 
 const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
+  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
   const gridApiRef = useGridApiRef();
@@ -123,7 +125,15 @@ const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
       onClose={!loading && onClose}
       sx={{ maxHeight: window.outerHeight - 100 }}
     >
-      <Box sx={{ p: 4 }}>
+      <Box
+        sx={{
+          p: 4,
+          height: "100%",
+          width: "100%",
+          overflow: "auto",
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
         <Grid container spacing={1} gap={2}>
           {!data ? (
             <>
@@ -190,8 +200,7 @@ const EquipmentFileUpload = ({ register, isOpen, onClose, onSave }) => {
                       columns={register?.formFields
                         ?.filter(
                           (field) =>
-                            field.showInRegister &&
-                            isFieldUploadParsable(field)
+                            field.showInRegister && isFieldUploadParsable(field)
                         )
                         .map((field) => ({
                           field: field.key,

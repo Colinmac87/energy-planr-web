@@ -153,9 +153,10 @@ const DataFileField = ({ file, onDelete }) => {
             >
               <Stack
                 sx={{
-                  gap: 1,
-                  backgroundColor: theme.palette.primary.main,
-                  p: 0.5,
+                  gap: 0.5,
+                  backgroundColor: theme.palette.background.paper,
+                  alignItems: "center",
+                  border: `1px solid ${theme.palette.background.default}`,
                 }}
               >
                 <Link href={file.url} target="_blank">
