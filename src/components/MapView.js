@@ -52,6 +52,7 @@ const DrawingLayer = ({ drawType }) => {
     //   type: drawType,
     // });
     // draw.current= _draw;
+
     map.addInteraction(_draw);
     setDraw(_draw);
   };
@@ -72,10 +73,12 @@ const MapView = ({
 }) => {
   const theme = useTheme();
 
-  const map = useRef();
+  const mapRef = useRef();
+  const vectorSource = useRef();
   const draw = useRef();
 
-  const [drawType, setDrawType] = useState(null);
+  const [drawType, setDrawType] = useState("Circle");
+  const [canDragPan, setCanDragPan] = useState(true);
 
   const [markerImage] = useState(() => {
     const _image = new Image();
@@ -83,6 +86,12 @@ const MapView = ({
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC";
     return _image;
   });
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     mapRef.current.render();
+  //   }, 500);
+  // }, [drawType]);
 
   const initMap = () => {
     // addDraw();
@@ -116,7 +125,7 @@ const MapView = ({
           </Button>
         }
       >
-        Drawing {drawType}
+        Drawing {drawType}, {canDragPan.toString()}
       </Alert>
     );
   };
@@ -136,15 +145,24 @@ const MapView = ({
         backgroundColor: "#DFDEDD",
       }}
     >
-      <MapComponent ref={map}>
-        <olView
-          arg={{
+      <MapComponent
+        ref={mapRef}
+        onChange={(e) => console.log("map changed", e.target.interactions)}
+        view={{
+          projection: projection,
+          zoom: 2,
+          maxZoom: 8,
+          center: getCenter(extent),
+        }}
+      >
+        {/* <olView
             projection: projection,
+          arg={{
           }}
           zoom={2}
           maxZoom={8}
           center={getCenter(extent)}
-        />
+        /> */}
 
         <imageLayer>
           <imageStaticSource
@@ -162,16 +180,25 @@ const MapView = ({
           />
         </imageLayer>
 
-        <DrawingLayer drawType={drawType} />
+        <vectorLayer>
+          <vectorSource ref={vectorSource}></vectorSource>
+        </vectorLayer>
 
-        <dragPanInteraction />
+        {drawType && (
+          <drawInteraction
+            arg={{ type: drawType, source: vectorSource.current }}
+            onDrawend={(e) => console.log(e)}
+            attachAdd="interaction"
+          />
+        )}
+        <dragPanInteraction active={canDragPan} />
         <mouseWheelZoomInteraction />
       </MapComponent>
 
+      {/* Status bar */}
       {
         <Box
           sx={{
-            // flexDirection: "column",
             gap: 1,
             position: "absolute",
             top: 0,
@@ -183,6 +210,7 @@ const MapView = ({
         </Box>
       }
 
+      {/* Interaction controls */}
       <Stack
         sx={{
           flexDirection: "column",
@@ -202,7 +230,7 @@ const MapView = ({
             }}
             onClick={() => {
               try {
-                const view = map.current.getView();
+                const view = mapRef.current.getView();
                 view.setZoom(view.getZoom() + 0.5);
               } catch (error) {
                 console.log("zoom-in", error);
@@ -222,7 +250,7 @@ const MapView = ({
             }}
             onClick={() => {
               try {
-                const view = map.current.getView();
+                const view = mapRef.current.getView();
                 view.setZoom(view.getZoom() - 0.5);
               } catch (error) {
                 console.log("zoom-in", error);
@@ -234,7 +262,7 @@ const MapView = ({
         </Tooltip>
       </Stack>
 
-      {/* Draw Features */}
+      {/* Draw features */}
       <Stack
         sx={{
           flexDirection: "column",
@@ -244,25 +272,6 @@ const MapView = ({
           bottom: 12,
         }}
       >
-        {/* <Tooltip title="Box" placement="right">
-          <IconButton
-            size="small"
-            variant="contained"
-            sx={{
-              bgcolor: theme.palette.background.default,
-              borderRadius: theme.shape.borderRadius,
-            }}
-            onClick={() => {
-              try {
-                addDraw("");
-              } catch (error) {
-                console.log("rectangle", error);
-              }
-            }}
-          >
-            <RectangleOutlined />
-          </IconButton>
-        </Tooltip> */}
         <Tooltip title="Circle" placement="right">
           <IconButton
             size="small"
@@ -274,7 +283,8 @@ const MapView = ({
             onClick={() => {
               try {
                 // addDraw("Circle");
-                setDrawType("Circle");
+                // setDrawType("Circle");
+                setCanDragPan(!canDragPan);
               } catch (error) {
                 console.log("circle", error);
               }
