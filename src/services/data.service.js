@@ -115,6 +115,7 @@ export const updateDataPin = async (id, pin) => {
       xPin: pin,
     });
   } catch (error) {
+    console.log("pin error", error);
     console.log(error);
   }
 };

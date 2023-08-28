@@ -177,6 +177,7 @@ const EquipmentPinForm = ({ data }) => {
               ]}
               mode={pinCoords == null ? "pin" : "view"}
               onPinPlacement={(coords) => {
+                console.log("fifth");
                 setPinCoords(coords);
               }}
             />
@@ -198,12 +199,12 @@ const EquipmentPinForm = ({ data }) => {
           </DialogContent>
           <DialogActions>
             <Button
-              variant="contained"
+              variant="outlined"
               onClick={() => setIsConfirmPinDialogOpen(false)}
             >
               Cancel
             </Button>
-            <LoadingButton variant="outlined" onClick={handleSavePin}>
+            <LoadingButton variant="contained" onClick={handleSavePin}>
               Save
             </LoadingButton>
           </DialogActions>
