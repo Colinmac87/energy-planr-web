@@ -34,11 +34,11 @@ div.ProseMirror {
   background-color: transparent !important;
 }
 
-.MuiPopover-root,
+/* .MuiPopover-root,
 .MuiPopper-root,
 .MuiDialog-root {
   z-index: 1405 !important;
-}
+} */
 
 .notistack-MuiContent > div {
   margin: auto;

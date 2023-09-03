@@ -18,13 +18,13 @@ import WithMapViewer from "./WithMapViewer";
 import { getLocations } from "../services/location.service";
 import { useSelector } from "react-redux";
 import { getDataByAsset } from "../services/data.service";
+import { isInternalField } from "../utils/form.utils";
 
 const AssetMapView = ({ preSelected }) => {
   const { asset } = useSelector((state) => state.asset);
 
   const [data, setData] = useState([]);
-  const [expanded, setExpanded] = useState([]);
-  const [selected, setSelected] = useState(preSelected);
+  const [selectedDataGroup, setSelectedDataGroup] = useState(preSelected);
 
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -36,35 +36,28 @@ const AssetMapView = ({ preSelected }) => {
       getLocations(asset.id).then((_locations) => setLocations(_locations));
 
       getDataByAsset(asset.id).then((_data) => setData(_data));
-
-      // let temp = [];
-      // const schema = data[0];
-
-      // for (const property in schema) {
-      //   // remove internal properties
-      //   if (["id", "x", "y", "level"].includes(property)) continue;
-
-      //   const allPropertyValues = data.map((i) => i[property]);
-
-      //   temp.push({
-      //     group: property,
-      //     entries: [...new Set(allPropertyValues)],
-      //   });
-      // }
-
-      // setTreeViewData(temp);
     } catch (error) {}
   }, []);
 
-  const handleToggle = (event, nodeIds) => {
-    setExpanded(nodeIds);
-  };
+  useEffect(() => {
+    try {
+      let temp = [];
+      const schema = data[0];
 
-  const handleExpandClick = () => {
-    setExpanded((oldExpanded) =>
-      oldExpanded.length === 0 ? ["1", "5", "6", "7"] : []
-    );
-  };
+      for (const property in schema) {
+        if (isInternalField(property)) continue;
+
+        const allPropertyValues = data.map((i) => i[property]);
+
+        temp.push({
+          group: property,
+          entries: [...new Set(allPropertyValues)],
+        });
+      }
+
+      setTreeViewData(temp);
+    } catch (error) {}
+  }, [data]);
 
   return (
     <Box
@@ -114,30 +107,54 @@ const AssetMapView = ({ preSelected }) => {
         </MenuList>
 
         <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>
-          {treeViewData.map((treeViewObject) => (
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMore />}>
-                <Typography>{treeViewObject.group}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense={true}>
-                  {treeViewObject.entries.map((propertyValue, i) => (
-                    <ListItemButton
-                      key={`${treeViewObject.group}-${propertyValue}`}
-                      selected={
-                        selected == `${treeViewObject.group}-${propertyValue}`
-                      }
-                      onClick={() =>
-                        setSelected(`${treeViewObject.group}-${propertyValue}`)
-                      }
-                    >
-                      <ListItemText primary={propertyValue} />
-                    </ListItemButton>
-                  ))}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+          {treeViewData.map((treeViewObject) => {
+            let isGroupSelected = false;
+
+            if (selectedDataGroup) {
+              const keyValue = selectedDataGroup.split(";;");
+              isGroupSelected = treeViewObject.group == keyValue[0];
+            }
+
+            return (
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography
+                    sx={{ fontWeight: isGroupSelected ? "bold" : "normal" }}
+                  >
+                    {treeViewObject.group}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <List dense={true}>
+                    {treeViewObject.entries
+                      .filter((propertyValue) => propertyValue)
+                      .map((propertyValue, i) => (
+                        <ListItemButton
+                          key={`${treeViewObject.group};;${propertyValue}`}
+                          selected={
+                            selectedDataGroup ==
+                            `${treeViewObject.group};;${propertyValue}`
+                          }
+                          onClick={() => {
+                            if (
+                              selectedDataGroup ==
+                              `${treeViewObject.group};;${propertyValue}`
+                            )
+                              setSelectedDataGroup(null);
+                            else
+                              setSelectedDataGroup(
+                                `${treeViewObject.group};;${propertyValue}`
+                              );
+                          }}
+                        >
+                          <ListItemText primary={propertyValue} />
+                        </ListItemButton>
+                      ))}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
         </Box>
       </Paper>
 
@@ -154,14 +171,35 @@ const AssetMapView = ({ preSelected }) => {
           overflow: "hidden",
         }}
       >
-        {selectedLocation && (
+        {selectedLocation ? (
           <WithMapViewer
             location={selectedLocation}
-            data={data.filter(
-              (d) =>
-                d.xPin?.coords && d.xPin?.locationId == selectedLocation?.id
-            )}
+            data={data.filter((d) => {
+              if (
+                d.xPin?.coords &&
+                d.xPin?.locationId == selectedLocation?.id
+              ) {
+                if (!selectedDataGroup) return true;
+
+                const keyValue = selectedDataGroup.split(";;");
+                return d[keyValue[0]] == keyValue[1];
+              }
+              return false;
+            })}
           />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="caption">
+              Select a location to view the map
+            </Typography>
+          </Box>
         )}
       </Box>
     </Box>

@@ -485,13 +485,16 @@ const AssetRegisterView = ({ onDataSelect }) => {
         anchor={"bottom"}
         open={isEquipmentDetailViewerOpen}
         onClose={onCloseEquipmentDetailViewer}
-        sx={{ maxHeight: window.outerHeight - 100, zIndex: 1400 }}
+        sx={{
+          maxHeight: window.outerHeight - 100,
+          // zIndex: 1400
+        }}
       >
         <Box
           sx={{
             height: "100%",
             backgroundColor: theme.palette.background.default,
-            zIndex: 1400,
+            // zIndex: 1400,
           }}
         >
           <EquipmentDataForm

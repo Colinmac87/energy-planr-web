@@ -16,7 +16,6 @@ import {
 import { useEffect, useState } from "react";
 import { getLocations } from "../services/location.service";
 import { useSelector } from "react-redux";
-import MapView from "./MapView";
 import { LoadingButton } from "@mui/lab";
 import { updateDataPin } from "../services/data.service";
 import { useSnackbar } from "notistack";
@@ -31,6 +30,7 @@ import {
   PIN_SIZE_SMALL,
   PIN_SIZE_TINY,
 } from "../constants/map.constants";
+import WithMapAnnotations from "./WithMapAnnotations";
 
 const EquipmentPinForm = ({ data }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -84,7 +84,7 @@ const EquipmentPinForm = ({ data }) => {
         overflow: "hidden",
       }}
     >
-      <Stack sx={{ flex: 1, width: "100%", height: "100%" }}>
+      <Stack sx={{ flex: 1, width: "100%", height: "100%", gap: 1 }}>
         <Stack
           sx={{
             flexDirection: "row",
@@ -94,6 +94,7 @@ const EquipmentPinForm = ({ data }) => {
           <FormControl fullWidth sx={{ flex: 1 }}>
             <InputLabel>Location</InputLabel>
             <Select
+              autoFocus
               value={location}
               label="Location"
               onChange={(e) => {
@@ -153,7 +154,6 @@ const EquipmentPinForm = ({ data }) => {
         </Stack>
         <Paper
           sx={{
-            mt: 2,
             flex: 1,
             backgroundColor: "eee2",
             minHeight: "100%",
@@ -162,8 +162,8 @@ const EquipmentPinForm = ({ data }) => {
           }}
         >
           {location && (
-            <MapView
-              image={location.backgroundMapUrl}
+            <WithMapAnnotations
+              location={location}
               data={[
                 {
                   ...data,
@@ -174,6 +174,7 @@ const EquipmentPinForm = ({ data }) => {
                   },
                 },
               ]}
+              areAnnotationsVisible={false}
               arePinsVisible={true}
               mode={"pin"}
               onPinPlacement={(coords) => {

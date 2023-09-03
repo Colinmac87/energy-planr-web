@@ -4,17 +4,29 @@ import {
   IconButton,
   Stack,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { Fullscreen, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Fullscreen,
+  Layers,
+  LayersClear,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { useState } from "react";
-import WithMapOverlays from "./WithMapOverlays";
+import WithMapAnnotations from "./WithMapAnnotations";
 
 const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
   const [arePinsVisible, setArePinsVisibile] = useState(true);
+  const [areAnnotationsVisible, setAreAnnotationsVisibile] = useState(true);
 
   const onTogglePinsVisibility = () => {
     setArePinsVisibile(!arePinsVisible);
+  };
+
+  const onToggleAnnotationsVisibility = () => {
+    setAreAnnotationsVisibile(!areAnnotationsVisible);
   };
 
   return (
@@ -44,27 +56,41 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
             {location?.name}
           </Typography>
           <Stack sx={{ flexDirection: "row", gap: 3 }}>
-            <IconButton
-              key="btnTooglePinsVisibilitiy"
-              onClick={onTogglePinsVisibility}
-              size="small"
-            >
-              {arePinsVisible ? <Visibility /> : <VisibilityOff />}
-            </IconButton>
-            <IconButton
-              key="btnMapFullScreenToggle"
-              onClick={onToggleFullscreen}
-              size="small"
-            >
-              <Fullscreen />
-            </IconButton>
+            <Tooltip title="Toggle annotations">
+              <IconButton
+                key="btnToogleAnnotationsVisibilitiy"
+                onClick={onToggleAnnotationsVisibility}
+                size="small"
+              >
+                {areAnnotationsVisible ? <Layers /> : <LayersClear />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Toggle pins">
+              <IconButton
+                key="btnTooglePinsVisibilitiy"
+                onClick={onTogglePinsVisibility}
+                size="small"
+              >
+                {arePinsVisible ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Toggle fullscreen">
+              <IconButton
+                key="btnMapFullScreenToggle"
+                onClick={onToggleFullscreen}
+                size="small"
+              >
+                <Fullscreen />
+              </IconButton>
+            </Tooltip>
           </Stack>
         </Toolbar>
       </AppBar>
 
-      <WithMapOverlays
+      <WithMapAnnotations
         location={location}
         data={data}
+        areAnnotationsVisible={areAnnotationsVisible}
         arePinsVisible={arePinsVisible}
       />
     </Box>
