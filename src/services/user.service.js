@@ -125,3 +125,24 @@ export const getUsersByCompany = async (companyId) => {
     return null;
   }
 };
+
+export const saveRegisterPreferences = async (
+  id,
+  { registerId, preferences }
+) => {
+  try {
+    const user = await getUser({ id: id });
+    console.log("here", { registerId, preferences });
+
+    const rg =
+      user.registerPreferences?.filter((rf) => rf.registerId != registerId) ||
+      [];
+
+    const docRef = doc(db, "users", id);
+    await updateDoc(docRef, {
+      registerPreferences: [...rg, { registerId, preferences }],
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
