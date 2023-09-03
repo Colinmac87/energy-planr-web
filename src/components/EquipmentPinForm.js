@@ -164,7 +164,6 @@ const EquipmentPinForm = ({ data }) => {
           {location && (
             <MapView
               image={location.backgroundMapUrl}
-              arePinsVisible={true}
               data={[
                 {
                   ...data,
@@ -175,9 +174,9 @@ const EquipmentPinForm = ({ data }) => {
                   },
                 },
               ]}
-              mode={pinCoords == null ? "pin" : "view"}
+              arePinsVisible={true}
+              mode={"pin"}
               onPinPlacement={(coords) => {
-                console.log("fifth");
                 setPinCoords(coords);
               }}
             />

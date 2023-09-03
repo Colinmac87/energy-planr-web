@@ -11,26 +11,27 @@ import {
   useTheme,
 } from "@mui/material";
 import { getCenter } from "ol/extent";
-import { Point, Polygon } from "ol/geom";
-import { Projection, fromLonLat, get } from "ol/proj";
-import React, { createRef, useEffect, useRef, useState } from "react";
+import { Point, Polygon, Circle } from "ol/geom";
+import { Projection } from "ol/proj";
+import React, { useEffect, useRef, useState } from "react";
 import {
   RFeature,
   RInteraction,
   RLayerImage,
   RLayerVector,
   RMap,
-  ROverlay,
   RPopup,
-  RStyle,
 } from "rlayers";
+import { Circle as CircleStyle, Fill, Style } from "ol/style";
 
 const MapView = ({
   image,
   data,
+  overlays,
   arePinsVisible,
   mode = "view", // view || pin
   onPinPlacement,
+  onDraw,
 }) => {
   const theme = useTheme();
 
@@ -46,21 +47,18 @@ const MapView = ({
 
   const mapRef = useRef();
 
-  // useEffect(() => {
-  //   if (mode == "pin") setDrawType("Point");
-  //   else setDrawType(null);
-  // }, [mode]);
+  useEffect(() => {
+    console.log("data", data);
+  }, [data]);
 
   const handlePointPlace = (coords) => {
-    // if (mode == "pin") {
     onPinPlacement(coords);
-    // }
   };
 
   const handleDraw = (coords) => {
-    console.log("coords", {
+    onDraw({
       type: drawType,
-      coords: JSON.stringify(coords),
+      coords: coords,
     });
   };
 
@@ -117,49 +115,64 @@ const MapView = ({
         <RLayerImage url={image} extent={extent} />
 
         {/* Markers display */}
-        <RLayerVector>
-          {arePinsVisible &&
-            data?.length > 0 &&
-            data
-              .filter((dataPoint) => dataPoint.xPin.coords)
-              .map((dataPoint) => (
-                <RFeature
-                  geometry={new Point(dataPoint.xPin.coords)}
-                  // onClick={(e) =>
-                  // e.map.getView().fit(e.target.getGeometry().getExtent(), {
-                  //   duration: 250,
-                  //   maxZoom: 15,
-                  // })
-                  // }
-                >
-                  <RPopup trigger={"click"}>
-                    <Paper elevation={18} sx={{ p: 2 }}>
-                      <Typography>{dataPoint.id}</Typography>
-                    </Paper>
-                  </RPopup>
-                </RFeature>
-              ))}
-        </RLayerVector>
+        {arePinsVisible && (
+          <RLayerVector>
+            {data?.length > 0 &&
+              data
+                .filter((dataPoint) => dataPoint.xPin.coords)
+                .map((dataPoint) => (
+                  <RFeature
+                    geometry={new Point(dataPoint.xPin.coords)}
+                    style={
+                      new Style({
+                        image: new CircleStyle({
+                          radius: dataPoint.xPin.size * 5,
+                          fill: new Fill({ color: dataPoint.xPin.color }),
+                        }),
+                      })
+                    }
+                  >
+                    <RPopup trigger={"click"}>
+                      <Paper elevation={18} sx={{ p: 2 }}>
+                        <Typography>{dataPoint.id}</Typography>
+                      </Paper>
+                    </RPopup>
+                  </RFeature>
+                ))}
+          </RLayerVector>
+        )}
 
         {/* Drawings display */}
         <RLayerVector>
-          <RFeature
-            geometry={
-              new Polygon([
-                [
-                  [268.9355169663954, 768.7197534397103],
-                  [306.8041108466033, 772.4728372225447],
-                  [301.676061322356, 712.65780342833],
-                ],
-              ])
-            }
-          ></RFeature>
+          {overlays?.map((overlay) => {
+            console.log(overlay);
+            if (overlay.type == "Circle")
+              return (
+                <RFeature
+                  geometry={new Circle(overlay.coords[0], 500)}
+                ></RFeature>
+              );
+            if (overlay.type == "Polygon")
+              return (
+                <RFeature geometry={new Polygon(overlay.coords)}></RFeature>
+              );
+
+            return null;
+          })}
         </RLayerVector>
 
         {/* Pin placement layer */}
-        {mode == "pin" && (
+        {mode == "pin" && !data[0].xPin?.coords && (
           <RLayerVector>
             <RInteraction.RDraw
+              style={
+                new Style({
+                  image: new CircleStyle({
+                    radius: data[0].xPin.size * 5,
+                    fill: new Fill({ color: data[0].xPin.color }),
+                  }),
+                })
+              }
               type={"Point"}
               onDrawEnd={(e) => {
                 handlePointPlace(e.target.sketchCoords_);
@@ -169,45 +182,30 @@ const MapView = ({
         )}
 
         {/* Drawing layer */}
-        <RLayerVector
-        // onChange={React.useCallback((e) => {
-        //     // On every change, check if there is a feature covering the Eiffel Tower
-        //     const source = e.target;
-        //     if (source?.forEachFeatureAtCoordinateDirect)
-        //         setSelected(
-        //             source.forEachFeatureAtCoordinateDirect(TourEiffel, () => true)
-        //         );
-        // }, [])}
-        >
-          {/* <RStyle.RStyle>
-            <RStyle.RStroke color="#0000ff" width={3} />
-            <RStyle.RFill color="rgba(0, 0, 0)" />
-          </RStyle.RStyle> */}
-
+        <RLayerVector>
           {drawType && (
             <RInteraction.RDraw
               type={drawType}
               onDrawEnd={(e) => {
-                handleDraw(e.target.sketchCoords_);
+                console.log("eee", e.target);
+                // handleDraw(e.target.sketchCoords_);
               }}
             />
           )}
         </RLayerVector>
       </RMap>
 
-      {
-        <Box
-          sx={{
-            gap: 1,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          {renderStateInfo()}
-        </Box>
-      }
+      <Box
+        sx={{
+          gap: 1,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        {renderStateInfo()}
+      </Box>
 
       <Stack
         sx={{

@@ -1,5 +1,7 @@
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -32,6 +34,7 @@ export const createLocation = async (assetId, { name, backgroundMapFile }) => {
     const location = {
       assetId: assetId,
       name: name,
+      overlays: [],
       isDeleted: false,
     };
 
@@ -99,6 +102,28 @@ export const updateLocationsOrder = async (locationIds) => {
     locationIds.forEach((locationId, i) => {
       const docRef = doc(db, "locations", locationId);
       updateDoc(docRef, { order: i + 1 });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addOverlay = async (id, { type, coords }) => {
+  try {
+    const docRef = doc(db, "locations", id);
+    return await updateDoc(docRef, {
+      overlays: arrayUnion({ type: type, coords: JSON.stringify(coords) }),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteOverlay = async (id, { type, coords }) => {
+  try {
+    const docRef = doc(db, "locations", id);
+    return await updateDoc(docRef, {
+      overlays: arrayRemove({ type: type, coords: coords }),
     });
   } catch (error) {
     console.log(error);

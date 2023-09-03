@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Fullscreen, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import MapView from "./MapView";
+import WithMapOverlays from "./WithMapOverlays";
 
 const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
   const [arePinsVisible, setArePinsVisibile] = useState(true);
@@ -61,8 +61,9 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
           </Stack>
         </Toolbar>
       </AppBar>
-      <MapView
-        image={location?.backgroundMapUrl}
+
+      <WithMapOverlays
+        location={location}
         data={data}
         arePinsVisible={arePinsVisible}
       />
