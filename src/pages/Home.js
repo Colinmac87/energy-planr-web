@@ -77,18 +77,32 @@ const Home = () => {
     <Grid item md={4} lg={3} gap={2} spacing={2}>
       <Card>
         <CardActionArea
-          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
+          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)}
         >
           <CardContent sx={{ padding: "5px" }}>
             <Typography variant="h6">{asset.name}</Typography>
           </CardContent>
-          <CardMedia
-            component="img"
-            height="180"
-            sx={{ height: 180, minHeight: 180, maxHeight: 180 }}
-            image={asset.thumbnailUrl}
-            alt={asset.name}
-          />
+          {asset.thumbnailUrl ? (
+            <CardMedia
+              component="img"
+              height="180"
+              sx={{ height: 180, minHeight: 180, maxHeight: 180 }}
+              image={asset.thumbnailUrl}
+              alt={asset.name}
+            />
+          ) : (
+            <CardMedia
+              component="img"
+              height="180"
+              sx={{
+                height: 180,
+                minHeight: 180,
+                maxHeight: 180,
+                objectFit: "cover",
+              }}
+              image={require("../assets/images/no-image.jpeg")}
+            />
+          )}
         </CardActionArea>
       </Card>
     </Grid>
@@ -98,7 +112,7 @@ const Home = () => {
     <Grid item xs={12}>
       <Card>
         <CardActionArea
-          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}`), 50)}
+          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)}
         >
           <CardContent>
             <Typography variant="h6">{asset.name}</Typography>

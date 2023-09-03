@@ -27,9 +27,7 @@ const Asset = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState(
-    params?.tab || "register-view"
-  );
+  const [selectedTab, setSelectedTab] = useState(params?.tab || "register");
 
   const { asset } = useSelector((state) => state.asset);
 
@@ -61,11 +59,11 @@ const Asset = () => {
 
   const renderPage = () => {
     switch (selectedTab) {
-      case "register-view":
+      case "register":
         return <AssetRegisterView />;
-      case "map-view":
+      case "map":
         return <AssetMapView />;
-      case "settings-view":
+      case "settings":
         return <AssetSettings onDeleteAsset={onDeleteAsset} />;
       default:
         return null;
@@ -116,10 +114,10 @@ const Asset = () => {
             <IconButton
               aria-label="register"
               onClick={() =>
-                selectedTab != "register-view" &&
-                setSelectedTab("register-view")
+                selectedTab != "register" &&
+                setSelectedTab("register")
               }
-              color={selectedTab == "register-view" ? "primary" : "default"}
+              color={selectedTab == "register" ? "primary" : "default"}
             >
               <TableChart fontSize="large" />
             </IconButton>
@@ -128,9 +126,9 @@ const Asset = () => {
             <IconButton
               aria-label="map"
               onClick={() =>
-                selectedTab != "map-view" && setSelectedTab("map-view")
+                selectedTab != "map" && setSelectedTab("map")
               }
-              color={selectedTab == "map-view" ? "primary" : "default"}
+              color={selectedTab == "map" ? "primary" : "default"}
             >
               <Map fontSize="large" />
             </IconButton>
@@ -139,10 +137,10 @@ const Asset = () => {
             <IconButton
               aria-label="form"
               onClick={() =>
-                selectedTab != "settings-view" &&
-                setSelectedTab("settings-view")
+                selectedTab != "settings" &&
+                setSelectedTab("settings")
               }
-              color={selectedTab == "settings-view" ? "primary" : "default"}
+              color={selectedTab == "settings" ? "primary" : "default"}
             >
               <Settings fontSize="large" />
             </IconButton>
