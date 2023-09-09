@@ -33,7 +33,10 @@ const AssetMapView = ({ preSelected }) => {
 
   useEffect(() => {
     try {
-      getLocations(asset.id).then((_locations) => setLocations(_locations));
+      getLocations(asset.id).then((_locations) => {
+        setLocations(_locations);
+        setSelectedLocation(_locations[0]);
+      });
 
       getDataByAsset(asset.id).then((_data) => setData(_data));
     } catch (error) {}
@@ -171,7 +174,7 @@ const AssetMapView = ({ preSelected }) => {
           overflow: "hidden",
         }}
       >
-        {selectedLocation ? (
+        {selectedLocation && (
           <WithMapViewer
             location={selectedLocation}
             data={data.filter((d) => {
@@ -187,19 +190,6 @@ const AssetMapView = ({ preSelected }) => {
               return false;
             })}
           />
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="caption">
-              Select a location to view the map
-            </Typography>
-          </Box>
         )}
       </Box>
     </Box>

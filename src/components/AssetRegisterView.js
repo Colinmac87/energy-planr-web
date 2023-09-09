@@ -28,6 +28,7 @@ import {
   Archive,
   Delete,
   Edit,
+  Numbers,
   Place,
   Unarchive,
   UploadFile,
@@ -50,7 +51,7 @@ import WithCellTriggerEffect from "./dataUI/WithCellTriggerEffect";
 import { useSnackbar } from "notistack";
 import { MaterialReactTable } from "material-react-table";
 import { LoadingButton } from "@mui/lab";
-import { fromSecs } from "../utils/date.utils";
+import { fromSecs, withFormat } from "../utils/date.utils";
 import { saveRegisterPreferences } from "../services/user.service";
 
 const AssetRegisterView = () => {
@@ -73,16 +74,14 @@ const AssetRegisterView = () => {
   const [data, setData] = useState([]);
 
   // Filters
+  const [enableRowNumbers, setEnableRowNumbers] = useState(null);
   const [globalFilter, setGlobalFilter] = useState("");
   const [density, setDensity] = useState("comfortable");
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState([]);
   const [columnSizing, setColumnSizing] = useState([]);
-
-  useEffect(() => {
-    console.log("change", user);
-  }, []);
+  const [showColumnFilters, setShowColumnFilters] = useState(false);
 
   const onCloseEquipmentDetailViewer = () => {
     setSelectedData(null);
@@ -107,15 +106,20 @@ const AssetRegisterView = () => {
     saveRegisterPreferences(user.id, {
       registerId: register.id,
       preferences: JSON.stringify({
+        enableRowNumbers,
         globalFilter,
         columnVisibility,
         columnFilters,
         columnSizing,
         density,
         sorting,
+        showColumnFilters,
       }),
     }).then(() => {
-      enqueueSnackbar("Filters saved", { variant: "success" });
+      enqueueSnackbar("Filters saved", {
+        variant: "success",
+        autoHideDuration: 20000,
+      });
     });
   };
 
@@ -130,19 +134,27 @@ const AssetRegisterView = () => {
           );
           if (registerPreference) {
             const preferences = JSON.parse(registerPreference.preferences);
+            setEnableRowNumbers(
+              preferences?.enableRowNumbers == null
+                ? true
+                : preferences?.enableRowNumbers
+            );
             setGlobalFilter(preferences.globalFilter);
             setColumnVisibility(preferences.columnVisibility);
             setColumnFilters(preferences.columnFilters);
             setColumnSizing(preferences.columnSizing);
             setDensity(preferences.density);
             setSorting(preferences.sorting);
+            setShowColumnFilters(preferences.showColumnFilters);
           } else {
+            setEnableRowNumbers(true);
             setGlobalFilter("");
             setColumnVisibility([]);
             setColumnFilters([]);
             setColumnSizing([]);
             setDensity("comfortable");
             setSorting([]);
+            setShowColumnFilters(false);
           }
         }, 5);
       })
@@ -208,6 +220,23 @@ const AssetRegisterView = () => {
       enqueueSnackbar("Record restored", { variant: "success" });
       loadData();
     });
+  };
+
+  const getTableState = () => {
+    const state = {
+      globalFilter,
+      columnVisibility,
+      columnFilters,
+      columnSizing,
+      density,
+      sorting,
+      showColumnFilters,
+      isLoading: loading,
+    };
+
+    if (globalFilter) state.showGlobalFilter = true;
+
+    return state;
   };
 
   const renderRowActions = () => {
@@ -333,7 +362,7 @@ const AssetRegisterView = () => {
       >
         <Stack sx={{ flex: 1 }}>
           {register?.id && (
-            <FormControl fullWidth>
+            <FormControl fullWidth size="small">
               <InputLabel>Register</InputLabel>
               <Select
                 label="Register"
@@ -386,27 +415,44 @@ const AssetRegisterView = () => {
 
       <Box
         sx={{
+          flex: 1,
           m: 0,
           p: 0,
           width: "100%",
           height: "100%",
           maxWidth: "100%",
           maxHeight: "100%",
-          overflow: "hidden",
+          overflowX: "hidden",
+          overflowY: "hidden",
         }}
       >
-        {register && (
+        {register && enableRowNumbers != null && (
           <MaterialReactTable
+            muiTableContainerProps={{
+              sx: {
+                maxHeight: "clamp(350px, calc(100vh - 212px), 9999px)",
+                // 212px is a calculated number from top of the page till the start of table rows
+                // 64 = top nav
+                // 16 = padding
+                // 40 = stack (register dropdown and new reigster button)
+                // 56 = table controls
+                // 36 = table headings
+              },
+            }}
+            // Filters
             onGlobalFilterChange={setGlobalFilter}
             onDensityChange={setDensity}
             onColumnFiltersChange={setColumnFilters}
             onSortingChange={setSorting}
             onColumnVisibilityChange={setColumnVisibility}
             onColumnSizingChange={setColumnSizing}
+            onShowColumnFiltersChange={setShowColumnFilters}
+            // enableGlobalFilter={true}
+
             //
             enableEditing={!showingArchivedData && editingTable}
             editingMode="table"
-            enableRowNumbers={!editingTable}
+            enableRowNumbers={enableRowNumbers}
             displayColumnDefOptions={{ "mrt-row-actions": { size: 110 } }}
             enableRowSelection={!editingTable}
             enableMultiRowSelection
@@ -421,6 +467,7 @@ const AssetRegisterView = () => {
               >
                 <Stack sx={{ flexDirection: "row", gap: 2 }}>
                   <Button
+                    size="small"
                     variant="outlined"
                     disabled={
                       table.getPrePaginationRowModel().rows.length === 0
@@ -432,6 +479,7 @@ const AssetRegisterView = () => {
                     Export All Rows
                   </Button>
                   <Button
+                    size="small"
                     variant="outlined"
                     disabled={
                       !table.getIsSomeRowsSelected() &&
@@ -444,16 +492,39 @@ const AssetRegisterView = () => {
                     Export Selected Rows
                   </Button>
                 </Stack>
-                <Stack sx={{ flexDirection: "row", gap: 1 }}>
-                  <Tooltip title="Save filters" arrow>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      sx={{ mr: 2 }}
-                      onClick={savePreferences}
+                <Stack
+                  sx={{
+                    flexDirection: "row",
+                    gap: 1,
+                    mr: 1,
+                  }}
+                >
+                  <Button
+                    variant="text"
+                    size="small"
+                    sx={{ mr: 2 }}
+                    onClick={savePreferences}
+                  >
+                    Save Filters
+                  </Button>
+
+                  <Tooltip
+                    title={
+                      enableRowNumbers ? "Hide row numbers" : "Show row numbers"
+                    }
+                    arrow
+                  >
+                    <IconButton
+                      onClick={() => {
+                        const _enableRowNumbers = enableRowNumbers;
+                        setEnableRowNumbers(null);
+                        setTimeout(() => {
+                          setEnableRowNumbers(!_enableRowNumbers);
+                        }, 0);
+                      }}
                     >
-                      Save Filters
-                    </Button>
+                      <Numbers />
+                    </IconButton>
                   </Tooltip>
                   <Tooltip
                     title={
@@ -492,7 +563,7 @@ const AssetRegisterView = () => {
                 ? [
                     {
                       accessorKey: "xInfox",
-                      header: "Info",
+                      header: "Update Info",
                       enableSorting: false,
                       enableColumnFilter: false,
                       enableColumnActions: false,
@@ -512,14 +583,13 @@ const AssetRegisterView = () => {
                               row.original.xUpdatedBy?.fullName ||
                               row.original.xCreatedBy?.fullName}
                             <br />
-                            {fromSecs(
-                              row.original.xArchivedAt?.seconds ||
-                                row.original.xUpdatedAt?.seconds ||
-                                row.original.xCreatedAt?.seconds
-                            )
-                              .toLocaleString()
-                              .replace(",", "")
-                              .slice(0, 16)}
+                            {withFormat(
+                              fromSecs(
+                                row.original.xArchivedAt?.seconds ||
+                                  row.original.xUpdatedAt?.seconds ||
+                                  row.original.xCreatedAt?.seconds
+                              )
+                            )}
                           </Typography>
                         </Tooltip>
                       ),
@@ -560,15 +630,7 @@ const AssetRegisterView = () => {
             slots={{ toolbar: GridToolbar }}
             enablePagination={false}
             enableRowVirtualization
-            state={{
-              globalFilter,
-              columnVisibility,
-              columnFilters,
-              columnSizing,
-              density,
-              sorting,
-              isLoading: loading,
-            }}
+            state={getTableState()}
             enableColumnResizing
             enableColumnActions
             enableBottomToolbar={false}
@@ -582,14 +644,13 @@ const AssetRegisterView = () => {
         onClose={onCloseEquipmentDetailViewer}
         sx={{
           maxHeight: window.outerHeight - 100,
-          // zIndex: 1400
+          zIndex: 1400,
         }}
       >
         <Box
           sx={{
             height: "100%",
             backgroundColor: theme.palette.background.default,
-            // zIndex: 1400,
           }}
         >
           <EquipmentDataForm

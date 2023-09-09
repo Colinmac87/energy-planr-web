@@ -84,7 +84,7 @@ const AssetForm = ({ onSaving, onSave, onDelete }) => {
   };
 
   return (
-    <Grid container rowGap={4}>
+    <Grid container rowGap={4} sx={{ p: 2 }}>
       <Grid item xs={12}>
         <Box component={"form"} onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>

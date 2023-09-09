@@ -105,9 +105,9 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
         display: "flex",
         flex: 1,
         flexGrow: 1,
-        m: 0,
-        p: 0,
-        pb: 8,
+        ml: 2,
+        mr: 2,
+        pb: 11,
         overflow: "hidden",
         position: "relative",
       }}
@@ -187,8 +187,7 @@ const FormGroupsManager = ({ register, onChangeRegister, onSave }) => {
           borderBottomRightRadius: 2,
           overflow: "auto",
           mt: 11,
-          pt: 2,
-          pb: 1,
+          p: 0,
         }}
       >
         <Grid

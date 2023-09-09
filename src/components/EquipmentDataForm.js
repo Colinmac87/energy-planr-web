@@ -24,7 +24,7 @@ import { LoadingButton } from "@mui/lab";
 import EquipmentFilesForm from "./EquipmentFilesForm";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { fromSecs } from "../utils/date.utils";
+import { fromSecs, withFormat } from "../utils/date.utils";
 import EquipmentPinForm from "./EquipmentPinForm";
 
 const EquipmentDataForm = ({
@@ -206,30 +206,32 @@ const EquipmentDataForm = ({
               <Stack
                 sx={{ flexDirection: "row", justifyContent: "space-between" }}
               >
+                {formData.xCreatedBy && (
+                  <Typography variant="caption">
+                    Created by {formData.xCreatedBy?.fullName}, on{" "}
+                    {withFormat(fromSecs(formData.xCreatedAt?.seconds))}
+                  </Typography>
+                )}
                 {formData.xUpdatedBy && (
                   <Typography variant="caption">
                     Modified by {formData.xUpdatedBy?.fullName}, on{" "}
-                    {fromSecs(formData.xUpdatedAt?.seconds).toDateString()}
+                    {withFormat(fromSecs(formData.xUpdatedAt?.seconds))}
                   </Typography>
                 )}
-                <Typography variant="caption">
-                  Created by {formData.xCreatedBy?.fullName}, on{" "}
-                  {fromSecs(formData.xCreatedAt?.seconds).toDateString()}
-                </Typography>
               </Stack>
               <Divider sx={{ mt: 2, mb: 3 }} />
               <Stack flexDirection={"row"} justifyContent={"space-between"}>
                 <Stack flexDirection={"row"} gap={6}>
-                  <Button
+                  {/* <Button
                     variant="outlined"
                     disabled={loading}
                     onClick={onClose}
                   >
                     Cancel
-                  </Button>
+                  </Button> */}
                 </Stack>
                 <Stack flexDirection={"row"} gap={6}>
-                  {canEdit && formData?.id && (
+                  {/* {canEdit && formData?.id && (
                     <Button
                       variant="outlined"
                       disabled={loading}
@@ -238,12 +240,23 @@ const EquipmentDataForm = ({
                     >
                       Delete
                     </Button>
-                  )}
+                  )} */}
+                  <Stack flexDirection={"row"} gap={6}>
+                    <Button
+                      variant="outlined"
+                      disabled={loading}
+                      onClick={onClose}
+                      sx={{ minWidth: 128 }}
+                    >
+                      Cancel
+                    </Button>
+                  </Stack>
                   {canEdit && (
                     <LoadingButton
                       type="submit"
                       variant="contained"
                       loading={loading}
+                      sx={{ minWidth: 128 }}
                     >
                       Save
                     </LoadingButton>

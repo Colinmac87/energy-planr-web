@@ -156,6 +156,7 @@ const RegistersManager = ({ onSave }) => {
       container
       rowGap={4}
       sx={{
+        p: 2,
         alignContent: "flex-start",
       }}
     >

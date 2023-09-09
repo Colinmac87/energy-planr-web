@@ -12,6 +12,7 @@ import {
   Paper,
   Select,
   Stack,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getLocations } from "../services/location.service";
@@ -24,11 +25,6 @@ import { TwitterPicker } from "react-color";
 import {
   PIN_DEFAULT_COLOR,
   PIN_DEFAULT_SIZE,
-  PIN_SIZE_HUGE,
-  PIN_SIZE_LARGE,
-  PIN_SIZE_MEDIUM,
-  PIN_SIZE_SMALL,
-  PIN_SIZE_TINY,
 } from "../constants/map.constants";
 import WithMapAnnotations from "./WithMapAnnotations";
 
@@ -81,55 +77,74 @@ const EquipmentPinForm = ({ data }) => {
         height: 768,
         m: 0,
         p: 1,
-        overflow: "hidden",
       }}
     >
       <Stack sx={{ flex: 1, width: "100%", height: "100%", gap: 1 }}>
         <Stack
           sx={{
             flexDirection: "row",
-            gap: 64,
           }}
         >
-          <FormControl fullWidth sx={{ flex: 1 }}>
-            <InputLabel>Location</InputLabel>
-            <Select
-              autoFocus
-              value={location}
-              label="Location"
-              onChange={(e) => {
-                setLocation(null);
-                setTimeout(() => setLocation(e.target.value), 50);
-              }}
-            >
-              {locations.map((l) => (
-                <MenuItem value={l}>{l.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Stack sx={{ flexDirection: "row", gap: 4 }}>
-            <FormControl sx={{ width: 150 }}>
-              <InputLabel>Size</InputLabel>
-              <Select
-                value={pinSize}
-                label="Size"
-                onChange={(e) => {
-                  setPinSize(e.target.value);
-                }}
-              >
-                <MenuItem value={PIN_SIZE_TINY}>{PIN_SIZE_TINY}</MenuItem>
-                <MenuItem value={PIN_SIZE_SMALL}>{PIN_SIZE_SMALL}</MenuItem>
-                <MenuItem value={PIN_SIZE_MEDIUM}>{PIN_SIZE_MEDIUM}</MenuItem>
-                <MenuItem value={PIN_SIZE_LARGE}>{PIN_SIZE_LARGE}</MenuItem>
-                <MenuItem value={PIN_SIZE_HUGE}>{PIN_SIZE_HUGE}</MenuItem>
-              </Select>
-            </FormControl>
-            <TwitterPicker
-              triangle="hide"
-              color={pinColor}
-              onChangeComplete={(color) => setPinColor(color.hex)}
-              colors={["#FCB900", "#00D084", PIN_DEFAULT_COLOR]}
-            />
+          <Stack sx={{ flex: 1 }}>
+            {locations.length > 0 ? (
+              <FormControl sx={{ width: "50%" }} size="small">
+                <InputLabel>Location</InputLabel>
+                <Select
+                  autoFocus
+                  value={location}
+                  label="Location"
+                  onChange={(e) => {
+                    setLocation(null);
+                    setTimeout(() => setLocation(e.target.value), 50);
+                  }}
+                >
+                  {locations.map((l) => (
+                    <MenuItem value={l}>{l.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <Typography sx={{ flex: 1 }}>&nbsp;</Typography>
+            )}
+          </Stack>
+          <Stack
+            sx={{
+              flex: 1,
+              flexDirection: "row",
+              gap: 2,
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            {pinCoords == null && (
+              <>
+                {/* <FormControl sx={{ width: 150 }} size="small">
+                  <InputLabel>Size</InputLabel>
+                  <Select
+                    value={pinSize}
+                    label="Size"
+                    onChange={(e) => {
+                      setPinSize(e.target.value);
+                    }}
+                  >
+                    <MenuItem value={PIN_SIZE_TINY}>{PIN_SIZE_TINY}</MenuItem>
+                    <MenuItem value={PIN_SIZE_SMALL}>{PIN_SIZE_SMALL}</MenuItem>
+                    <MenuItem value={PIN_SIZE_MEDIUM}>
+                      {PIN_SIZE_MEDIUM}
+                    </MenuItem>
+                    <MenuItem value={PIN_SIZE_LARGE}>{PIN_SIZE_LARGE}</MenuItem>
+                    <MenuItem value={PIN_SIZE_HUGE}>{PIN_SIZE_HUGE}</MenuItem>
+                  </Select>
+                </FormControl> */}
+                <TwitterPicker
+                  disabled={true}
+                  triangle="hide"
+                  color={pinColor}
+                  onChangeComplete={(color) => setPinColor(color.hex)}
+                  colors={["#FCB900", "#00D084", PIN_DEFAULT_COLOR]}
+                />
+              </>
+            )}
             <Button
               disabled={pinCoords == null}
               variant="outlined"
@@ -141,7 +156,6 @@ const EquipmentPinForm = ({ data }) => {
               Clear
             </Button>
             <Button
-              disabled={pinCoords == null}
               variant="contained"
               startIcon={<WhereToVote />}
               onClick={() => {

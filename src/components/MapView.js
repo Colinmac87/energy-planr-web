@@ -1,7 +1,9 @@
 import {
   Add,
   CircleOutlined,
+  Close,
   Delete,
+  OpenInFull,
   Polyline,
   Remove,
 } from "@mui/icons-material";
@@ -20,7 +22,7 @@ import {
 import { createEmpty, extend, getCenter, getHeight, getWidth } from "ol/extent";
 import { Point, Polygon, Circle } from "ol/geom";
 import { Projection } from "ol/proj";
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import WithDataField from "./dataUI/WithDataField";
 import {
   RFeature,
@@ -53,6 +55,7 @@ const MapView = ({
   mode = "view", // view || pin
   onPinPlacement,
   onSaveAnnotations,
+  onExpandPin,
 }) => {
   const theme = useTheme();
   const { registers } = useSelector((state) => state.asset);
@@ -73,6 +76,9 @@ const MapView = ({
   const [isErasingAnnotations, setIsErasingAnnotations] = useState(false);
 
   const [tempAnnotationCoords, setTempAnnotationCoords] = useState([]);
+
+  const mapRef = createRef();
+  const pinsRef = useRef(new Array(data.length));
 
   useEffect(() => {
     setAnnotations(initialAnnotations);
@@ -179,18 +185,23 @@ const MapView = ({
     return null;
   };
 
-  const renderPin = (dataPoint) => {
+  const renderPin = (dataPoint, i) => {
     const register = registers.find((r) => r.id == dataPoint?.xRegisterId);
     const defaultField = register?.formFields?.find((f) => f.isDefault == true);
 
     return (
       <RFeature
+        ref={(el) => (pinsRef.current[i] = el)}
         geometry={new Point(dataPoint.xPin.coords)}
         style={
           new Style({
             image: new CircleStyle({
               radius: dataPoint.xPin.size * 5,
               fill: new Fill({ color: dataPoint.xPin.color }),
+              stroke: new Stroke({
+                color: "#111",
+                width: 3,
+              }),
             }),
           })
         }
@@ -200,13 +211,49 @@ const MapView = ({
             <Paper
               elevation={18}
               sx={{
+                position: "relative",
+                minWidth: 200,
                 maxWidth: 256,
                 borderStyle: "solid",
                 borderColor: theme.palette.primary.main,
                 borderWidth: 2,
               }}
             >
-              <Stack sx={{ p: 2 }}>
+              <Stack
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  flexDirection: "row",
+                }}
+              >
+                <Tooltip title="View Data">
+                  <IconButton
+                    sx={{ borderRadius: 0 }}
+                    onClick={() => {
+                      pinsRef.current[i].ol.dispatchEvent("click");
+                      onExpandPin(dataPoint);
+                    }}
+                  >
+                    <OpenInFull sx={{ fontSize: 14 }} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Close">
+                  <IconButton
+                    sx={{ borderRadius: 0 }}
+                    onClick={() => {
+                      try {
+                        pinsRef.current[i].ol.dispatchEvent("click");
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    }}
+                  >
+                    <Close sx={{ fontSize: 14 }} />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+              <Stack sx={{ p: 2, pt: 4 }}>
                 {defaultField ? (
                   <Stack>
                     <Typography variant="caption">
@@ -221,12 +268,6 @@ const MapView = ({
                 ) : (
                   <Typography>{dataPoint.id}</Typography>
                 )}
-              </Stack>
-              <Stack>
-                <Divider />
-                <Typography variant="caption" p={0.6}>
-                  <i>Click on the pin to dismiss</i>
-                </Typography>
               </Stack>
             </Paper>
           </RPopup>
@@ -250,6 +291,7 @@ const MapView = ({
       }}
     >
       <RMap
+        ref={mapRef}
         width={"100%"}
         height={"100%"}
         initial={initial}
@@ -316,7 +358,7 @@ const MapView = ({
           <RLayerVector>
             {data
               .filter((dataPoint) => dataPoint.xPin.coords)
-              .map((dataPoint) => renderPin(dataPoint))}
+              .map((dataPoint, i) => renderPin(dataPoint, i))}
           </RLayerVector>
         )}
 
@@ -462,7 +504,9 @@ const MapView = ({
             }}
             onClick={() => {
               try {
-                setView({ ...view, zoom: 20 });
+                mapRef.current.ol
+                  .getView()
+                  .setZoom(mapRef.current.ol.getView().getZoom() + 0.3);
               } catch (error) {
                 console.log("zoom-in", error);
               }
@@ -484,7 +528,9 @@ const MapView = ({
             }}
             onClick={() => {
               try {
-                setView({ ...view, zoom: 5 });
+                mapRef.current.ol
+                  .getView()
+                  .setZoom(mapRef.current.ol.getView().getZoom() - 0.3);
               } catch (error) {
                 console.log("zoom-in", error);
               }

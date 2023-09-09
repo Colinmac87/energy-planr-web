@@ -77,7 +77,9 @@ const Home = () => {
     <Grid item md={4} lg={3} gap={2} spacing={2}>
       <Card>
         <CardActionArea
-          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)}
+          onClick={() =>
+            setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)
+          }
         >
           <CardContent sx={{ padding: "5px" }}>
             <Typography variant="h6">{asset.name}</Typography>
@@ -100,7 +102,7 @@ const Home = () => {
                 maxHeight: 180,
                 objectFit: "cover",
               }}
-              image={require("../assets/images/no-image.jpeg")}
+              image={require("../assets/images/no-image.png")}
             />
           )}
         </CardActionArea>
@@ -112,7 +114,9 @@ const Home = () => {
     <Grid item xs={12}>
       <Card>
         <CardActionArea
-          onClick={() => setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)}
+          onClick={() =>
+            setTimeout(() => navigate(`/asset/${asset.id}/register`), 50)
+          }
         >
           <CardContent>
             <Typography variant="h6">{asset.name}</Typography>
@@ -204,12 +208,12 @@ const Home = () => {
           >
             <ToggleButton value="grid">
               <Tooltip title="Cards">
-                <ViewModuleOutlined />
+                <ViewModuleOutlined fontSize="small" />
               </Tooltip>
             </ToggleButton>
             <ToggleButton value="list">
               <Tooltip title="List">
-                <ViewListOutlined />
+                <ViewListOutlined fontSize="small" />
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
@@ -272,10 +276,9 @@ const Home = () => {
             flex: 1,
             height: "100%",
             backgroundColor: theme.palette.background.paper,
-            p: 2,
           }}
         >
-          <Typography variant="h4" mb={4}>
+          <Typography variant="h4" m={2} mb={4}>
             New Asset
           </Typography>
           <AssetForm

@@ -116,7 +116,7 @@ const AssetSettings = ({ onDeleteAsset }) => {
           backgroundColor: "#eee1",
         }}
       >
-        <Typography variant="h6" sx={{ p: 1.8 }}>
+        <Typography variant="h6" sx={{ p: 1.8, pt: 1.2 }}>
           Settings
         </Typography>
         <MenuList sx={{ flexGrow: 1 }}>
@@ -185,7 +185,6 @@ const AssetSettings = ({ onDeleteAsset }) => {
           display: "flex",
           flex: 1,
           m: 0,
-          p: 2,
           overflow: "auto",
           position: "relative",
         }}

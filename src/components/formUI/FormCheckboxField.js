@@ -11,12 +11,10 @@ import { useState } from "react";
 const FormCheckboxField = ({ field, value, onChange }) => {
   const theme = useTheme();
 
-  const [selectedOptions, setSelectedOptions] = useState(
-    JSON.parse(value || "[]")
-  );
+  const [selectedOptions, setSelectedOptions] = useState(value || "[]");
 
   const onToggleCheckbox = (key, checked) => {
-    const selectedOptionsCopy = JSON.parse(JSON.stringify(selectedOptions));
+    const selectedOptionsCopy = JSON.parse(selectedOptions);
 
     if (checked) {
       selectedOptionsCopy.push(key);

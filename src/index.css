@@ -34,11 +34,22 @@ div.ProseMirror {
   background-color: transparent !important;
 }
 
-/* .MuiPopover-root,
+.twitter-picker div {
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+.MuiPopover-root,
 .MuiPopper-root,
 .MuiDialog-root {
+  z-index: 1402 !important;
+}
+
+.notistack-SnackbarContainer {
   z-index: 1405 !important;
-} */
+}
 
 .notistack-MuiContent > div {
   margin: auto;
@@ -46,7 +57,7 @@ div.ProseMirror {
 }
 
 .locationListItem .locationListItem-sortButton {
-  display: none;
+  display: inherit;
 }
 
 .locationListItem:hover .locationListItem-sortButton {

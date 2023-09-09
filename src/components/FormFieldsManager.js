@@ -76,48 +76,61 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
     return arr;
   };
 
+  const getVisibleFields = () =>
+    JSON.parse(JSON.stringify(fields)).filter(
+      (f) => filterGroupKey == "none" || f.group == filterGroupKey
+    );
+
   const onChangeFieldProperty = (index, property, value) => {
-    let fieldsCopy = JSON.parse(JSON.stringify(fields));
+    try {
+      let fieldsCopy = getVisibleFields();
 
-    if (property == "type") {
-      fieldsCopy[index].showInRegister = canShowInRegister(value);
-    }
+      if (property == "type") {
+        fieldsCopy[index].showInRegister = canShowInRegister(value);
+      }
 
-    if (property == "isDefault") {
-      fieldsCopy = fieldsCopy.map((f) => ({
-        ...f,
-        isDefault: false,
-      }));
-    }
+      if (property == "isDefault") {
+        fieldsCopy = fieldsCopy.map((f) => ({
+          ...f,
+          isDefault: false,
+        }));
+      }
 
-    fieldsCopy[index][property] = value;
-    setFields(fieldsCopy);
+      fieldsCopy[index][property] = value;
+      setFields(fieldsCopy);
+    } catch (error) {}
   };
 
   const moveUp = (index) => {
-    const fieldsCopy = JSON.parse(JSON.stringify(fields));
-    const fieldObject = fieldsCopy[index];
+    try {
+      const fieldsCopy = getVisibleFields();
+      const fieldObject = fieldsCopy[index];
 
-    fieldsCopy[index] = fieldsCopy[index - 1];
-    fieldsCopy[index - 1] = fieldObject;
+      fieldsCopy[index] = fieldsCopy[index - 1];
+      fieldsCopy[index - 1] = fieldObject;
 
-    setFields(fieldsCopy);
+      setFields(fieldsCopy);
+    } catch (error) {}
   };
 
   const moveDown = (index) => {
-    const fieldsCopy = JSON.parse(JSON.stringify(fields));
-    const fieldObject = fieldsCopy[index];
+    try {
+      const fieldsCopy = getVisibleFields();
+      const fieldObject = fieldsCopy[index];
 
-    fieldsCopy[index] = fieldsCopy[index + 1];
-    fieldsCopy[index + 1] = fieldObject;
+      fieldsCopy[index] = fieldsCopy[index + 1];
+      fieldsCopy[index + 1] = fieldObject;
 
-    setFields(fieldsCopy);
+      setFields(fieldsCopy);
+    } catch (error) {}
   };
 
   const removeField = (index) => {
-    const fieldsCopy = JSON.parse(JSON.stringify(fields));
-    fieldsCopy.splice(index, 1);
-    setFields(fieldsCopy);
+    try {
+      const fieldsCopy = getVisibleFields();
+      fieldsCopy.splice(index, 1);
+      setFields(fieldsCopy);
+    } catch (error) {}
   };
 
   const addField = () => {
@@ -170,9 +183,10 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         display: "flex",
         flex: 1,
         flexGrow: 1,
-        m: 0,
-        p: 0,
-        pb: 8,
+        ml: 2,
+        mr: 2,
+        pb: 11,
+        border: "hidden",
         overflow: "hidden",
         position: "relative",
       }}
@@ -274,8 +288,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
           borderBottomRightRadius: 2,
           overflow: "auto",
           mt: 11,
-          pt: 2,
-          pb: 1,
+          p: 0,
         }}
       >
         <Grid

@@ -108,6 +108,7 @@ const LocationsManager = () => {
       container
       rowGap={4}
       sx={{
+        p: 2,
         alignContent: "flex-start",
       }}
     >
@@ -180,7 +181,7 @@ const LocationsManager = () => {
                     </Stack>
                   }
                 >
-                  <ListItemText primary={location.name} secondary="-" />
+                  <ListItemText primary={location.name} />
                 </ListItem>
               </>
             ))}
