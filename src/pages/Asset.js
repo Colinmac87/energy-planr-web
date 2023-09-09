@@ -100,6 +100,7 @@ const Asset = () => {
             theme.palette.mode == "light"
               ? theme.palette.background.paper
               : theme.palette.background.default,
+          borderRight: `1px solid ${theme.palette.divider}`,
         }}
       >
         <Stack
@@ -114,8 +115,7 @@ const Asset = () => {
             <IconButton
               aria-label="register"
               onClick={() =>
-                selectedTab != "register" &&
-                setSelectedTab("register")
+                selectedTab != "register" && setSelectedTab("register")
               }
               color={selectedTab == "register" ? "primary" : "default"}
             >
@@ -125,9 +125,7 @@ const Asset = () => {
           <Tooltip title="Map" placement="right">
             <IconButton
               aria-label="map"
-              onClick={() =>
-                selectedTab != "map" && setSelectedTab("map")
-              }
+              onClick={() => selectedTab != "map" && setSelectedTab("map")}
               color={selectedTab == "map" ? "primary" : "default"}
             >
               <Map fontSize="large" />
@@ -137,8 +135,7 @@ const Asset = () => {
             <IconButton
               aria-label="form"
               onClick={() =>
-                selectedTab != "settings" &&
-                setSelectedTab("settings")
+                selectedTab != "settings" && setSelectedTab("settings")
               }
               color={selectedTab == "settings" ? "primary" : "default"}
             >

@@ -43,7 +43,8 @@ div.ProseMirror {
 
 .MuiPopover-root,
 .MuiPopper-root,
-.MuiDialog-root {
+.MuiDialog-root,
+.MuiDrawer-root {
   z-index: 1402 !important;
 }
 

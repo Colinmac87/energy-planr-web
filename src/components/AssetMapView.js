@@ -109,7 +109,7 @@ const AssetMapView = ({ preSelected }) => {
             ))}
         </MenuList>
 
-        <Box sx={{ display: "flex", flex: 1, flexDirection: "column", p: 2 }}>
+        <Box sx={{ display: "flex", flex: 1, flexDirection: "column" }}>
           {treeViewData.map((treeViewObject) => {
             let isGroupSelected = false;
 
