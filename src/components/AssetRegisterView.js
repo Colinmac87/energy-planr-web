@@ -28,6 +28,9 @@ import {
   Archive,
   Delete,
   Edit,
+  EditOff,
+  LocationOff,
+  LocationOn,
   Numbers,
   Place,
   Unarchive,
@@ -549,7 +552,7 @@ const AssetRegisterView = () => {
                       disabled={showingArchivedData}
                       onClick={() => setEditingTable(!editingTable)}
                     >
-                      <Edit />
+                      {editingTable ? <EditOff /> : <Edit />}
                     </IconButton>
                   </Tooltip>
                 </Stack>
@@ -562,11 +565,31 @@ const AssetRegisterView = () => {
               register?.formFields
                 ? [
                     {
-                      accessorKey: "xInfox",
-                      header: "Update Info",
+                      accessorKey: "xPin",
+                      header: "Pin status",
                       enableSorting: false,
                       enableColumnFilter: false,
                       enableColumnActions: false,
+                      enableEditing: false,
+                      size: 100,
+                      Cell: ({ renderedCellValue, row }) =>
+                        renderedCellValue?.coords ? (
+                          <LocationOn
+                            sx={{ color: renderedCellValue?.color }}
+                          />
+                        ) : (
+                          <LocationOff
+                            sx={{ color: theme.palette.grey[800] }}
+                          />
+                        ),
+                    },
+                    {
+                      accessorKey: "xInfox",
+                      header: "Update info",
+                      enableSorting: false,
+                      enableColumnFilter: false,
+                      enableColumnActions: false,
+                      enableEditing: false,
                       Cell: ({ renderedCellValue, row }) => (
                         <Tooltip
                           title={
