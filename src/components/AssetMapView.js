@@ -10,6 +10,8 @@ import {
   ListItemText,
   ListItemButton,
   MenuList,
+  Stack,
+  Chip,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { useEffect, useState } from "react";
@@ -121,11 +123,24 @@ const AssetMapView = ({ preSelected }) => {
             return (
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography
-                    sx={{ fontWeight: isGroupSelected ? "bold" : "normal" }}
+                  <Stack
+                    sx={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    {treeViewObject.group}
-                  </Typography>
+                    <Typography
+                      sx={{ fontWeight: isGroupSelected ? "bold" : "normal" }}
+                    >
+                      {treeViewObject.group}
+                    </Typography>
+                    <Chip
+                      size="small"
+                      label={treeViewObject.entries.length}
+                      sx={{ fontSize: 10 }}
+                    />
+                  </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
                   <List dense={true}>

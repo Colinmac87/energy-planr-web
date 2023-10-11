@@ -9,6 +9,7 @@ const WithMapAnnotations = ({
   mode,
   location,
   data,
+  isArialViewVisible,
   areAnnotationsVisible,
   arePinsVisible,
   onPinPlacement,
@@ -39,10 +40,12 @@ const WithMapAnnotations = ({
         mode={mode || "view"}
         data={data}
         image={location.backgroundMapUrl}
+        defaultZoomPercentage={location.defaultZoomPercentage || 10}
         initialAnnotations={location.annotations?.map((annotation) => ({
           ...annotation,
           coords: JSON.parse(annotation.coords),
         }))}
+        isArialViewVisible={isArialViewVisible}
         areAnnotationsVisible={areAnnotationsVisible}
         arePinsVisible={arePinsVisible}
         onPinPlacement={onPinPlacement}

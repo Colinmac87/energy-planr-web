@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Grid,
   Stack,
   TextField,
@@ -20,6 +19,9 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(location?.name);
   const [backgroundMapFile, setBackgroundMapFile] = useState(null);
+  const [defaultZoomPercentage, setDefaultZoomPercentage] = useState(
+    location?.defaultZoomPercentage || 10
+  );
 
   const onFileUploadChanges = (files) => {
     if (files.length > 0) setBackgroundMapFile(files[0]);
@@ -32,7 +34,11 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
     onSaving();
 
     if (location?.id) {
-      updateLocation(location.id, { name, backgroundMapFile })
+      updateLocation(location.id, {
+        name,
+        backgroundMapFile,
+        defaultZoomPercentage,
+      })
         .then(() => {
           enqueueSnackbar("Changes saved", { variant: "success" });
           onSave();
@@ -45,7 +51,11 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
         })
         .finally(() => setLoading(false));
     } else {
-      createLocation(assetId, { name, backgroundMapFile })
+      createLocation(assetId, {
+        name,
+        backgroundMapFile,
+        defaultZoomPercentage,
+      })
         .then((locationId) => {
           if (locationId) {
             enqueueSnackbar("New location created", { variant: "success" });
@@ -80,57 +90,91 @@ const LocationForm = ({ assetId, location, onSaving, onSave, onCancel }) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <FileUpload
-            getBase64={false}
-            multiFile={false}
-            disabled={loading}
-            title="Background"
-            header={location ? "Drag a new file here" : "Drop file here"}
-            leftLabel="or"
-            rightLabel="to select file"
-            buttonLabel="click here"
-            buttonRemoveLabel="Remove all"
-            maxFileSize={20}
-            maxUploadFiles={1}
-            maxFilesContainerHeight={357}
-            acceptedType={"image/*"}
-            onFilesChange={onFileUploadChanges}
-            onError={onFileUploadError}
-            imageSrc={
-              location?.backgroundMapUrl ||
-              "https://www.pngplay.com/wp-content/uploads/8/Upload-Icon-Logo-Transparent-File.png"
+          <Box
+            sx={{
+              position: "relative",
+              border: `1px solid ${theme.palette.grey[700]}`,
+              py: 1,
+            }}
+          >
+            <Typography
+              sx={{
+                position: "absolute",
+                top: -11,
+                left: 9,
+                px: 0.6,
+                backgroundColor: theme.palette.background.paper,
+              }}
+              variant="caption"
+            >
+              Background
+            </Typography>
+            <FileUpload
+              getBase64={false}
+              multiFile={false}
+              disabled={loading}
+              title=""
+              header={location ? "Drag a new file here" : "Drop file here"}
+              leftLabel="or"
+              rightLabel="to select file"
+              buttonLabel="click here"
+              buttonRemoveLabel="Remove all"
+              maxFileSize={20}
+              maxUploadFiles={1}
+              maxFilesContainerHeight={357}
+              acceptedType={"image/*"}
+              onFilesChange={onFileUploadChanges}
+              onError={onFileUploadError}
+              imageSrc={
+                location?.backgroundMapUrl ||
+                "https://www.pngplay.com/wp-content/uploads/8/Upload-Icon-Logo-Transparent-File.png"
+              }
+              showPlaceholderImage={true}
+              onContextReady={(context) => {}}
+              PlaceholderGridProps={{ md: 12 }}
+              LabelsGridProps={{ md: 12 }}
+              ContainerProps={{
+                sx: {
+                  p: 0,
+                  backgroundColor: "transparent",
+                  border: "none",
+                  "& .MuiTypography-root": {
+                    color: theme.palette.text.primary,
+                  },
+                  "& .MuiButton-root": {
+                    borderColor: theme.palette.primary.main,
+                    color: theme.palette.primary.main,
+                  },
+                },
+              }}
+              BannerProps={{
+                elevation: 0,
+                sx: {
+                  backgroundColor: "transparent",
+                },
+              }}
+            />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12}>
+          <TextField
+            label={"Zoom Percentage"}
+            variant="outlined"
+            type="number"
+            fullWidth
+            value={defaultZoomPercentage}
+            onChange={(e) => setDefaultZoomPercentage(e.target.value)}
+            helperText={
+              defaultZoomPercentage < 1 ||
+              (defaultZoomPercentage > 100 &&
+                "Zoom percentage can be between 1 and 100")
             }
-            showPlaceholderImage={true}
-            onContextReady={(context) => {}}
-            PlaceholderGridProps={{ md: 12 }}
-            LabelsGridProps={{ md: 12 }}
-            ContainerProps={{
-              sx: {
-                p: 0,
-                backgroundColor: "transparent",
-                border: "none",
-                "& .MuiTypography-root": {
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiButton-root": {
-                  borderColor: theme.palette.primary.main,
-                  color: theme.palette.primary.main,
-                },
-              },
-            }}
-            BannerProps={{
-              elevation: 0,
-              sx: {
-                backgroundColor: "transparent",
-              },
-            }}
           />
         </Grid>
+
         <Grid item xs={12}>
           <Stack flexDirection={"row"} justifyContent={"space-between"}>
-            {/* <Button variant="outlined" disabled={loading} onClick={onCancel}>
-              Cancel
-            </Button> */}
             <LoadingButton type="submit" variant="contained" loading={loading}>
               Save
             </LoadingButton>

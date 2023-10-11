@@ -6,7 +6,7 @@ const DataDateRangeField = ({ field, value }) => {
     const [start, end] = value?.split(",");
 
     return (
-      <Typography>
+      <Typography sx={{ whiteSpace: "pre-line" }}>
         {moment(parseInt(start)).format("DD-MM-YYYY")} -{" "}
         {moment(parseInt(end)).format("DD-MM-YYYY")}
       </Typography>

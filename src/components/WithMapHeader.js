@@ -11,6 +11,8 @@ import {
   Fullscreen,
   Layers,
   LayersClear,
+  Public,
+  PublicOff,
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
@@ -20,6 +22,7 @@ import WithMapAnnotations from "./WithMapAnnotations";
 const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
   const [arePinsVisible, setArePinsVisibile] = useState(true);
   const [areAnnotationsVisible, setAreAnnotationsVisibile] = useState(true);
+  const [isArialViewVisible, setIsArialViewVisible] = useState(false);
 
   const onTogglePinsVisibility = () => {
     setArePinsVisibile(!arePinsVisible);
@@ -27,6 +30,14 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
 
   const onToggleAnnotationsVisibility = () => {
     setAreAnnotationsVisibile(!areAnnotationsVisible);
+  };
+
+  const onToggleArialViewVisibility = () => {
+    const newValue = !isArialViewVisible;
+    setIsArialViewVisible(null);
+    setTimeout(() => {
+      setIsArialViewVisible(newValue);
+    }, 50);
   };
 
   return (
@@ -56,6 +67,15 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
             {location?.name}
           </Typography>
           <Stack sx={{ flexDirection: "row", gap: 3 }}>
+            <Tooltip title="Toggle arial view">
+              <IconButton
+                key="btnToogleArialViewVisibilitiy"
+                onClick={onToggleArialViewVisibility}
+                size="small"
+              >
+                {isArialViewVisible ? <Public /> : <PublicOff />}
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Toggle annotations">
               <IconButton
                 key="btnToogleAnnotationsVisibilitiy"
@@ -87,12 +107,15 @@ const WithMapHeader = ({ location, data, onToggleFullscreen }) => {
         </Toolbar>
       </AppBar>
 
-      <WithMapAnnotations
-        location={location}
-        data={data}
-        areAnnotationsVisible={areAnnotationsVisible}
-        arePinsVisible={arePinsVisible}
-      />
+      {isArialViewVisible != null && (
+        <WithMapAnnotations
+          location={location}
+          data={data}
+          isArialViewVisible={isArialViewVisible}
+          areAnnotationsVisible={areAnnotationsVisible}
+          arePinsVisible={arePinsVisible}
+        />
+      )}
     </Box>
   );
 };

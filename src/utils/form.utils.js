@@ -25,6 +25,10 @@ export const canShowInRegister = (fieldType) => {
   return ![FIELD_RICHTEXT, FIELD_FILE, FIELD_IMAGE].includes(fieldType);
 };
 
+export const canShowInMapTree = (fieldType) => {
+  return ![FIELD_RICHTEXT, FIELD_FILE, FIELD_IMAGE].includes(fieldType);
+};
+
 export const muiDataGridCellEditProps = (fieldType) => {
   switch (fieldType) {
     case FIELD_TEXT:
@@ -41,7 +45,7 @@ export const muiDataGridCellEditProps = (fieldType) => {
       };
     default:
       return {
-        enableEditing: false
+        enableEditing: false,
       };
   }
 };
@@ -67,7 +71,7 @@ export const validateFormBuilder = (formFields) => {
     let formHasDefaultField = false;
     formFields.forEach((field, index) => {
       const i = index + 1;
-      
+
       if (!field.name || field.name.trim() == "")
         result.errors.push(`${i}: Field name is required`);
 

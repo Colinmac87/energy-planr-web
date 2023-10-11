@@ -36,6 +36,7 @@ import { saveFormFields } from "../services/register.service";
 import WithFormBuilderFieldOptions from "./formBuilder/WithFormBuilderFieldOptions";
 import {
   canBeDefaultField,
+  canShowInMapTree,
   canShowInRegister,
   getDefaultField,
   validateFormBuilder,
@@ -87,6 +88,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
 
       if (property == "type") {
         fieldsCopy[index].showInRegister = canShowInRegister(value);
+        fieldsCopy[index].showInMapTree = canShowInMapTree(value);
       }
 
       if (property == "isDefault") {
@@ -144,6 +146,7 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
         group: filterGroupKey || "none",
         isDefault: fields.length == 0,
         showInRegister: true,
+        showInMapTree: true,
         meta: {},
         triggers: [],
       },
@@ -475,6 +478,22 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
                           />
                         }
                         label="Show in Register"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            disabled={!canShowInMapTree(field.type)}
+                            checked={field.showInMapTree}
+                            onChange={(e) =>
+                              onChangeFieldProperty(
+                                i,
+                                "showInMapTree",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        }
+                        label="Show in Map Tree"
                       />
                     </Stack>
                     <FormControl>

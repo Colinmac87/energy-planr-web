@@ -27,12 +27,16 @@ export const getLocations = async (assetId) => {
   }
 };
 
-export const createLocation = async (assetId, { name, backgroundMapFile }) => {
+export const createLocation = async (
+  assetId,
+  { name, backgroundMapFile, defaultZoomPercentage }
+) => {
   try {
     const location = {
       assetId: assetId,
       name: name,
       annotations: [],
+      defaultZoomPercentage: defaultZoomPercentage,
       isDeleted: false,
     };
 
@@ -65,10 +69,14 @@ export const getLocation = async (id) => {
   }
 };
 
-export const updateLocation = async (id, { name, backgroundMapFile }) => {
+export const updateLocation = async (
+  id,
+  { name, backgroundMapFile, defaultZoomPercentage }
+) => {
   try {
     const location = {
       name: name,
+      defaultZoomPercentage: defaultZoomPercentage,
     };
 
     if (backgroundMapFile) {

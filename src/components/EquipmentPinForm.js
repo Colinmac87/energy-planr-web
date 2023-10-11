@@ -11,6 +11,8 @@ import {
   MenuItem,
   Paper,
   Select,
+  SpeedDial,
+  SpeedDialAction,
   Stack,
   Typography,
 } from "@mui/material";
@@ -20,11 +22,18 @@ import { useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 import { updateDataPin } from "../services/data.service";
 import { useSnackbar } from "notistack";
-import { WhereToVote, WrongLocation } from "@mui/icons-material";
-import { TwitterPicker } from "react-color";
+import {
+  Draw,
+  LocationOn,
+  PinDrop,
+  Save,
+  WrongLocation,
+} from "@mui/icons-material";
 import {
   PIN_DEFAULT_COLOR,
   PIN_DEFAULT_SIZE,
+  PIN_TYPE_POINT,
+  PIN_TYPE_POLYGON,
 } from "../constants/map.constants";
 import WithMapAnnotations from "./WithMapAnnotations";
 
@@ -38,6 +47,7 @@ const EquipmentPinForm = ({ data }) => {
   const [locations, setLocations] = useState([]);
   const [location, setLocation] = useState(null);
 
+  const [pinType, setPinType] = useState(data?.xPin?.type || null);
   const [pinCoords, setPinCoords] = useState(data?.xPin?.coords);
   const [pinColor, setPinColor] = useState(
     data?.xPin?.color || PIN_DEFAULT_COLOR
@@ -56,6 +66,7 @@ const EquipmentPinForm = ({ data }) => {
 
   const handleSavePin = () => {
     updateDataPin(data.id, {
+      type: pinType,
       coords: pinCoords,
       color: pinColor,
       size: pinSize,
@@ -107,67 +118,10 @@ const EquipmentPinForm = ({ data }) => {
               <Typography sx={{ flex: 1 }}>&nbsp;</Typography>
             )}
           </Stack>
-          <Stack
-            sx={{
-              flex: 1,
-              flexDirection: "row",
-              gap: 2,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
-            {pinCoords == null && (
-              <>
-                {/* <FormControl sx={{ width: 150 }} size="small">
-                  <InputLabel>Size</InputLabel>
-                  <Select
-                    value={pinSize}
-                    label="Size"
-                    onChange={(e) => {
-                      setPinSize(e.target.value);
-                    }}
-                  >
-                    <MenuItem value={PIN_SIZE_TINY}>{PIN_SIZE_TINY}</MenuItem>
-                    <MenuItem value={PIN_SIZE_SMALL}>{PIN_SIZE_SMALL}</MenuItem>
-                    <MenuItem value={PIN_SIZE_MEDIUM}>
-                      {PIN_SIZE_MEDIUM}
-                    </MenuItem>
-                    <MenuItem value={PIN_SIZE_LARGE}>{PIN_SIZE_LARGE}</MenuItem>
-                    <MenuItem value={PIN_SIZE_HUGE}>{PIN_SIZE_HUGE}</MenuItem>
-                  </Select>
-                </FormControl> */}
-                <TwitterPicker
-                  disabled={true}
-                  triangle="hide"
-                  color={pinColor}
-                  onChangeComplete={(color) => setPinColor(color.hex)}
-                  colors={["#FCB900", "#00D084", PIN_DEFAULT_COLOR]}
-                />
-              </>
-            )}
-            <Button
-              disabled={pinCoords == null}
-              variant="outlined"
-              startIcon={<WrongLocation />}
-              onClick={() => {
-                setPinCoords(null);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<WhereToVote />}
-              onClick={() => {
-                setIsConfirmPinDialogOpen(true);
-              }}
-            >
-              Save
-            </Button>
-          </Stack>
         </Stack>
         <Paper
           sx={{
+            position: "relative",
             flex: 1,
             backgroundColor: "eee2",
             minHeight: "100%",
@@ -182,6 +136,7 @@ const EquipmentPinForm = ({ data }) => {
                 {
                   ...data,
                   xPin: {
+                    type: pinType,
                     coords: pinCoords,
                     color: pinColor,
                     size: pinSize,
@@ -190,12 +145,54 @@ const EquipmentPinForm = ({ data }) => {
               ]}
               areAnnotationsVisible={false}
               arePinsVisible={true}
-              mode={"pin"}
+              mode={pinType == null ? "null" : "pin"}
               onPinPlacement={(coords) => {
+                // alert(coords);
                 setPinCoords(coords);
               }}
             />
           )}
+          <SpeedDial
+            ariaLabel="SpeedDial basic example"
+            sx={{ position: "absolute", bottom: 16, left: 16 }}
+            icon={<PinDrop />}
+          >
+            <SpeedDialAction
+              key={"Default Pin"}
+              icon={<LocationOn />}
+              tooltipTitle={"Default Pin"}
+              onClick={() => {
+                setPinCoords(null);
+                setPinType(PIN_TYPE_POINT);
+              }}
+            />
+            <SpeedDialAction
+              key={"Custom Pin"}
+              icon={<Draw />}
+              tooltipTitle={"Custom Pin"}
+              onClick={() => {
+                setPinCoords(null);
+                setPinType(PIN_TYPE_POLYGON);
+              }}
+            />
+            <SpeedDialAction
+              key={"Delete Pin"}
+              icon={<WrongLocation />}
+              tooltipTitle={"Delete Pin"}
+              onClick={() => {
+                setPinCoords(null);
+                setPinType(null);
+              }}
+            />
+            <SpeedDialAction
+              key={"Save Pin"}
+              icon={<Save />}
+              tooltipTitle={"Save Pin"}
+              onClick={() => {
+                setIsConfirmPinDialogOpen(true);
+              }}
+            />
+          </SpeedDial>
         </Paper>
 
         <Dialog

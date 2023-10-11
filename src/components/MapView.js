@@ -6,15 +6,20 @@ import {
   OpenInFull,
   Polyline,
   Remove,
+  Title,
 } from "@mui/icons-material";
 import {
   Alert,
   Box,
   Button,
-  Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Paper,
   Stack,
+  TextField,
   Tooltip,
   Typography,
   useTheme,
@@ -28,12 +33,14 @@ import {
   RFeature,
   RInteraction,
   RLayerImage,
+  RLayerTile,
   RLayerVector,
   RMap,
   RPopup,
 } from "rlayers";
-import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style";
+import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style";
 import { useSelector } from "react-redux";
+import { PIN_TYPE_POINT, PIN_TYPE_POLYGON } from "../constants/map.constants";
 
 const colorBlob = (size) =>
   "rgba(" +
@@ -48,11 +55,13 @@ const extentFeatures = (features, resolution) => {
 
 const MapView = ({
   image,
+  defaultZoomPercentage,
   data,
   initialAnnotations,
   arePinsVisible,
   areAnnotationsVisible,
-  mode = "view", // view || pin
+  isArialViewVisible,
+  mode, // view || pin
   onPinPlacement,
   onSaveAnnotations,
   onExpandPin,
@@ -67,15 +76,21 @@ const MapView = ({
     extent: extent,
   });
   const center = getCenter(extent);
-  const initial = { center: center, zoom: 1 };
+  const initial = { center: center, zoom: defaultZoomPercentage / 10 };
 
   const [view, setView] = useState(initial);
 
   const [drawType, setDrawType] = useState(null);
   const [annotations, setAnnotations] = useState(initialAnnotations);
   const [isErasingAnnotations, setIsErasingAnnotations] = useState(false);
+  const [isEditingAnnotationsLabel, setIsEditingAnnotationsLabel] =
+    useState(false);
+  const [isAnnotationLabelDialogOpen, setIsAnnotationLabelDialogOpen] =
+    useState(false);
 
   const [tempAnnotationCoords, setTempAnnotationCoords] = useState([]);
+
+  const [contextFeature, setContextFeature] = useState(null);
 
   const mapRef = createRef();
   const pinsRef = useRef(new Array(data.length));
@@ -83,10 +98,6 @@ const MapView = ({
   useEffect(() => {
     setAnnotations(initialAnnotations);
   }, [initialAnnotations]);
-
-  const handlePointPlace = (coords) => {
-    onPinPlacement(coords);
-  };
 
   const addDraw = (_drawType) => {
     setTempAnnotationCoords([]);
@@ -116,6 +127,30 @@ const MapView = ({
       (a) => JSON.stringify(a.coords) != JSON.stringify(coords) // stringify for array comparison
     );
     setAnnotations(_annotations);
+  };
+
+  const editAnnotationLabel = ({ type, coords }) => {
+    const _annotation = annotations.find(
+      (a) => JSON.stringify(a.coords) == JSON.stringify(coords) // stringify for array comparison
+    );
+    setContextFeature(_annotation);
+    setIsAnnotationLabelDialogOpen(true);
+  };
+
+  const saveAnnotationLabel = () => {
+    onSaveAnnotations(
+      annotations.map((a) =>
+        JSON.stringify(a.coords) == JSON.stringify(contextFeature.coords) // stringify for array comparison
+          ? { ...a, label: contextFeature.label }
+          : a
+      )
+    );
+    setTimeout(closeAnnotationLabelDialog, 50);
+  };
+
+  const closeAnnotationLabelDialog = () => {
+    setContextFeature(null);
+    setIsAnnotationLabelDialogOpen(false);
   };
 
   const cancelAnnotations = () => {
@@ -182,6 +217,36 @@ const MapView = ({
         </Alert>
       );
 
+    if (isEditingAnnotationsLabel)
+      return (
+        <Alert
+          severity="info"
+          action={
+            <Stack sx={{ flexDirection: "row", gap: 2 }}>
+              {/* <Button
+                color="inherit"
+                size="small"
+                variant="contained"
+                onClick={saveAnnotations}
+              >
+                Save
+              </Button> */}
+              <Button
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setIsEditingAnnotationsLabel(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          }
+        >
+          Click on an annotation to modify label
+        </Alert>
+      );
+
     return null;
   };
 
@@ -192,18 +257,32 @@ const MapView = ({
     return (
       <RFeature
         ref={(el) => (pinsRef.current[i] = el)}
-        geometry={new Point(dataPoint.xPin.coords)}
+        geometry={
+          dataPoint.xPin.type == PIN_TYPE_POLYGON
+            ? new Polygon(dataPoint.xPin.coords, "XY", [
+                dataPoint.xPin.coords.length,
+              ])
+            : new Point(dataPoint.xPin.coords)
+        }
         style={
-          new Style({
-            image: new CircleStyle({
-              radius: dataPoint.xPin.size * 5,
-              fill: new Fill({ color: dataPoint.xPin.color }),
-              stroke: new Stroke({
-                color: "#111",
-                width: 3,
-              }),
-            }),
-          })
+          dataPoint.xPin.type == PIN_TYPE_POLYGON
+            ? new Style({
+                fill: new Fill({ color: dataPoint.xPin.color }),
+                stroke: new Stroke({
+                  width: 3,
+                  color: "#111",
+                }),
+              })
+            : new Style({
+                image: new CircleStyle({
+                  radius: dataPoint.xPin.size * 5,
+                  fill: new Fill({ color: dataPoint.xPin.color }),
+                  stroke: new Stroke({
+                    color: "#111",
+                    width: 3,
+                  }),
+                }),
+              })
         }
       >
         {mode == "view" && (
@@ -290,18 +369,31 @@ const MapView = ({
         backgroundColor: "#DFDEDD",
       }}
     >
-      <RMap
-        ref={mapRef}
-        width={"100%"}
-        height={"100%"}
-        initial={initial}
-        view={[view, setView]}
-        projection={projection}
-        noDefaultControls
-      >
-        <RLayerImage url={image} extent={extent} />
+      {isArialViewVisible ? (
+        <RMap
+          ref={mapRef}
+          width={"100%"}
+          height={"100%"}
+          initial={{ center: center, zoom: 6 }}
+          noDefaultControls
+        >
+          <RLayerTile url="http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}&s=Ga" />
+        </RMap>
+      ) : (
+        <RMap
+          ref={mapRef}
+          width={"100%"}
+          height={"100%"}
+          initial={initial}
+          view={[view, setView]}
+          projection={projection}
+          minZoom={1}
+          maxZoom={10}
+          noDefaultControls
+        >
+          <RLayerImage url={image} extent={extent} />
 
-        {/* {arePinsVisible && data?.length > 0 && (
+          {/* {arePinsVisible && data?.length > 0 && (
           <RLayerCluster distance={20}>
             <RStyle
               cacheSize={1024}
@@ -353,123 +445,153 @@ const MapView = ({
           </RLayerCluster>
         )} */}
 
-        {/* Pins display */}
-        {arePinsVisible && data?.length > 0 && (
-          <RLayerVector>
-            {data
-              .filter((dataPoint) => dataPoint.xPin.coords)
-              .map((dataPoint, i) => renderPin(dataPoint, i))}
-          </RLayerVector>
-        )}
+          {/* Pins display layer */}
+          {arePinsVisible && data?.length > 0 && (
+            <RLayerVector>
+              {data
+                .filter((dataPoint) => dataPoint.xPin.coords)
+                .map((dataPoint, i) => renderPin(dataPoint, i))}
+            </RLayerVector>
+          )}
 
-        {/* Annotations display */}
-        {areAnnotationsVisible && annotations?.length > 0 && (
-          <RLayerVector>
-            {annotations?.map((annotation) => {
-              if (annotation.type == "Circle")
-                return (
-                  <RFeature
-                    geometry={new Circle(annotation.coords, null, "XY")}
-                    style={
-                      new Style({
-                        fill: new Fill({
-                          color: `${theme.palette.primary.main}11`,
-                        }),
-                        stroke: new Stroke({
-                          width: 2,
-                          color: theme.palette.primary.main,
-                        }),
-                      })
-                    }
-                    onClick={(e) => {
-                      if (!isErasingAnnotations) return;
+          {/* Annotations display layer */}
+          {areAnnotationsVisible && annotations?.length > 0 && (
+            <RLayerVector>
+              {annotations?.map((annotation) => {
+                if (annotation.type == "Circle")
+                  return (
+                    <RFeature
+                      geometry={new Circle(annotation.coords, null, "XY")}
+                      style={
+                        new Style({
+                          text: new Text({
+                            text: annotation.label,
+                            font: "bold 18px Inter",
+                          }),
+                          fill: new Fill({
+                            color: `${theme.palette.primary.main}11`,
+                          }),
+                          stroke: new Stroke({
+                            width: 2,
+                            color: theme.palette.primary.main,
+                          }),
+                        })
+                      }
+                      onClick={(e) => {
+                        const clickedCoords =
+                          e.target.values_.geometry.flatCoordinates;
+                        clickedCoords.pop();
+                        clickedCoords.pop();
 
-                      const clickedCoords =
-                        e.target.values_.geometry.flatCoordinates;
-                      clickedCoords.pop();
-                      clickedCoords.pop();
+                        if (isErasingAnnotations) {
+                          deleteAnnotation({
+                            type: "Circle",
+                            coords: clickedCoords,
+                          });
+                        }
 
-                      deleteAnnotation({
-                        type: "Circle",
-                        coords: clickedCoords,
-                      });
-                    }}
-                  ></RFeature>
-                );
-              if (annotation.type == "Polygon")
-                return (
-                  <RFeature
-                    geometry={
-                      new Polygon(annotation.coords, "XY", [
-                        annotation.coords.length,
-                      ])
-                    }
-                    style={
-                      new Style({
-                        fill: new Fill({
-                          color: `${theme.palette.primary.main}11`,
-                        }),
-                        stroke: new Stroke({
-                          width: 2,
-                          color: theme.palette.primary.main,
-                        }),
-                      })
-                    }
-                    onClick={(e) => {
-                      if (!isErasingAnnotations) return;
+                        if (isEditingAnnotationsLabel) {
+                          editAnnotationLabel({
+                            type: "Circle",
+                            coords: clickedCoords,
+                          });
+                        }
+                      }}
+                    ></RFeature>
+                  );
+                if (annotation.type == "Polygon")
+                  return (
+                    <RFeature
+                      geometry={
+                        new Polygon(annotation.coords, "XY", [
+                          annotation.coords.length,
+                        ])
+                      }
+                      style={
+                        new Style({
+                          text: new Text({
+                            text: annotation.label,
+                            font: "bold 18px Inter",
+                          }),
+                          fill: new Fill({
+                            color: `${theme.palette.primary.main}11`,
+                          }),
+                          stroke: new Stroke({
+                            width: 2,
+                            color: theme.palette.primary.main,
+                          }),
+                        })
+                      }
+                      onClick={(e) => {
+                        const clickedCoords =
+                          e.target.values_.geometry.flatCoordinates;
 
-                      const clickedCoords =
-                        e.target.values_.geometry.flatCoordinates;
+                        if (isErasingAnnotations) {
+                          deleteAnnotation({
+                            type: "Polygon",
+                            coords: clickedCoords,
+                          });
+                        }
 
-                      deleteAnnotation({
-                        type: "Polygon",
-                        coords: clickedCoords,
-                      });
-                    }}
-                  ></RFeature>
-                );
+                        if (isEditingAnnotationsLabel) {
+                          editAnnotationLabel({
+                            type: "Polygon",
+                            coords: clickedCoords,
+                          });
+                        }
+                      }}
+                      onDblClick={(e) => {
+                        alert("hah!");
+                      }}
+                    ></RFeature>
+                  );
 
-              return null;
-            })}
-          </RLayerVector>
-        )}
+                return null;
+              })}
+            </RLayerVector>
+          )}
 
-        {/* Pin placement layer */}
-        {mode == "pin" && !data[0].xPin?.coords && (
-          <RLayerVector>
-            <RInteraction.RDraw
-              style={
-                new Style({
-                  image: new CircleStyle({
-                    radius: data[0].xPin.size * 5,
-                    fill: new Fill({ color: data[0].xPin.color }),
-                  }),
-                })
-              }
-              type={"Point"}
-              onDrawEnd={(e) => {
-                handlePointPlace(e.target.sketchCoords_);
-              }}
-            />
-          </RLayerVector>
-        )}
+          {/* Pin draw layer */}
+          {mode == "pin" && !data[0].xPin?.coords && (
+            <RLayerVector>
+              <RInteraction.RDraw
+                style={
+                  data[0].xPin?.type == PIN_TYPE_POINT &&
+                  new Style({
+                    image: new CircleStyle({
+                      radius: data[0].xPin.size * 5,
+                      fill: new Fill({ color: data[0].xPin.color }),
+                    }),
+                  })
+                }
+                type={data[0].xPin?.type}
+                onDrawEnd={(e) => {
+                  if (data[0].xPin?.type == PIN_TYPE_POLYGON)
+                    onPinPlacement(e.feature.values_.geometry.flatCoordinates);
+                  else onPinPlacement(e.target.sketchCoords_);
+                }}
+              />
+            </RLayerVector>
+          )}
 
-        {/* Annotation layer */}
-        {drawType && (
-          <RLayerVector>
-            <RInteraction.RDraw
-              type={drawType}
-              onDrawEnd={(e) => {
-                setTempAnnotationCoords([
-                  ...tempAnnotationCoords,
-                  e.feature.values_.geometry.flatCoordinates,
-                ]);
-              }}
-            />
-          </RLayerVector>
-        )}
-      </RMap>
+          {/* Annotation draw layer */}
+          {drawType && (
+            <RLayerVector>
+              <RInteraction.RDraw
+                type={drawType}
+                onDrawEnd={(e) => {
+                  setTempAnnotationCoords([
+                    ...tempAnnotationCoords,
+                    e.feature.values_.geometry.flatCoordinates,
+                  ]);
+                }}
+              />
+            </RLayerVector>
+          )}
+        </RMap>
+      )}
 
+      {/* Status bar */}
       <Box
         sx={{
           gap: 1,
@@ -482,6 +604,7 @@ const MapView = ({
         {renderStateInfo()}
       </Box>
 
+      {/* Controls */}
       <Stack
         sx={{
           flexDirection: "column",
@@ -552,6 +675,30 @@ const MapView = ({
             bottom: 12,
           }}
         >
+          {!isEditingAnnotationsLabel && (
+            <Tooltip title="Modify Labels" placement="right">
+              <IconButton
+                size="small"
+                variant="contained"
+                sx={{
+                  bgcolor: theme.palette.background.default,
+                  borderRadius: theme.shape.borderRadius,
+                  borderStyle: "solid",
+                  borderColor: theme.palette.divider,
+                  borderWidth: 2,
+                }}
+                onClick={() => {
+                  try {
+                    setIsEditingAnnotationsLabel(true);
+                  } catch (error) {
+                    console.log("circle", error);
+                  }
+                }}
+              >
+                <Title />
+              </IconButton>
+            </Tooltip>
+          )}
           {!drawType && (
             <Tooltip title="Erase" placement="right">
               <IconButton
@@ -624,6 +771,36 @@ const MapView = ({
           </Tooltip>
         </Stack>
       )}
+
+      <Dialog
+        open={isAnnotationLabelDialogOpen}
+        onClose={closeAnnotationLabelDialog}
+      >
+        <DialogTitle>Annotation label</DialogTitle>
+        <DialogContent>
+          <TextField
+            multiline
+            rows={3}
+            autoFocus
+            margin="dense"
+            label="Label"
+            fullWidth
+            variant="outlined"
+            value={contextFeature?.label}
+            onChange={(e) =>
+              setContextFeature({
+                ...contextFeature,
+                label: e.target.value,
+              })
+            }
+          />
+        </DialogContent>
+        <DialogActions sx={{ pr: 3, pb: 2 }}>
+          <Button variant="outlined" onClick={saveAnnotationLabel}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
