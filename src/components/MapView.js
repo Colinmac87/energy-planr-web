@@ -540,9 +540,6 @@ const MapView = ({
                           });
                         }
                       }}
-                      onDblClick={(e) => {
-                        alert("hah!");
-                      }}
                     ></RFeature>
                   );
 

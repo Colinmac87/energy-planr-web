@@ -128,27 +128,28 @@ const UserForm = ({ user, onSaving, onSave, onCancel }) => {
             onChange={(e) => setEmailAddress(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            disabled={user?.id}
-            label={"Password"}
-            variant="outlined"
-            fullWidth
-            value={password}
-            onChange={(e) => setEmailAddress(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Tooltip title="Generate random password">
-                    <IconButton onClick={generatePassword} edge="end">
-                      <SyncLock />
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Grid>
+        {!user?.id && (
+          <Grid item xs={12}>
+            <TextField
+              label={"Password"}
+              variant="outlined"
+              fullWidth
+              value={password}
+              onChange={(e) => setEmailAddress(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Tooltip title="Generate random password">
+                      <IconButton onClick={generatePassword} edge="end">
+                        <SyncLock />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Stack flexDirection={"row"} justifyContent={"space-between"}>
             {/* <Button variant="outlined" disabled={loading} onClick={onCancel}>

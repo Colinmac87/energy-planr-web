@@ -46,6 +46,7 @@ export const createUser = async (
       role: role,
       companyId: companyId,
       password: password, // this is set temporarily, and is removed when the user signins in the first time
+      isDeleted: false,
     });
     return docRef.id;
   } catch (error) {
@@ -72,11 +73,21 @@ export const updateUserRole = async (id, role) => {
   }
 };
 
+export const deleteUser = async (id) => {
+  try {
+    const docRef = doc(db, "users", id);
+    updateDoc(docRef, { isDeleted: true });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getUserByEmailAddress = async (emailAddress) => {
   try {
     const q = query(
       collection(db, "users"),
-      where("emailAddress", "==", emailAddress)
+      where("emailAddress", "==", emailAddress),
+      where("isDeleted", "==", false)
     );
 
     const querySnapshot = await getDocs(q);
@@ -94,13 +105,19 @@ export const getUser = async ({ id, uid }) => {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() };
+        const _user = docSnap.data();
+        if (_user.isDeleted == true) return null;
+        return { id: docSnap.id, ..._user };
       } else {
         return null;
       }
     }
     if (uid) {
-      const q = query(collection(db, "users"), where("uid", "==", uid));
+      const q = query(
+        collection(db, "users"),
+        where("uid", "==", uid),
+        where("isDeleted", "==", false)
+      );
 
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((qs) => ({ id: qs.id, ...qs.data() }))[0];
@@ -115,7 +132,8 @@ export const getUsersByCompany = async (companyId) => {
   try {
     const q = query(
       collection(db, "users"),
-      where("companyId", "==", companyId)
+      where("companyId", "==", companyId),
+      where("isDeleted", "==", false)
     );
 
     const querySnapshot = await getDocs(q);
@@ -132,7 +150,6 @@ export const saveRegisterPreferences = async (
 ) => {
   try {
     const user = await getUser({ id: id });
-    console.log("here", { registerId, preferences });
 
     const rg =
       user.registerPreferences?.filter((rf) => rf.registerId != registerId) ||

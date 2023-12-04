@@ -79,12 +79,22 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
 
   const getVisibleFields = () =>
     JSON.parse(JSON.stringify(fields)).filter(
-      (f) => filterGroupKey == "none" || f.group == filterGroupKey
+      (f) =>
+        filterGroupKey == null ||
+        filterGroupKey == "none" ||
+        f.group == filterGroupKey
     );
 
   const onChangeFieldProperty = (index, property, value) => {
     try {
       let fieldsCopy = getVisibleFields();
+      console.log({
+        filterGroupKey,
+        fields: fieldsCopy,
+        index,
+        property,
+        value,
+      });
 
       if (property == "type") {
         fieldsCopy[index].showInRegister = canShowInRegister(value);
@@ -100,7 +110,9 @@ const FormFieldsManager = ({ register, onChangeRegister, onSave }) => {
 
       fieldsCopy[index][property] = value;
       setFields(fieldsCopy);
-    } catch (error) {}
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const moveUp = (index) => {

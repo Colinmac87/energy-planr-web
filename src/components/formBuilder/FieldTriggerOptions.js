@@ -228,44 +228,6 @@ const FieldTriggerOptions = ({ field, onChange }) => {
                     }
                   />
                 </Stack>
-                <Stack flex={1} gap={1}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        sx={{
-                          "&.Mui-checked": {
-                            color: actions.mapPinHighlight.color,
-                          },
-                        }}
-                        checked={actions.mapPinHighlight.isActive}
-                        onChange={(e) =>
-                          setActions({
-                            ...actions,
-                            mapPinHighlight: {
-                              ...actions.mapPinHighlight,
-                              isActive: e.target.checked,
-                            },
-                          })
-                        }
-                      />
-                    }
-                    label="Map Pin Highlight"
-                  />
-                  <GithubPicker
-                    triangle="hide"
-                    disabled={!actions.mapPinHighlight.isActive}
-                    color={actions.mapPinHighlight.color}
-                    onChangeComplete={(color) =>
-                      setActions({
-                        ...actions,
-                        mapPinHighlight: {
-                          ...actions.mapPinHighlight,
-                          color: color.hex,
-                        },
-                      })
-                    }
-                  />
-                </Stack>
               </Stack>
             </Grid>
           </Grid>
