@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { fromSecs, withFormat } from "../utils/date.utils";
 import EquipmentPinForm from "./EquipmentPinForm";
+import { canEdit } from "../constants/account.constants";
 
 const EquipmentDataForm = ({
   tab = "data",
@@ -37,6 +38,7 @@ const EquipmentDataForm = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { asset } = useSelector((state) => state.asset);
+  const { user } = useSelector((state) => state.account);
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(
@@ -45,7 +47,7 @@ const EquipmentDataForm = ({
   const [selectedTab, setSelectedTab] = useState(tab);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const canEdit = true;
+  const isEditable = canEdit(user.role);
 
   const formGroups = [
     {
@@ -172,35 +174,30 @@ const EquipmentDataForm = ({
               {formGroups
                 .filter((group) => group.hasFields == true)
                 .map((group) => (
-                  <Paper sx={{ marginBottom: 2, padding: 2 }}>
-                    <Stack spacing={1}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <Typography variant="h6">{group.name}</Typography>
-                        </Grid>
-                        {register.formFields
-                          .filter(
-                            (field) => field.group == (group.key || "none")
-                          )
-                          .map((field, i) =>
-                            canEdit ? (
-                              <WithFormField
-                                key={i}
-                                field={field}
-                                value={formData[field.key] || null}
-                                onChange={(v) => onChangeFormData(field.key, v)}
-                              />
-                            ) : (
-                              <WithDataField
-                                key={i}
-                                field={field}
-                                value={formData[field.key]}
-                              />
-                            )
-                          )}
+                  <Paper sx={{ p: 2, mb: 3 }}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="h6">{group.name}</Typography>
                       </Grid>
-                      <br />
-                    </Stack>
+                      {register.formFields
+                        .filter((field) => field.group == (group.key || "none"))
+                        .map((field, i) =>
+                          isEditable ? (
+                            <WithFormField
+                              key={i}
+                              field={field}
+                              value={formData[field.key] || null}
+                              onChange={(v) => onChangeFormData(field.key, v)}
+                            />
+                          ) : (
+                            <WithDataField
+                              key={i}
+                              field={field}
+                              value={formData[field.key]}
+                            />
+                          )
+                        )}
+                    </Grid>
                   </Paper>
                 ))}
               <Stack
@@ -231,7 +228,7 @@ const EquipmentDataForm = ({
                   </Button> */}
                 </Stack>
                 <Stack flexDirection={"row"} gap={6}>
-                  {/* {canEdit && formData?.id && (
+                  {/* {isEditable && formData?.id && (
                     <Button
                       variant="outlined"
                       disabled={loading}
@@ -251,7 +248,7 @@ const EquipmentDataForm = ({
                       Cancel
                     </Button>
                   </Stack>
-                  {canEdit && (
+                  {isEditable && (
                     <LoadingButton
                       type="submit"
                       variant="contained"

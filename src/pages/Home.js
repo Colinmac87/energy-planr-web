@@ -28,6 +28,11 @@ import {
 import { getKey, saveKey } from "../utils/storage.utils";
 import { useNavigate } from "react-router-dom";
 import { generateRandomInt } from "../utils/number.utils";
+import WithRole from "../components/wrappers/WithRole";
+import {
+  USER_ROLE_ADMIN,
+  USER_ROLE_MODERATOR,
+} from "../constants/account.constants";
 
 const Home = () => {
   const theme = useTheme();
@@ -193,13 +198,15 @@ const Home = () => {
             gap: 4,
           }}
         >
-          <Button
-            variant="contained"
-            onClick={() => setIsNewAssetFormOpen(true)}
-            sx={{ alignSelf: "stretch" }}
-          >
-            New Asset
-          </Button>
+          <WithRole roles={[USER_ROLE_MODERATOR, USER_ROLE_ADMIN]}>
+            <Button
+              variant="contained"
+              onClick={() => setIsNewAssetFormOpen(true)}
+              sx={{ alignSelf: "stretch" }}
+            >
+              New Asset
+            </Button>
+          </WithRole>
 
           <ToggleButtonGroup
             value={viewType}
@@ -265,31 +272,33 @@ const Home = () => {
         renderSkeletonLoading(8)
       )}
 
-      <Drawer
-        anchor={"right"}
-        open={isNewAssetFormOpen}
-        onClose={onCloseNewAssetForm}
-      >
-        <Box
-          sx={{
-            width: 440,
-            flex: 1,
-            height: "100%",
-            backgroundColor: theme.palette.background.paper,
-          }}
+      <WithRole roles={[USER_ROLE_MODERATOR, USER_ROLE_ADMIN]}>
+        <Drawer
+          anchor={"right"}
+          open={isNewAssetFormOpen}
+          onClose={onCloseNewAssetForm}
         >
-          <Typography variant="h4" m={2} mb={4}>
-            New Asset
-          </Typography>
-          <AssetForm
-            onSaving={() => {}}
-            onSave={() => {
-              onCloseNewAssetForm();
-              loadAssets();
+          <Box
+            sx={{
+              width: 440,
+              flex: 1,
+              height: "100%",
+              backgroundColor: theme.palette.background.paper,
             }}
-          />
-        </Box>
-      </Drawer>
+          >
+            <Typography variant="h4" m={2} mb={4}>
+              New Asset
+            </Typography>
+            <AssetForm
+              onSaving={() => {}}
+              onSave={() => {
+                onCloseNewAssetForm();
+                loadAssets();
+              }}
+            />
+          </Box>
+        </Drawer>
+      </WithRole>
     </Grid>
   );
 };

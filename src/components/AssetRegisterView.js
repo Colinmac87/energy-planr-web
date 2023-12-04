@@ -56,6 +56,15 @@ import { MaterialReactTable } from "material-react-table";
 import { LoadingButton } from "@mui/lab";
 import { fromSecs, withFormat } from "../utils/date.utils";
 import { saveRegisterPreferences } from "../services/user.service";
+import WithRole from "./wrappers/WithRole";
+import {
+  USER_ROLE_ADMIN,
+  USER_ROLE_MODERATOR,
+  USER_ROLE_EDITOR,
+  isAdmin,
+  canAdmin,
+  canEdit,
+} from "../constants/account.constants";
 
 const AssetRegisterView = () => {
   const theme = useTheme();
@@ -243,7 +252,7 @@ const AssetRegisterView = () => {
   };
 
   const renderRowActions = () => {
-    if (editingTable)
+    if (!canEdit(user.role) || editingTable)
       return {
         renderRowActionMenuItems: null,
         renderRowActions: null,
@@ -391,28 +400,34 @@ const AssetRegisterView = () => {
           sx={{ flex: 3 }}
           justifyContent={"flex-end"}
         >
-          <Button
-            disabled={register == null}
-            variant="outlined"
-            component="label"
-            startIcon={<UploadFile />}
-            onClick={() => setIsFileUploadDialogOpen(true)}
+          <WithRole
+            roles={[USER_ROLE_ADMIN, USER_ROLE_MODERATOR, USER_ROLE_EDITOR]}
           >
-            Upload Data
-          </Button>
-          <Button
-            disabled={register == null}
-            variant="contained"
-            component="label"
-            startIcon={<Add />}
-            onClick={() => {
-              setFormTab("data");
-              setSelectedData(null);
-              setIsEquipmentDetailViewerOpen(true);
-            }}
-          >
-            New Record
-          </Button>
+            <>
+              <Button
+                disabled={register == null}
+                variant="outlined"
+                component="label"
+                startIcon={<UploadFile />}
+                onClick={() => setIsFileUploadDialogOpen(true)}
+              >
+                Upload Data
+              </Button>
+              <Button
+                disabled={register == null}
+                variant="contained"
+                component="label"
+                startIcon={<Add />}
+                onClick={() => {
+                  setFormTab("data");
+                  setSelectedData(null);
+                  setIsEquipmentDetailViewerOpen(true);
+                }}
+              >
+                New Record
+              </Button>
+            </>
+          </WithRole>
         </Stack>
       </Stack>
 
@@ -450,8 +465,6 @@ const AssetRegisterView = () => {
             onColumnVisibilityChange={setColumnVisibility}
             onColumnSizingChange={setColumnSizing}
             onShowColumnFiltersChange={setShowColumnFilters}
-            // enableGlobalFilter={true}
-
             //
             enableEditing={!showingArchivedData && editingTable}
             editingMode="table"
@@ -529,32 +542,44 @@ const AssetRegisterView = () => {
                       <Numbers />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip
-                    title={
-                      showingArchivedData ? "Hide archived" : "Show archived"
-                    }
-                    arrow
+                  <WithRole
+                    roles={[
+                      USER_ROLE_ADMIN,
+                      USER_ROLE_MODERATOR,
+                      USER_ROLE_EDITOR,
+                    ]}
                   >
-                    <IconButton
-                      disabled={editingTable}
-                      onClick={() =>
-                        setShowingArchivedData(!showingArchivedData)
-                      }
-                    >
-                      <Archive />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={editingTable ? "Stop editing" : "Edit table"}
-                    arrow
-                  >
-                    <IconButton
-                      disabled={showingArchivedData}
-                      onClick={() => setEditingTable(!editingTable)}
-                    >
-                      {editingTable ? <EditOff /> : <Edit />}
-                    </IconButton>
-                  </Tooltip>
+                    <>
+                      <Tooltip
+                        title={
+                          showingArchivedData
+                            ? "Hide archived"
+                            : "Show archived"
+                        }
+                        arrow
+                      >
+                        <IconButton
+                          disabled={editingTable}
+                          onClick={() =>
+                            setShowingArchivedData(!showingArchivedData)
+                          }
+                        >
+                          <Archive />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        title={editingTable ? "Stop editing" : "Edit table"}
+                        arrow
+                      >
+                        <IconButton
+                          disabled={showingArchivedData}
+                          onClick={() => setEditingTable(!editingTable)}
+                        >
+                          {editingTable ? <EditOff /> : <Edit />}
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  </WithRole>
                 </Stack>
               </Stack>
             )}
